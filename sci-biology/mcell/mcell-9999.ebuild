@@ -6,7 +6,8 @@ EAPI=5
 
 inherit git-2 cmake-utils
 
-EGIT_REPO_URI="git://github.com/mcellteam/mcell.git"
+EGIT_REPO_URI="git://github.com/tgbugs/mcell.git"
+EGIT_BRANCH="cmake"
 
 DESCRIPTION="MCell: Monte Carlo Simulator of Cellular Microphysiology"
 HOMEPAGE="http://mcell.org"
@@ -20,8 +21,6 @@ IUSE=""
 DEPEND=">=sys-devel/flex-2.5.6"
 RDEPEND="${DEPEND}"
 
-#CMAKE_USE_DIR=${WORKDIR}/${P}
-#CMAKE_IN_SOURCE_BUILD=true
 BUILD_DIR="${WORKDIR}/${P}/build"
 
 
@@ -30,4 +29,10 @@ src_configure() {
 }
 src_compile() {
 	cmake-utils_src_compile  # problem with cmd line options or something
+}
+src_install() {
+	cmake-utils_src_install
+	doman man/*
+	dodoc docs/*.*
+	dodoc docs/reaction_overview/*.pdf
 }
