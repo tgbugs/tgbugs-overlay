@@ -1,0 +1,29 @@
+# Copyright 1999-2016 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Id$
+
+EAPI=5
+
+inherit eutils
+
+DESCRIPTION="Brownian Dynamics of Biological Molecules"
+HOMEPAGE="http://browndye.ucsd.edu/"
+SRC_URI="http://browndye.ucsd.edu/browndye.tar.gz"
+
+LICENSE="MIT"
+SLOT="0"
+KEYWORDS=""
+IUSE=""
+
+DEPEND="dev-lang/ocaml"
+RDEPEND="${DEPEND}"
+
+S="${WORKDIR}/${PN}"
+
+src_prepare() {
+	epatch "${FILESDIR}"/${P}-parallel_build.patch
+}
+
+src_compile() {
+	emake all  # fails when run with -j > 1 due to missing ordering rules
+}

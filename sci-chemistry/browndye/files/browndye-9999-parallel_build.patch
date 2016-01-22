@@ -1,0 +1,27 @@
+--- Makefile.old	2016-01-21 17:37:59.426360672 -0800
++++ Makefile	2016-01-21 17:38:03.324461110 -0800
+@@ -10,20 +10,18 @@
+ cpp_depend:
+ 	cd src && cp Makefile.pre Makefile && $(subst efl, $(eflag), $(subst cpp,$(CPPP), sh -c "cpp -MM efl *.cc >> Makefile"))
+ 
+-cpp_all:
++cpp_all: cpp_depend
+ 	cd src && $(MAKE) all
+ 
+ cpp_programs: cpp_depend cpp_all
+ 
+ ocaml_dep:
+-	cd aux && touch .depend1; touch .depend2; $(MAKE) depend; 
++	cd aux && touch .depend1; touch .depend2; $(MAKE) depend1 && $(MAKE) depend2; 
+ 
+-ocaml_all:
++ocaml_all: ocaml_dep
+ 	cd aux && $(MAKE) all; 
+ 
+-ocaml_programs: ocaml_dep ocaml_all
+-
+-all: cpp_programs ocaml_programs
++all: cpp_programs ocaml_all
+ 
+ clean_cc: 
+ 	cd src && cp Makefile.pre Makefile; $(MAKE) clean; rm -f Makefile Makefile.bak
