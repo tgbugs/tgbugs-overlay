@@ -1,10 +1,27 @@
---- makefile.old	2016-01-22 17:13:24.085452684 -0800
-+++ makefile    	2016-01-22 17:25:46.647534832 -0800
+--- makefile.old	2016-01-22 22:58:44.751572708 -0800
++++ makefile		2016-01-22 23:00:37.183563457 -0800
 @@ -1,6 +1,6 @@
  
  # Linux:
 -INSTALL_DIR = ~/.config/blender/2.75/scripts/addons/
-+INSTALL_DIR = /usr/share/blender/scripts/addons/
++INSTALL_DIR = "${D}${DESTDIR}" #/usr/share/blender/scripts/addons/
  
  # Mac:
  #INSTALL_DIR = ~/Library/Application\ Support/Blender/2.74/scripts/addons/
+@@ -69,11 +69,10 @@
+ 
+ .PHONY: install
+ install: cellblender.zip
+-	@if [ "$(INSTALL_DIR)" ]; then \
+-	  unzip -o cellblender.zip -d $(INSTALL_DIR); \
+-	  cp test_suite/cellblender_test_suite.py $(INSTALL_DIR); \
+-	fi
++	mkdir -p $(INSTALL_DIR)
++	unzip -o cellblender.zip -d $(INSTALL_DIR)
++	cp test_suite/cellblender_test_suite.py $(INSTALL_DIR)
+ 	@echo ===========================================================
+-	@cat $(INSTALL_DIR)cellblender/cellblender_id.py
++	@cat cellblender/cellblender_id.py
+ 	@echo ===========================================================
+ 
+
