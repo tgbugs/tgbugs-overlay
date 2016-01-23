@@ -4,10 +4,9 @@
 
 EAPI=5
 
-inherit git-2 cmake-utils
+inherit git-2 cmake-utils eutils
 
-EGIT_REPO_URI="git://github.com/tgbugs/mcell.git"
-EGIT_BRANCH="cmake"
+EGIT_REPO_URI="git://github.com/mcellteam/mcell.git"
 
 DESCRIPTION="MCell: Monte Carlo Simulator of Cellular Microphysiology"
 HOMEPAGE="http://mcell.org"
@@ -24,6 +23,9 @@ RDEPEND="${DEPEND}"
 BUILD_DIR="${S}/build"
 
 
+src_prepare() {
+	epatch "${FILESDIR}"/${P}-destdir.patch
+}
 src_configure() {
 	cmake-utils_src_configure
 }

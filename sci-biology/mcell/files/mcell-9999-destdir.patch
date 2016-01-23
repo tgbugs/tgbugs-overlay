@@ -1,0 +1,10 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 15d275c..7ec6c25 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -154,3 +154,5 @@ add_executable(mcell
+   ${BISON_mdlParser_OUTPUTS}
+   ${FLEX_mdlScanner_OUTPUTS})
+ target_link_libraries(mcell ${M_LIB})
++
++install(PROGRAMS build/mcell DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
