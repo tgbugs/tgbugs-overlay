@@ -15,22 +15,20 @@ SRC_URI=""
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="mcell"
+IUSE="+mcell"
 
 DEPEND=">=media-gfx/blender-2.6
 	mcell? ( sci-biology/mcell )"
 RDEPEND="${DEPEND}"
 
 BUILD_DIR="${S}"
-DESTDIR="/usr/share/blender/scripts/addons/"
 
 src_prepare() {
 	epatch "${FILESDIR}"/${P}-destdir.patch \
 		"${FILESDIR}"/${P}-parallel_build.patch
 }
-#src_install() {
-	#if VER="/usr/share/blender/*";then
-	#insinto ${VER}/scripts/addons/
-		#doins -r "${S}"
-	#fi
-#}
+src_install() {
+	if VER="/usr/share/blender/*";then
+		emake DESTDIR=$(echo $VER)/scripts/addons/ install
+	fi
+}
