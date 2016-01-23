@@ -14,7 +14,7 @@
  #  (see Arguments to Specify the Goals). 
  
 +sources: cellblender
-+	make $(SOURCES)
++	$(MAKE) $(SOURCES)
 +
 +
  # Note that files which auto-change but are included in the zip file are not part of the source list
