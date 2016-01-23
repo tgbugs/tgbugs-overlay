@@ -1,0 +1,25 @@
+--- makefile.old	2016-01-22 17:13:24.085452684 -0800
++++ makefile	2016-01-22 17:51:41.976687962 -0800
+@@ -14,7 +14,7 @@
+ ZIPOPTS = -X -0 -D -o
+ 
+ .PHONY: all
+-all: cellblender subdirs cellblender.zip SimControl.jar SimControl
++all: subdirs cellblender.zip SimControl.jar SimControl
+ 
+ cellblender:
+ 	ln -s . cellblender
+@@ -33,8 +33,12 @@
+ # target recipe will be executed only when the phony target is a specified goal
+ #  (see Arguments to Specify the Goals). 
+ 
++sources: cellblender
++	make $(SOURCES)
++
++
+ # Note that files which auto-change but are included in the zip file are not part of the source list
+-cellblender.zip: $(SOURCES) SimControl
++cellblender.zip: sources SimControl
+ 	@echo Updating cellblender.zip
+ 	@echo Sources = $(SOURCES)
+ 	touch -t 201502050000 cellblender_id.py

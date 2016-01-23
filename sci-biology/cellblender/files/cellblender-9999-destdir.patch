@@ -1,0 +1,10 @@
+--- makefile.old	2016-01-22 17:13:24.085452684 -0800
++++ makefile    	2016-01-22 17:25:46.647534832 -0800
+@@ -1,6 +1,6 @@
+ 
+ # Linux:
+-INSTALL_DIR = ~/.config/blender/2.75/scripts/addons/
++INSTALL_DIR = /usr/share/blender/scripts/addons/
+ 
+ # Mac:
+ #INSTALL_DIR = ~/Library/Application\ Support/Blender/2.74/scripts/addons/
