@@ -15,13 +15,13 @@ SRC_URI=""
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~amd64 ~x86"  # havn't actually tried to build on other systems...
 IUSE=""
 
 DEPEND=">=sys-devel/flex-2.5.6"
 RDEPEND="${DEPEND}"
 
-BUILD_DIR="${WORKDIR}/${P}/build"
+BUILD_DIR="${S}/build"
 
 
 src_configure() {
