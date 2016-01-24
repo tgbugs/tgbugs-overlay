@@ -1,0 +1,15 @@
+# ChangeLog for media-gfx/yed
+# Copyright 1999-2013 Gentoo Foundation; Distributed under the GPL v2
+# $Header: $
+
+*yed-3.14.4 (24 Jan 2016)
+  27 Apr 2014; tgbugs
+  +yed-3.14.4.ebuild:
+  Version Bump. Remove old.
+
+*yed-3.14.1 (27 Apr 2015)
+
+  27 Apr 2014; tgbugs
+  +yed-3.14.1.ebuild:
+  Initial ebuild based on yed-3.11.1.ebuild from overlay 'scrill'
+
