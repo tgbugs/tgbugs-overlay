@@ -21,9 +21,18 @@ RDEPEND="${DEPEND}"
 S="${WORKDIR}/${PN}"
 
 src_prepare() {
-	epatch "${FILESDIR}"/${P}-parallel_build.patch
+	epatch "${FILESDIR}"/${P}-parallel_build.patch \
+		"${FILESDIR}"/${P}-parallel_build-2.patch \
+		"${FILESDIR}"/${P}-install.patch
 }
 
 src_compile() {
 	emake all  # fails when run with -j > 1 due to missing ordering rules
+}
+
+src_install() {
+	emake install
+	insinto /usr/bin/
+	doins -r "${S}"/usr/bin/*
+	die
 }
