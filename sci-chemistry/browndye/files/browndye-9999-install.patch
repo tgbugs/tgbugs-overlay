@@ -1,0 +1,8 @@
+--- Makefile.old	2016-01-21 17:56:07.905583842 -0800
++++ Makefile	2016-01-26 15:57:00.523030556 -0800
+@@ -43,3 +43,5 @@
+ 
+ clean: clean_cc clean_oc clean_example clean_example2 clean_example3 clean_bin
+ 
++install: all
++	mkdir -p usr/bin && cp -RL bin/* usr/bin/ && chmod +x usr/bin/*

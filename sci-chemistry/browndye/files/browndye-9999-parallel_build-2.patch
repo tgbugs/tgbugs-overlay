@@ -1,0 +1,19 @@
+--- aux/Makefile.old	2016-01-26 16:24:43.754353031 -0800
++++ aux/Makefile	2016-01-26 16:28:41.098423117 -0800
+@@ -13,13 +13,13 @@
+ expat_dep:
+ 	cd ocaml-expat && $(MAKE) depend;
+ 
+-expat_all:
++expat_all: expat_dep
+ 	cd ocaml-expat && $(MAKE) allopt;
+ 
+ expat_clean:
+ 	cd ocaml-expat && $(MAKE) clean;
+ 
+-expat: expat_dep expat_all;
++expat: expat_all;
+ 
+ # Dependencies
+ create_make: lines.mli lines.ml create_make.ml
+
