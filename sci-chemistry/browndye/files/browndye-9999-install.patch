@@ -5,4 +5,4 @@
  clean: clean_cc clean_oc clean_example clean_example2 clean_example3 clean_bin
  
 +install: all
-+	mkdir -p usr/bin && cp -RL bin/* usr/bin/ && chmod +x usr/bin/*
++	mkdir -p usr/bin && cp -RL bin/* usr/bin/

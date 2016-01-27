@@ -21,8 +21,7 @@ RDEPEND="${DEPEND}"
 S="${WORKDIR}/${PN}"
 
 src_prepare() {
-	epatch "${FILESDIR}"/${P}-parallel_build.patch \
-		"${FILESDIR}"/${P}-parallel_build-2.patch \
+	epatch "${FILESDIR}"/${P}-parallel_build-2.patch \
 		"${FILESDIR}"/${P}-install.patch
 }
 
@@ -34,5 +33,8 @@ src_install() {
 	emake install
 	insinto /usr/bin/
 	doins -r "${S}"/usr/bin/*
-	die
+	find "${D}"/usr/bin/ -type f ! -name '*.*' -exec chmod 755 {} \; \
+		|| die "failed to make plugins executables"
+
+	#die
 }
