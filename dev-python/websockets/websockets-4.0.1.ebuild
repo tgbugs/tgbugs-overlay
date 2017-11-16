@@ -10,12 +10,12 @@ DESCRIPTION="WebSocket implementation in Python 3"
 HOMEPAGE="https://github.com/aaugustin/websockets"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="Apache-2.0"
+LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-DEPEND="dev-python/pip"
+DEPEND=""
 RDEPEND="${DEPEND}"
 
 RESTRICT="test"

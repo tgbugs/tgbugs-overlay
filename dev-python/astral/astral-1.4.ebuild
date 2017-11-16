@@ -15,15 +15,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-DEPEND="dev-python/pip"
+DEPEND=""
 RDEPEND="${DEPEND}"
 
 RESTRICT="test"
-
-#python_prepare_all() {
-	#distutils-r1_python_prepare_all
-#}
-
-#python_install_all() {
-	#distutils-r1_python_install_all
-#}

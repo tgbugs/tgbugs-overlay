@@ -10,12 +10,12 @@ DESCRIPTION="A universal Python parser combinator library inspired by Parsec lib
 HOMEPAGE="https://github.com/sighingnow/parsec.py"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="Apache-2.0"
+LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-DEPEND="dev-python/pip"
+DEPEND=""
 RDEPEND="${DEPEND}"
 
 RESTRICT="test"
