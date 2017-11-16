@@ -6,8 +6,8 @@ EAPI=6
 PYTHON_COMPAT=( python2_7 python3_{4,5,6} )
 inherit distutils-r1
 
-DESCRIPTION="Calculations for the position of the sun and moon."
-HOMEPAGE="https://github.com/sffjunkie/astral"
+DESCRIPTION="A universal Python parser combinator library inspired by Parsec library of Haskell"
+HOMEPAGE="https://github.com/sighingnow/parsec.py"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
