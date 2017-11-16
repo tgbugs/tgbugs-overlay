@@ -19,7 +19,7 @@ DEPEND=""
 RDEPEND="dev-python/beautifulsoup:4[${PYTHON_USEDEP}]
 dev-python/requests[${PYTHON_USEDEP}]
 dev-python/six[${PYTHON_USEDEP}]
-dev-python/werkzeug[${PYTHON_USEDEP}]"
-RDEPEND="${DEPEND}"
+dev-python/werkzeug[${PYTHON_USEDEP}]
+${DEPEND}"
 
 RESTRICT="test"
