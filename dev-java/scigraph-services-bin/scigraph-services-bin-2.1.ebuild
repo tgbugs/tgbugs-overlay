@@ -38,6 +38,7 @@ pkg_setup() {
 	ebegin "Creating scigraph user and group"
 	enewgroup scigraph
 	enewuser scigraph -1 -1 "${SCIGRAPH_HOME}" scigraph
+	keepdir "${SCIGRAPH_HOME}"
 	eend $?
 }
 
