@@ -32,17 +32,17 @@ EXECUTABLE="/usr/bin/${MY_PN}"
 
 S="${WORKDIR}/${MY_P}-SNAPSHOT"
 
+SCIGRAPH_HOME="/var/lib/scigraph"
 pkg_setup() {
-	SCIGRAPH_HOME="/var/lib/scigraph"
-
 	ebegin "Creating scigraph user and group"
 	enewgroup scigraph
 	enewuser scigraph -1 -1 "${SCIGRAPH_HOME}" scigraph
-	keepdir "${SCIGRAPH_HOME}"
 	eend $?
 }
 
 src_install() {
+	keepdir "${SCIGRAPH_HOME}"
+
 	dodir ${SCIGRAPH_SHARE}
 
 	cp -Rp lib "${ED}${SCIGRAPH_SHARE}" || die "failed to copy"
