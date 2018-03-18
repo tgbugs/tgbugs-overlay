@@ -28,7 +28,6 @@ SCIGRAPH="${PN}-${SLOT}"
 SCIGRAPH_SHARE="/usr/share/${SCIGRAPH}"
 SERVICES_FOLDER="/usr/share/scigraph-services"
 
-#EXECUTABLE="${SCIGRAPH_SHARE}/bin/${MY_PN}"
 EXECUTABLE="/usr/bin/${MY_PN}"
 
 S="${WORKDIR}/${MY_P}-SNAPSHOT"
@@ -47,16 +46,14 @@ src_install() {
 
 	cp -Rp lib "${ED}${SCIGRAPH_SHARE}" || die "failed to copy"
 	cp "${MY_P}-SNAPSHOT.jar" "${ED}${SCIGRAPH_SHARE}/${MY_P}.jar"
-	java-pkg_regjar "${ED}${SCIGRAPH_SHARE}"/lib/*.jar #"${PN}.jar"
+	java-pkg_regjar "${ED}${SCIGRAPH_SHARE}"/lib/*.jar
 	java-pkg_regjar "${ED}${SCIGRAPH_SHARE}/${MY_P}.jar"
 
 	keepdir "/var/log/${MY_PN}"
 	fowners scigraph:scigraph "/var/log/${MY_PN}"
 
-	#dodir "${SCIGRAPH_SHARE}/bin"
 	dodir "/usr/bin"
 	echo '#!/usr/bin/env sh' > "${ED}${EXECUTABLE}"
-	#echo '/usr/bin/java -jar "'"${SCIGRAPH_SHARE}/${MY_P}.jar"'" $@ &' >> "${ED}${EXECUTABLE}"
 	echo '/usr/bin/java $@ &' >> "${ED}${EXECUTABLE}"
 	echo 'echo $! > '"/var/run/${MY_PN}/${MY_PN}.pid" >> "${ED}${EXECUTABLE}"
 
@@ -64,7 +61,6 @@ src_install() {
 
 	dodir ${SERVICES_FOLDER}
 	dosym "${SCIGRAPH_SHARE}/${MY_P}.jar" "${SERVICES_FOLDER}/scigraph-services.jar"
-	#dosym "${EXECUTABLE}" "/usr/bin/${MY_PN}"
 
 	newinitd "${FILESDIR}/${PV}/scigraph-services.rc" scigraph-services
 	newconfd "${FILESDIR}/${PV}/scigraph-services.confd" scigraph-services

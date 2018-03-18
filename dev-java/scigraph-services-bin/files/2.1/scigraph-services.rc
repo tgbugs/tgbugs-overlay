@@ -37,5 +37,4 @@ start_pre() {
     if [ -f "/tmp/X${DISPLAY}.lock" ] ; then
         Xvfb ${DISPLAY} -screen 0 1024x768x24 &
     fi
-    #ulimit -n 1048576
 }
