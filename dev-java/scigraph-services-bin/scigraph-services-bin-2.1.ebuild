@@ -42,6 +42,7 @@ pkg_setup() {
 
 src_install() {
 	keepdir "${SCIGRAPH_HOME}"
+	fowners scigraph:scigraph "${SCIGRAPH_HOME}"
 
 	dodir ${SCIGRAPH_SHARE}
 
