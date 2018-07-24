@@ -1,17 +1,15 @@
-<repositories encoding="unicode" version="1.1">
+<repositories version="1.0">
   <repo quality="experimental" status="unofficial">
     <name>tgbugs-overlay</name>
-    <description>portage overlay for custom ebuilds</description>
+    <description>tgbugs portage overlay for custom ebuilds</description>
     <homepage>https://github.com/tgbugs/tgbugs-overlay</homepage>
-    <owner>
+    <owner type="person">
       <email>tgbugs@gmail.com</email>
       <name>Tom Gillespie</name>
     </owner>
     <source type="git">https://github.com/tgbugs/tgbugs-overlay.git</source>
     <source type="git">git://github.com/tgbugs/tgbugs-overlay.git</source>
-    <source type="git">git@github.com/tgbugs/tgbugs-overlay.git</source>
-    <feed>
-      https://github.com/tgbugs/tgbugs-overlay/commits/master.atom
-    </feed>
+    <source type="git">git@github.com:tgbugs/tgbugs-overlay.git</source>
+    <feed>https://github.com/tgbugs/tgbugs-overlay/commits/master.atom</feed>
   </repo>
 </repositories>
