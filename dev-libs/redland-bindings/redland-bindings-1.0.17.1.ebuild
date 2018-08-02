@@ -1,9 +1,9 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=7
 
-PYTHON_COMPAT=( python2_7 python3_6 )
+PYTHON_COMPAT=( python2_7 python3_4 python3_5 python3_6 python3_7 )
 
 inherit multilib python-single-r1
 
@@ -51,5 +51,6 @@ src_install() {
 	use python && python_optimize
 
 	dodoc AUTHORS ChangeLog NEWS README TODO
-	dohtml {NEWS,README,RELEASE,TODO}.html
+	docinto html
+	dodoc -r {NEWS,README,RELEASE,TODO}.html
 }
