@@ -3,7 +3,7 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( pypy3 python2_7 python3_{4,5,6} )
+PYTHON_COMPAT=( pypy pypy3 python2_7 python3_{4,5,6} )
 PYTHON_REQ_USE="threads(+)"
 
 inherit flag-o-matic distutils-r1 toolchain-funcs
@@ -20,7 +20,7 @@ IUSE="doc test"
 RDEPEND="
 	>=net-libs/zeromq-4.2.2-r2:=[drafts]
 	dev-python/py[${PYTHON_USEDEP}]
-	dev-python/cffi:=[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep dev-python/cffi:=[${PYTHON_USEDEP}] pypy{,3})
 	$(python_gen_cond_dep 'dev-python/gevent[${PYTHON_USEDEP}]' python2_7)
 "
 DEPEND="${RDEPEND}
