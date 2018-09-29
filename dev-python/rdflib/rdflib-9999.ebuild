@@ -3,7 +3,7 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( pypy3 python{2_7,3_{4,5,6}} )
+PYTHON_COMPAT=( pypy{3,} python{2_7,3_{4,5,6}} )
 PYTHON_REQ_USE="sqlite?,threads(+)"
 
 # The usual required for tests
@@ -13,7 +13,7 @@ inherit git-r3 distutils-r1
 
 DESCRIPTION="RDF library containing a triple store and parser/serializer"
 HOMEPAGE="https://github.com/RDFLib/rdflib https://github.com/tgbugs/rdflib"
-EGIT_REPO_URI="git://github.com/tgbugs/rdflib.git"
+EGIT_REPO_URI="https://github.com/tgbugs/rdflib.git"
 
 LICENSE="BSD"
 SLOT="0"
@@ -37,7 +37,7 @@ python_prepare_all() {
 	find -name "*.py[oc~]" -delete || die
 
 	# Bug 358189; take out tests that attempt to connect to the network
-	 sed -e "/'--with-doctest',/d" -e "/'--doctest-extension=.doctest',/d" \
+	sed -e "/'--with-doctest',/d" -e "/'--doctest-extension=.doctest',/d" \
 		-e "/'--doctest-tests',/d" -i run_tests.py || die
 
 	sed -e "s: 'sphinx.ext.intersphinx',::" -i docs/conf.py || die
