@@ -1,0 +1,3 @@
+SCIBOT_GROUP=__world__  # set this manually or via emerge --config
+SCIBOT_USERNAME=scibot  # change this for your particular curation setup
+SCIBOT_API_TOKEN=       # set this manually or via emerge --config and chmod 0600 this file ...

@@ -1,0 +1,30 @@
+#!/sbin/openrc-run
+# Copyright 1999-2018 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+: ${SCIBOT_GROUP:=scibot}
+: ${SCIBOT_USER:=scibot}
+: ${SERVICES_LOG_LOC:="/var/log/scibot"}
+
+BOOKMARKLET_LOG="${SERVICES_LOG_LOC}/bookmarklet.log"
+SYNC_LOG="${SERVICES_LOG_LOC}/sync.log"
+
+pidfile="/var/run/scigraph-services/scigraph-services.pid"
+command="/usr/bin/scigraph-services"
+sync_command="/usr/bin/scigraph-sync"
+command_args="scibot-sync >> \"${SYNC_LOG}\" 2>&1 && scibot-bookmarklet >> \"${BOOKMARKLET_LOG}/\" 2>&1"
+command_user="${SCIGRAPH_USER}:${SCIGRAPH_GROUP}"
+
+depend() {
+    after net
+}
+
+start_pre() {
+    if [ -f "${SYNC_LOG}" ]; then
+       touch "${SYNC_LOG}"
+    fi
+    if [ -f "${BOOKMARKLET_LOG}" ]; then
+       touch "${BOOKMARKLET_LOG}"
+    fi
+    #checkpath --directory --owner ${command_user} --mode 0775 "/var/run/scibot-bookmarklet"
+}
