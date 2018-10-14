@@ -19,9 +19,9 @@ DEPEND="
 	dev-python/curio[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
-	dev-python/gunicorn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.2[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.0.4[${PYTHON_USEDEP}]
+	www-servers/gunicorn[${PYTHON_USEDEP}]
 "
 RDEPEND="${DEPEND}"
 
