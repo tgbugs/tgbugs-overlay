@@ -9,20 +9,21 @@
 BOOKMARKLET_LOG="${SERVICES_LOG_LOC}/bookmarklet.log"
 SYNC_LOG="${SERVICES_LOG_LOC}/sync.log"
 
-pidfile="/var/run/scigraph-services/scigraph-services.pid"
-command="/usr/bin/scigraph-services"
-sync_command="/usr/bin/scigraph-sync"
-command_args="scibot-sync >> \"${SYNC_LOG}\" 2>&1 && scibot-bookmarklet >> \"${BOOKMARKLET_LOG}/\" 2>&1"
-command_user="${SCIGRAPH_USER}:${SCIGRAPH_GROUP}"
+pidfile="/var/run/scibot-bookmarklet/pid"
+command="/usr/bin/scibot-bookmarklet"
+#sync_command="/usr/bin/scigraph-sync"
+#scibot-sync >> \"${SYNC_LOG}\" 2>&1 && scibot-bookmarklet
+command_args=" >> \"${BOOKMARKLET_LOG}/\" 2>&1"
+command_user="${SCIBOT_USER}:${SCIBOT_GROUP}"
 
 depend() {
     after net
 }
 
 start_pre() {
-    if [ -f "${SYNC_LOG}" ]; then
-       touch "${SYNC_LOG}"
-    fi
+    #if [ -f "${SYNC_LOG}" ]; then
+       #touch "${SYNC_LOG}"
+    #fi
     if [ -f "${BOOKMARKLET_LOG}" ]; then
        touch "${BOOKMARKLET_LOG}"
     fi
