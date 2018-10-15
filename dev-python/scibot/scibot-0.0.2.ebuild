@@ -4,7 +4,7 @@
 EAPI=6
 
 PYTHON_COMPAT=( pypy3 python3_{6,7} )
-inherit distutils-r1
+inherit distutils-r1 user
 
 DESCRIPTION="Web annotation curation pipeline"
 HOMEPAGE="https://github.com/SciCrunch/scibot"
@@ -39,10 +39,10 @@ src_install() {
 	fowners ${PN}:${PN} "/var/log/${PN}"
 	newinitd "${FILESDIR}/scibot-bookmarklet.rc" scibot-bookmarklet
 	newconfd "${FILESDIR}/scibot-bookmarklet.confd" scibot-bookmarklet
+	distutils-r1_src_install
 }
 
 pkg_postinst() {
-	ewarn ""
 	ewarn "In order to run scibot you need to set the hypothes.is"
 	ewarn "group, user, and api token in /etc/conf.d/scibot-bookmarklet"
 }
