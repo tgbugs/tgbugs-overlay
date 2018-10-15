@@ -21,6 +21,7 @@ DEPEND="
 	dev-python/docopt[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.2[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.0.4[${PYTHON_USEDEP}]
+	dev-python/gevent[$(python_gen_usedep python3_{6,7})]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 "
 RDEPEND="${DEPEND}"
