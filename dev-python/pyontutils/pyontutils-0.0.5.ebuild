@@ -22,7 +22,7 @@ DEPEND="
 	dev-python/git-python[${PYTHON_USEDEP}]
 	dev-python/joblib[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
-	>=dev-python/ontquery-0.0.4[${PYTHON_USEDEP}]
+	>=dev-python/ontquery-0.0.5[${PYTHON_USEDEP}]
 	dev-python/psutil[${PYTHON_USEDEP}]
 	dev-python/pymysql[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
