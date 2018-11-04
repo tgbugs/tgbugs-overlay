@@ -12,7 +12,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Web services for SciGraph, A Neo4j backed ontology store."
 HOMEPAGE="https://github.com/SciGraph/SciGraph/"
-SRC_URI='SciGraph-neo4j-3.4.7-services-2018-09-27-ac538bf.zip'
+SRC_URI='SciGraph-master-services-2018-11-03-c992c7c.zip'
 
 LICENSE="Apache-2.0"
 SLOT="2.2"
