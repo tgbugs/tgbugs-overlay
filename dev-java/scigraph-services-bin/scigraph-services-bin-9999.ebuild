@@ -17,6 +17,7 @@ EGIT_REPO_URI="https://github.com/SciGraph/SciGraph.git"
 LICENSE="Apache-2.0"
 SLOT="9999"
 KEYWORDS="~amd64 ~x86"
+IUSE="+core"
 
 COMMON_DEP=""
 
@@ -30,6 +31,12 @@ SCIGRAPH_SHARE="/usr/share/${SCIGRAPH}"
 SERVICES_FOLDER="/usr/share/scigraph-services"
 
 EXECUTABLE="/usr/bin/${MY_PN}"
+
+CORE_PN="scigraph-core"
+CORE="scigraph-core-bin-${SLOT}"
+CORE_SHARE="/usr/share/${CORE}"
+CORE_FOLDER="/usr/share/scigraph-core"
+GRAPHLOAD_EXECUTABLE="/usr/bin/scigraph-graphload"
 
 SCIGRAPH_HOME="/var/lib/scigraph"
 pkg_setup() {
@@ -58,27 +65,42 @@ src_compile() {
 src_install() {
 	keepdir "${SCIGRAPH_HOME}"
 	fowners scigraph:scigraph "${SCIGRAPH_HOME}"
+	keepdir "/var/log/${MY_PN}"
+	fowners scigraph:scigraph "/var/log/${MY_PN}"
 
 	dodir ${SCIGRAPH_SHARE}
+	dodir ${SERVICES_FOLDER}
+	dodir "/usr/bin"
 
 	cp -Rp "${S}/SciGraph-services/target/dependency" "${ED}${SCIGRAPH_SHARE}/lib" || die "failed to copy"
-
 	cp "${S}/SciGraph-services/target/${MY_PN}-${HASH}.jar" "${ED}${SCIGRAPH_SHARE}/${MY_P}.jar"
 	java-pkg_regjar "${ED}${SCIGRAPH_SHARE}"/lib/*.jar
 	java-pkg_regjar "${ED}${SCIGRAPH_SHARE}/${MY_P}.jar"
 
-	keepdir "/var/log/${MY_PN}"
-	fowners scigraph:scigraph "/var/log/${MY_PN}"
+	dosym "${SCIGRAPH_SHARE}/${MY_P}.jar" "${SERVICES_FOLDER}/${MY_PN}.jar"
 
-	dodir "/usr/bin"
 	echo '#!/usr/bin/env sh' > "${ED}${EXECUTABLE}"
 	echo '/usr/bin/java $@ &' >> "${ED}${EXECUTABLE}"
 	echo 'echo $! > '"/var/run/${MY_PN}/${MY_PN}.pid" >> "${ED}${EXECUTABLE}"
 
 	chmod 0755 "${ED}${EXECUTABLE}"
 
-	dodir ${SERVICES_FOLDER}
-	dosym "${SCIGRAPH_SHARE}/${MY_P}.jar" "${SERVICES_FOLDER}/${MY_PN}.jar"
+	if use core; then
+		CORE_P="${CORE_PN}-${HASH}"
+
+		dodir ${CORE_SHARE}
+		dodir ${CORE_FOLDER}
+
+		cp "${S}/SciGraph-core/target/${CORE_PN}-${HASH}-jar-with-dependencies.jar" "${ED}${CORE_SHARE}/${CORE_P}.jar"
+		java-pkg_regjar "${ED}${CORE_SHARE}/${CORE_P}.jar"
+
+		dosym "${CORE_SHARE}/${CORE_P}.jar" "${CORE_FOLDER}/${CORE_PN}.jar"
+
+		echo '#!/usr/bin/env sh' > "${ED}${GRAPHLOAD_EXECUTABLE}"
+		echo "/usr/bin/java -cp \"${CORE_FOLDER}/${CORE_PN}.jar\" io.scigraph.owlapi.loader.BatchOwlLoader"' $@' >> "${ED}${GRAPHLOAD_EXECUTABLE}"
+		chmod 0755 "${ED}${GRAPHLOAD_EXECUTABLE}"
+	fi
+
 
 	newinitd "${FILESDIR}/${MY_PN}.rc" scigraph-services
 	newconfd "${FILESDIR}/${MY_PN}.confd" scigraph-services
