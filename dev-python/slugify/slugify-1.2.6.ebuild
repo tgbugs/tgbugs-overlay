@@ -3,7 +3,7 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( pypy3 python3_{4,5,6} )
+PYTHON_COMPAT=( pypy python2_7 pypy3 python3_{4,5,6} )
 inherit distutils-r1
 
 DESCRIPTION="A Python Slugify application that handles Unicode"
@@ -16,7 +16,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-DEPEND=">=dev-python/unidecode-0.04.16"
+DEPEND=">=dev-python/unidecode-0.04.16[${PYTHON_USEDEP}]"
 RDEPEND="${DEPEND}"
 
 RESTRICT="test"
