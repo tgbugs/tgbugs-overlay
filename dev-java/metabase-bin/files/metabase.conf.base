@@ -1,0 +1,8 @@
+MB_EMOJI_IN_LOGS=false
+MB_PASSWORD_COMPLEXITY=strong
+MB_PASSWORD_LENGTH=12
+MB_JETTY_HOST=0.0.0.0
+MB_JETTY_PORT=3000
+# at rest encryption for db creds
+# docs suggest to use `openssl rand -base64 32`
+MB_ENCRYPTION_SECRET_KEY=

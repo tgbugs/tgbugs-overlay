@@ -1,0 +1,59 @@
+#!/sbin/openrc-run
+# Copyright 1999-2018 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+: ${GROUP:=metabase}
+: ${USER:=metabase}
+: ${LOG_LOC:="/var/log/${SVCNAME}"}
+: ${CONFIG:="/etc/metabase.conf"}
+
+LOG="${LOG_LOC}/sysout.log"
+
+JAVA_HOME=$(java-config -O)
+[ -n "${GENTOO_VM}" ] && JAVA_HOME=$(java-config --select-vm="${GENTOO_VM}" -O)
+
+SVC_JAR="/usr/share/${SVCNAME}/${SVCNAME}.jar"
+ENV=$(cat ${CONFIG} | grep -v '#' | sed '/^$/d' | sed 's/^/ --env /')
+run_dir=${run_dir:-/run}
+eval run_in="~${USER}"
+
+name="metabase"
+description="metabase daemon"
+command="${JAVA_HOME}/bin/java"
+command_background="true"
+command_args="-jar \"${SVC_JAR}\""
+start_stop_daemon_args="
+--wait=10000
+--group ${GROUP}
+--user ${USER}
+--stdout ${LOG}
+--stderr ${LOG}
+--chdir ${run_in}
+${ENV}"
+pidfile="${run_dir}/${SVCNAME}/pid"
+
+checkconfig() {
+    [ -f ${CONFIG} ] || (echo "Missing config file!" ; return 1)
+    eval $(cat ${CONFIG} | grep -v '#' | sed '/^$/d')
+    OOPS=0
+    if [ "${MB_DB_TYPE}" != "h2" ] && [ -z "${MB_DB_PASS}" ]; then
+        eend 1 "MB_DB_PASS not set in ${CONFIG}"
+        OOPS=1
+    fi
+    if [ -z "${MB_ENCRYPTION_SECRET_KEY}" ]; then
+        eend 1 "MB_ENCRYPTION_SECRET_KEY not set in ${CONFIG}"
+        OOPS=1
+    fi
+    if [ ${OOPS} -ne 0 ]; then
+        return 1
+    fi
+}
+
+start_pre() {
+    checkconfig || return 1
+    checkpath --directory --mode 0700 --owner root:root "${run_dir}/${SVCNAME}"
+}
+
+depend() {
+    after net
+}
