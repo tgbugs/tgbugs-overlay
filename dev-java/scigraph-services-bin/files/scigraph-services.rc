@@ -2,8 +2,8 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-: ${SCIGRAPH_GROUP:=scigraph}
-: ${SCIGRAPH_USER:=scigraph}
+: ${GROUP:=scigraph}
+: ${USER:=scigraph}
 : ${SERVICES_CONFIG:="/var/lib/scigraph/services.yaml"}
 : ${SERVICES_LOG_LOC:="/var/log/scigraph-services"}
 
@@ -11,14 +11,25 @@ clean_opts() {
     echo $(echo "${SERVICES_OPTS}" | sed -e '/^[ ]*\/\//d' -e 's|[ ]*//.*| |' -e 's|^| |' | tr -d "\n")
 }
 
+JAVA_HOME=$(java-config -O)
+[ -n "${GENTOO_VM}" ] && JAVA_HOME=$(java-config --select-vm="${GENTOO_VM}" -O)
+
+SVC_JAR="/usr/share/scigraph-services/scigraph-services.jar"
 SERVICES_FOLDER="/usr/share/scigraph-services"
 SERVICES_LOG="${SERVICES_LOG_LOC}/sysout.log"
 SERVICES_OPTS="$(clean_opts)"
 
-pidfile="/var/run/scigraph-services/scigraph-services.pid"
-command="/usr/bin/scigraph-services"
-command_args="${SERVICES_OPTS} -jar \"/usr/share/scigraph-services/scigraph-services.jar\" server ${SERVICES_CONFIG} >> \"${SERVICES_LOG}\" 2>&1"
-command_user="${SCIGRAPH_USER}:${SCIGRAPH_GROUP}"
+description="${SVCNAME} daemon"
+command="${JAVA_HOME}/bin/java"
+command_background="true"
+pidfile="/var/run/scigraph-services/${SVCNAME}.pid"
+command_args="${SERVICES_OPTS} -jar \"${SVC_JAR}\" server ${SERVICES_CONFIG} >> \"${SERVICES_LOG}\" 2>&1"
+start_stop_daemon_args="
+--wait=5000
+--group ${GROUP}
+--user ${USER}
+--stdout ${SERVICES_LOG}
+--stderr ${SERVICES_LOG}"
 
 depend() {
     after net
@@ -33,7 +44,7 @@ start_pre() {
     if [ -f "${SERVICES_LOG}" ]; then
        touch "${SERVICES_LOG}"
     fi
-    checkpath --directory --owner ${command_user} --mode 0775 "/var/run/scigraph-services"
+    chown ${USER}:${GROUP} ${SERVICES_LOG}
     if [ -f "/tmp/X${DISPLAY}.lock" ] ; then
         Xvfb ${DISPLAY} -screen 0 1024x768x24 &
     fi

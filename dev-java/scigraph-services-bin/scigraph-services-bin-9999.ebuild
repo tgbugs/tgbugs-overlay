@@ -30,8 +30,6 @@ SCIGRAPH="${PN}-${SLOT}"
 SCIGRAPH_SHARE="/usr/share/${SCIGRAPH}"
 SERVICES_FOLDER="/usr/share/scigraph-services"
 
-EXECUTABLE="/usr/bin/${MY_PN}"
-
 CORE_PN="scigraph-core"
 CORE="scigraph-core-bin-${SLOT}"
 CORE_SHARE="/usr/share/${CORE}"
@@ -78,12 +76,6 @@ src_install() {
 	java-pkg_regjar "${ED}${SCIGRAPH_SHARE}/${MY_P}.jar"
 
 	dosym "${SCIGRAPH_SHARE}/${MY_P}.jar" "${SERVICES_FOLDER}/${MY_PN}.jar"
-
-	echo '#!/usr/bin/env sh' > "${ED}${EXECUTABLE}"
-	echo '/usr/bin/java $@ &' >> "${ED}${EXECUTABLE}"
-	echo 'echo $! > '"/var/run/${MY_PN}/${MY_PN}.pid" >> "${ED}${EXECUTABLE}"
-
-	chmod 0755 "${ED}${EXECUTABLE}"
 
 	if use core; then
 		CORE_P="${CORE_PN}-${HASH}"
