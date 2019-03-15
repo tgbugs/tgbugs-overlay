@@ -1,48 +1,48 @@
 [Unit]
 Description=SciGraph webservices
-After=network.target
+Requires=xvfb.service
+After=network.target xvfb.service
 
 [Service]
 User=scigraph
 Group=scigraph
 LimitNOFILE=1048576
-WorkingDirector=%h
-Environment=SERVICES_LOG_LOC="%L/%n"
-Environment=SERVICE_CONFIG="%h/services.conf"
-Environment=DISPLAY=":5"
-Environmnt=SERVICE_OPTS="
--server                             // make sure were using the 64-bit server VM
--d64
--Djava.net.preferIPv4Stack=true     // we dont use ipv6, so cut it out of the loop
--XX:+UseNUMA                        // make sure we use NUMA-specific GCs if possible
--XX:+UseCompressedOops              // use 32-bit pointers to reduce heap usage
--XX:+UseParNewGC                    // use parallel GC for the new generation
--XX:+UseConcMarkSweepGC             // use concurrent mark-and-sweep for the old generation
--XX:+CMSParallelRemarkEnabled       // use multiple threads for the remark phase
--XX:+AggressiveOpts                 // use the latest and greatest in JVM tech
--XX:+UseFastAccessorMethods         // be sure to inline simple accessor methods
--XX:+UseBiasedLocking               // speed up uncontended locks
--XX:NewRatio=2                      // set eden/survivor spaces to 1/3rd of heap
--Xms4G
--Xmx4G
--XX:+HeapDumpOnOutOfMemoryError     // dump the heap if we run out of memory
--XX:HeapDumpPath=${SERVICES_LOG_LOC}/head.dump   // dump the heap to this path
--XX:+PrintGC                        // do extended GC logging
--Xloggc:${SERVICES_LOG_LOC}/gc.log
--XX:+PrintGCDetails
--XX:+PrintGCTimeStamps
--XX:GCLogFileSize=20M
--XX:NumberOfGCLogFiles=15
--XX:+UseGCLogFileRotation
--XX:+PrintGCDateStamps
--XX:+PrintPromotionFailure
--Dfile.encoding=UTF-8
--Djava.security.egd=file:/dev/urandom // pull PRNG data from a non-blocking source
--Djava.rmi.server.hostname=%H
--XX:-ReduceInitialCardMarks        // might prevent a SEGV error"
-Environment=CLEAN_OPS=$(echo "${SERVICES_OPTS}" | sed -e '/^[ ]*\/\//d' -e 's|[ ]*//.*| |' -e 's|^| |' | tr -d "\n")
-ExecStartPre=Xvfb ${DISPLAY} --screen 0 1024x768x24
-ExecStart=/usr/bin/java ${CLEAN_OPTS} -jar "/usr/share/scigraph-services/scigraph-services.jar" server ${SERVICES_CONFIG}
+WorkingDirectory=/var/lib/scigraph
+StandardOutput=syslog
+StandardError=syslog
+Environment=SERVICES_LOG_LOC=/var/log/%N
+Environment=SERVICES_CONFIG=/var/lib/%N/services.yaml
+ExecStart=/usr/bin/java \
+-server \
+-d64 \
+-Djava.net.preferIPv4Stack=true \
+-XX:+UseNUMA \
+-XX:+UseCompressedOops \
+-XX:+UseParNewGC \
+-XX:+UseConcMarkSweepGC \
+-XX:+CMSParallelRemarkEnabled \
+-XX:+AggressiveOpts \
+-XX:+UseFastAccessorMethods \
+-XX:+UseBiasedLocking \
+-XX:NewRatio=2 \
+-Xms4G \
+-Xmx4G \
+-XX:+HeapDumpOnOutOfMemoryError \
+-XX:HeapDumpPath=${SERVICES_LOG_LOC}/head.dump \
+-XX:+PrintGC \
+-Xloggc:${SERVICES_LOG_LOC}/gc.log \
+-XX:+PrintGCDetails \
+-XX:+PrintGCTimeStamps \
+-XX:GCLogFileSize=20M \
+-XX:NumberOfGCLogFiles=15 \
+-XX:+UseGCLogFileRotation \
+-XX:+PrintGCDateStamps \
+-XX:+PrintPromotionFailure \
+-Dfile.encoding=UTF-8 \
+-Djava.security.egd=file:/dev/urandom \
+-Djava.rmi.server.hostname=%H \
+-XX:-ReduceInitialCardMarks \
+-jar "/usr/share/scigraph-services/scigraph-services.jar" server ${SERVICES_CONFIG}
 SuccessExitStatus=143
 TimeoutStopSec=10
 Restart=on-failure
