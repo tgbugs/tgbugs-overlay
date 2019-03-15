@@ -26,15 +26,16 @@ DEPEND=">=virtual/jdk-1.8
 		>=dev-java/maven-bin-3.3
 		app-arch/unzip"
 
-SCIGRAPH="${PN}-${SLOT}"
-SCIGRAPH_SHARE="/usr/share/${SCIGRAPH}"
-SERVICES_FOLDER="/usr/share/scigraph-services"
+SERVICES_PN="${MY_PN}-services"
+SERVICES="${SERVICES_PN}-bin-${SLOT}"
+SERVICES_SHARE="/usr/share/${SERVICES}"
+SERVICES_FOLDER="/usr/share/${SERVICES_PN}"
 
-CORE_PN="scigraph-core"
-CORE="scigraph-core-bin-${SLOT}"
+CORE_PN="${MY_PN}-core"
+CORE="${CORE_PN}-bin-${SLOT}"
 CORE_SHARE="/usr/share/${CORE}"
-CORE_FOLDER="/usr/share/scigraph-core"
-GRAPHLOAD_EXECUTABLE="/usr/bin/scigraph-graphload"
+CORE_FOLDER="/usr/share/${CORE_PN}"
+GRAPHLOAD_EXECUTABLE="/usr/bin/scigraph-load"
 
 SCIGRAPH_HOME="/var/lib/scigraph"
 pkg_setup() {
@@ -66,16 +67,18 @@ src_install() {
 	keepdir "/var/log/${MY_PN}"
 	fowners scigraph:scigraph "/var/log/${MY_PN}"
 
-	dodir ${SCIGRAPH_SHARE}
+	SERVICES_P="${SERVICES_PN}-${HASH}"
+
+	dodir ${SERVICES_SHARE}
 	dodir ${SERVICES_FOLDER}
 	dodir "/usr/bin"
 
-	cp -Rp "${S}/SciGraph-services/target/dependency" "${ED}${SCIGRAPH_SHARE}/lib" || die "failed to copy"
-	cp "${S}/SciGraph-services/target/${MY_PN}-${HASH}.jar" "${ED}${SCIGRAPH_SHARE}/${MY_P}.jar"
-	java-pkg_regjar "${ED}${SCIGRAPH_SHARE}"/lib/*.jar
-	java-pkg_regjar "${ED}${SCIGRAPH_SHARE}/${MY_P}.jar"
+	cp -Rp "${S}/SciGraph-services/target/dependency" "${ED}${SERVICES_SHARE}/lib" || die "failed to copy"
+	cp "${S}/SciGraph-services/target/${SERVICES_P}.jar" "${ED}${SERVICES_SHARE}/${SERVICES_P}.jar"
+	java-pkg_regjar "${ED}${SERVICES_SHARE}"/lib/*.jar
+	java-pkg_regjar "${ED}${SERVICES_SHARE}/${SERVICES_P}.jar"
 
-	dosym "${SCIGRAPH_SHARE}/${MY_P}.jar" "${SERVICES_FOLDER}/${MY_PN}.jar"
+	dosym "${SERVICES_SHARE}/${SERVICES_P}.jar" "${SERVICES_FOLDER}/${SERVICES_PN}.jar"
 
 	if use core; then
 		CORE_P="${CORE_PN}-${HASH}"
@@ -83,7 +86,7 @@ src_install() {
 		dodir ${CORE_SHARE}
 		dodir ${CORE_FOLDER}
 
-		cp "${S}/SciGraph-core/target/${CORE_PN}-${HASH}-jar-with-dependencies.jar" "${ED}${CORE_SHARE}/${CORE_P}.jar"
+		cp "${S}/SciGraph-core/target/${CORE_P}-jar-with-dependencies.jar" "${ED}${CORE_SHARE}/${CORE_P}.jar"
 		java-pkg_regjar "${ED}${CORE_SHARE}/${CORE_P}.jar"
 
 		dosym "${CORE_SHARE}/${CORE_P}.jar" "${CORE_FOLDER}/${CORE_PN}.jar"
@@ -94,6 +97,6 @@ src_install() {
 	fi
 
 
-	newinitd "${FILESDIR}/${MY_PN}.rc" scigraph-services
-	newconfd "${FILESDIR}/${MY_PN}.confd" scigraph-services
+	newinitd "${FILESDIR}/${SERVICES_PN}.rc" scigraph-services
+	newconfd "${FILESDIR}/${SERVICES_PN}.confd" scigraph-services
 }
