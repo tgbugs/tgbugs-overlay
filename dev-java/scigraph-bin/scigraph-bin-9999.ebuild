@@ -56,9 +56,9 @@ src_prepare() {
 }
 
 src_compile() {
-	mvn clean -DskipTests -DskipITs install
+	mvn clean -DskipTests -DskipITs install || die "compile failed"
 	pushd SciGraph-services
-	mvn -DskipTests -DskipITs install
+	mvn -DskipTests -DskipITs install || die "compile failed"
 }
 
 src_install() {
