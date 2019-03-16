@@ -38,6 +38,7 @@ CORE_FOLDER="/usr/share/${CORE_PN}"
 GRAPHLOAD_EXECUTABLE="/usr/bin/scigraph-load"
 
 SCIGRAPH_HOME="/var/lib/scigraph"
+
 pkg_setup() {
 	ebegin "Creating scigraph user and group"
 	enewgroup scigraph
@@ -45,20 +46,23 @@ pkg_setup() {
 	eend $?
 }
 
-src_prepare() {
+src_unpack() {
+	git-r3_src_unpack
+	ewarn "This install compiles during unpack because still no maven support."
+	pushd ${S}
 	export HASH=$(git rev-parse --short HEAD)
 	sed -i "/<name>SciGraph<\/name>/{N;s/<version>.\+<\/version>/<version>${HASH}<\/version>/}" pom.xml
 	sed -i "/<artifactId>scigraph<\/artifactId>/{N;s/<version>.\+<\/version>/<version>${HASH}<\/version>/}" SciGraph-analysis/pom.xml
 	sed -i "/<groupId>io.scigraph<\/groupId>/{N;s/<version>.\+<\/version>/<version>${HASH}<\/version>/}" SciGraph-core/pom.xml
 	sed -i "/<artifactId>scigraph<\/artifactId>/{N;s/<version>.\+<\/version>/<version>${HASH}<\/version>/}" SciGraph-entity/pom.xml
 	sed -i "/<groupId>io.scigraph<\/groupId>/{N;s/<version>.\+<\/version>/<version>${HASH}<\/version>/}" SciGraph-services/pom.xml
-	eapply_user
-}
-
-src_compile() {
-	mvn clean -DskipTests -DskipITs install || die "compile failed"
+	#eapply_user
+	# why isn't this in src_compile you ask? network-sandbox is the answer
+	mvn -DskipTests -DskipITs clean install || die "compile failed"
 	pushd SciGraph-services
 	mvn -DskipTests -DskipITs install || die "compile failed"
+	popd
+	popd
 }
 
 src_install() {
