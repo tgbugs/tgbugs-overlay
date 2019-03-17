@@ -20,7 +20,7 @@ RDEPEND=">=dev-python/astor-0.7.1[${PYTHON_USEDEP}]
 	>=dev-python/clint-0.4[${PYTHON_USEDEP}]
 	dev-python/flake8[${PYTHON_USEDEP}]
 	>=dev-python/funcparserlib-0.3.6[${PYTHON_USEDEP}]
-	>=dev-python/rply-0.7.6[${PYTHON_USEDEP}]
+	>=dev-python/rply-0.7.7[${PYTHON_USEDEP}]
 	"
 DEPEND="${RDEPEND}
 	doc? ( dev-python/sphinx[${PYTHON_USEDEP}] )
