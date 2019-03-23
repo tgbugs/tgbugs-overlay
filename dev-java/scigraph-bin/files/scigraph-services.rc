@@ -22,7 +22,8 @@ SERVICES_OPTS="$(clean_opts)"
 description="${SVCNAME} daemon"
 command="${JAVA_HOME}/bin/java"
 command_background="true"
-pidfile="/var/run/scigraph-services/${SVCNAME}.pid"
+run_dir=${run_dir:-/run}
+pidfile="${run_dir}/${SVCNAME}/pid"
 command_args="${SERVICES_OPTS} -jar \"${SVC_JAR}\" server ${SERVICES_CONFIG} >> \"${SERVICES_LOG}\" 2>&1"
 start_stop_daemon_args="
 --wait=5000
@@ -48,4 +49,5 @@ start_pre() {
     if [ -f "/tmp/X${DISPLAY}.lock" ] ; then
         Xvfb ${DISPLAY} -screen 0 1024x768x24 &
     fi
+    checkpath --directory --mode 0700 --owner root:root "${run_dir}/${SVCNAME}"
 }
