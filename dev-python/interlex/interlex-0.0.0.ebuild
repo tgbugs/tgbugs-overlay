@@ -13,11 +13,12 @@ HOMEPAGE="https://github.com/tgbugs/interlex"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE=""
+IUSE="+rabbitmq"
 
 DEPEND=""
 RDEPEND="${DEPEND}
-dev-python/celery
+rabbitmq? ( net-misc/rabbitmq-server )
+>=dev-python/celery-4.2.2
 dev-python/elasticsearch-py
 dev-python/flask
 dev-python/flask-restplus
@@ -27,3 +28,5 @@ dev-python/flask-sqlalchemy
 #dev-python/pyontutils  # skip for now
 
 RESTRICT="test"
+
+# NOTE use --onlydeps at this stage
