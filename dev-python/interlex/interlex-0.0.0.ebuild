@@ -18,11 +18,11 @@ IUSE=""
 DEPEND=""
 RDEPEND="${DEPEND}
 dev-python/celery
-dev-python/elasticsearch
+dev-python/elasticsearch-py
 dev-python/flask
-dev-python/flask_restplus
-dev-python/flask_sqlalchemy
-dev-python/psycopg2
+dev-python/flask-restplus
+dev-python/flask-sqlalchemy
+>=dev-python/psycopg-2.7
 "
 #dev-python/pyontutils  # skip for now
 
