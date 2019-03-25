@@ -17,13 +17,13 @@ IUSE=""
 
 DEPEND=""
 RDEPEND="${DEPEND}
+app-text/xlsx2csv
 dev-python/dicttoxml
 dev-python/google-api-python-client
 >=dev-python/jsonschema-3.0.1
 >=dev-python/pexpect-4.7.0
 dev-python/pyxattr
 dev-python/terminaltables
-dev-python/xlsx2csv
 "
 #dev-python/nibabel
 #dev-python/pydicom
