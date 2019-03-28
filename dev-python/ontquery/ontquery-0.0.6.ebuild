@@ -10,15 +10,30 @@ DESCRIPTION=""
 HOMEPAGE="https://github.com/tgbugs/ontquery"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
+PATCHES=(
+	"${FILESDIR}/${P}-setup-deps.patch"
+)
+
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="services"
+IUSE="dev services test"
 
-DEPEND="
-services? (
+SVCDEPEND="
 	>=dev-python/rdflib-5.0.0[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
+"
+DEPEND="
+dev? (
+	>=dev-python/pyontutils-0.0.5[${PYTHON_USEDEP}]
+)
+services? (
+	${SVCDEPEND}
+)
+test? (
+	dev-python/pytest[${PYTHON_USEDEP}]
+	dev-python/pytest-runner[${PYTHON_USEDEP}]
+	${SVCDEPEND}
 )
 "
 RDEPEND="${DEPEND}"
