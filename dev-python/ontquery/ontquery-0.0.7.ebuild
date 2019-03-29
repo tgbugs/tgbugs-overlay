@@ -10,10 +10,6 @@ DESCRIPTION=""
 HOMEPAGE="https://github.com/tgbugs/ontquery"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
-PATCHES=(
-	"${FILESDIR}/${P}-setup-deps.patch"
-)
-
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
