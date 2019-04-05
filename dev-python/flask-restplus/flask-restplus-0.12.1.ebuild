@@ -8,7 +8,7 @@ inherit distutils-r1
 
 DESCRIPTION="Framework for fast, easy, and documented API development with Flask"
 HOMEPAGE="https://github.com/noirbizarre/flask-restplus"
-SRC_URI="https://github.com/noirbizarre/${PN}/archive/${PV}.tar.gz"
+SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
