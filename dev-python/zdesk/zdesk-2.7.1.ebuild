@@ -10,6 +10,10 @@ DESCRIPTION="Zendesk API for Python generated from developer.zendesk.com"
 HOMEPAGE="https://github.com/fprimex/zdesk"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
+PATCHES=(
+	"${FILESDIR}/fix-setup-deps.patch"
+)
+
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
