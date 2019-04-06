@@ -1,0 +1,13 @@
+diff --git a/ttlser/setup.py b/ttlser/setup.py
+index 204356e..e0d4f7e 100644
+--- a/ttlser/setup.py
++++ b/ttlser/setup.py
+@@ -38,7 +38,7 @@ setup(
+     python_requires='>=3.5',
+     tests_require=tests_require,
+     install_requires=[
+-        'neurdflib',  # really 5.0.0 if my changes go in but dev < 5
++        'rdflib>=5.0.0',  # really 5.0.0 if my changes go in but dev < 5
+     ],
+     extras_require={'dev': ['pytest-cov'],
+                     'ttlfmt': ['docopt',
