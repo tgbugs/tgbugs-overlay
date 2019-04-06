@@ -15,6 +15,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="dev memex test zendesk"
 #REQUIRED_USE="test? ( memex )"  # incorrect but a useful pattern
+REQUIRE_USE="python_targets_pypy3? ( !memex )"
 
 DEPEND="
 	dev-python/setuptools[${PYTHON_USEDEP}]
@@ -30,7 +31,9 @@ DEPEND="
 		dev-python/python-dateutil[${PYTHON_USEDEP}]
 		dev-python/jsonschema[${PYTHON_USEDEP}]
 		dev-python/mistune[${PYTHON_USEDEP}]
-		dev-python/psycopg2[${PYTHON_USEDEP}]
+		dev-python/psycopg:2[$(python_gen_usedep python3_{6,7})]
+		$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' 'python3*')
+		$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' 'pypy3')
 		dev-python/slugify[${PYTHON_USEDEP}]
 		dev-python/sqlalchemy[${PYTHON_USEDEP}]
 		dev-python/webob[${PYTHON_USEDEP}]
