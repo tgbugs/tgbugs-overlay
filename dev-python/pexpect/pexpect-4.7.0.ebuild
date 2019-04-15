@@ -6,15 +6,15 @@ EAPI=6
 PYTHON_COMPAT=( python2_7 python3_{4,5,6,7} pypy pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
-inherit git-r3 distutils-r1
+inherit distutils-r1
 
 DESCRIPTION="Python module for spawning child apps and responding to expected patterns"
 HOMEPAGE="https://pexpect.readthedocs.io/ https://pypi.org/project/pexpect/ https://github.com/pexpect/pexpect/"
-EGIT_REPO_URI="https://github.com/pexpect/pexpect.git"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
 IUSE="doc examples test"
 
 RDEPEND=">=dev-python/ptyprocess-0.5[${PYTHON_USEDEP}]"
