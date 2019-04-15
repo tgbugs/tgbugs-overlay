@@ -15,6 +15,8 @@ DESCRIPTION="RDF library containing a triple store and parser/serializer"
 HOMEPAGE="https://github.com/RDFLib/rdflib https://github.com/tgbugs/rdflib"
 EGIT_REPO_URI="https://github.com/tgbugs/rdflib.git"
 
+PATCHES="${FILESDIR}/version.patch"
+
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64"
