@@ -20,6 +20,7 @@ SVCDEPEND="
 	dev-python/requests[${PYTHON_USEDEP}]
 "
 DEPEND="
+dev-python/setuptools
 dev? (
 	>=dev-python/pyontutils-0.0.5[${PYTHON_USEDEP}]
 )
