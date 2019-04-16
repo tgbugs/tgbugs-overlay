@@ -25,6 +25,8 @@ RDEPEND="
 	>dev-python/requests-2.18.0[${PYTHON_USEDEP}]
 	"
 DEPEND="${RDEPEND}
+	dev-python/parver
+	dev-python/invoke
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)"
