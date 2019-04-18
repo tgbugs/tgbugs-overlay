@@ -17,7 +17,7 @@ PATCHES=(
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="dev test"
+IUSE="dev test +ttlfmt"
 
 DEPEND="
 	dev-python/setuptools[${PYTHON_USEDEP}]
@@ -29,6 +29,10 @@ DEPEND="
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
 		dev-python/pytest-runner[${PYTHON_USEDEP}]
+	)
+	ttlfmt? (
+		dev-python/docopt[${PYTHON_USEDEP}]
+		dev-python/joblib[${PYTHON_USEDEP}]
 	)
 "
 RDEPEND="${DEPEND}"
