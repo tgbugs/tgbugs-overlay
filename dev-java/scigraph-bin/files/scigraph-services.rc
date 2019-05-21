@@ -2,8 +2,8 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-: ${GROUP:=scigraph}
-: ${USER:=scigraph}
+: ${SVCGROUP:=scigraph}
+: ${SVCUSER:=scigraph}
 : ${SERVICES_CONFIG:="/var/lib/scigraph/services.yaml"}
 : ${SERVICES_LOG_LOC:="/var/log/scigraph-services"}
 
@@ -27,8 +27,8 @@ pidfile="${run_dir}/${SVCNAME}/pid"
 command_args="${SERVICES_OPTS} -jar \"${SVC_JAR}\" server ${SERVICES_CONFIG} >> \"${SERVICES_LOG}\" 2>&1"
 start_stop_daemon_args="
 --wait=5000
---group ${GROUP}
---user ${USER}
+--group ${SVCGROUP}
+--user ${SVCUSER}
 --stdout ${SERVICES_LOG}
 --stderr ${SERVICES_LOG}"
 
@@ -45,7 +45,7 @@ start_pre() {
     if [ -f "${SERVICES_LOG}" ]; then
        touch "${SERVICES_LOG}"
     fi
-    chown ${USER}:${GROUP} ${SERVICES_LOG}
+    chown ${SVCUSER}:${SVCGROUP} ${SERVICES_LOG}
     if [ -f "/tmp/X${DISPLAY}.lock" ] ; then
         Xvfb ${DISPLAY} -screen 0 1024x768x24 &
     fi
