@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 : ${LOG_LEVEL:=info}
-: ${SCIBOT_OS_GROUP:=scibot}
-: ${SCIBOT_OS_USER:=scibot}
+: ${SVCGROUP:=scibot}
+: ${SVCUSER:=scibot}
 : ${SCIBOT_LOG_LOC:="/var/log/scibot"}
 : ${SOURCE_LOG_LOC:="${SICBOT_LOG_LOC}/logs"}
 
@@ -22,19 +22,19 @@ command_args="--bind ${socket}
 --workers 4
 --worker-class gevent
 --timeout 600
---group ${SCIBOT_OS_GROUP}
---user ${SCIBOT_OS_USER}
+--group ${SVCGROUP}
+--user ${SVCUSER}
 --log-level ${LOG_LEVEL}
 --log-file ${BOOKMARKLET_LOG}
 scibot.bookmarklet_server:app"
 retry='TERM/30/KILL/5'
-start_stop_daemon_args="--group ${SCIBOT_OS_GROUP} --user ${SCIBOT_OS_USER}"
+start_stop_daemon_args="--group ${SVCGROUP} --user ${SVCUSER}"
 
 sync_pidfile="${run_dir}/${SVCNAME}/sync.pid"
 sync_command="/usr/bin/scibot-sync" # >> ${SYNC_LOG} 2>&1"
 #sync_command_args=">> ${SYNC_LOG} 2>&1"
 
-command_owner="${SCIBOT_OS_USER}:${SCIBOT_OS_GROUP}"
+command_owner="${SVCUSER}:${SVCGROUP}"
 
 depend() {
     after net
@@ -64,14 +64,14 @@ start_pre() {
 start() {
     ebegin "Starting scibot bookmarklet sync"
 	start-stop-daemon --start --pidfile ${sync_pidfile} \
-		--group ${SCIBOT_OS_GROUP} --user ${SCIBOT_OS_USER} \
+		--group ${SVCGROUP} --user ${SVCUSER} \
  		--background --stdout ${SYNC_LOG} --stderr ${SYNC_LOG} \
 		--make-pidfile --env SCIBOT_SYNC=${SCIBOT_SYNC} \
 		--wait 250 --exec ${sync_command}
     eend $? "Failed to start scibot bookmarklet sync see ${SYNC_LOG}" || return 1
     ebegin "Starting scibot bookmarklet"
 	start-stop-daemon --start --pidfile ${pidfile} \
-		--group ${SCIBOT_OS_GROUP} --user ${SCIBOT_OS_USER} \
+		--group ${SVCGROUP} --user ${SVCUSER} \
 		--env SCIBOT_SYNC=${SCIBOT_SYNC} \
 		--env SCIBOT_USERNAME=${SCIBOT_USERNAME} \
 		--env SCIBOT_GROUP=${SCIBOT_GROUP} \
