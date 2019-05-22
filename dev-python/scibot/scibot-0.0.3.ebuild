@@ -13,7 +13,7 @@ HOMEPAGE="https://github.com/SciCrunch/scibot"
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="dev services test"
+IUSE="dev test"
 
 RDEPEND="
 	dev-python/curio[${PYTHON_USEDEP}]
