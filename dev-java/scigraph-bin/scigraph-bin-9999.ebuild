@@ -21,7 +21,8 @@ IUSE="+core"
 
 COMMON_DEP=""
 
-RDEPEND=">=virtual/jre-1.8"
+RDEPEND=">=virtual/jre-1.8
+		x11-misc/xvfb-run"
 DEPEND=">=virtual/jdk-1.8
 		>=dev-java/maven-bin-3.3
 		app-arch/unzip"

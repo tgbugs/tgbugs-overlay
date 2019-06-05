@@ -30,7 +30,8 @@ start_stop_daemon_args="
 --group ${SVCGROUP}
 --user ${SVCUSER}
 --stdout ${SERVICES_LOG}
---stderr ${SERVICES_LOG}"
+--stderr ${SERVICES_LOG}
+--env DISPLAY=${DISPLAY}"
 
 depend() {
     after net
