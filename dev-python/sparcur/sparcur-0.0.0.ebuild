@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( pypy3 python3_{5,6,7} )
+PYTHON_COMPAT=( pypy3 python3_{6,7} )
 inherit distutils-r1
 
 DESCRIPTION="Code for the SPARC curation workflow."
@@ -17,12 +17,12 @@ IUSE=""
 
 DEPEND=""
 RDEPEND="${DEPEND}
-app-text/xlsx2csv
-dev-python/augpathlib
-dev-python/dicttoxml
-dev-python/google-api-python-client
->=dev-python/jsonschema-3.0.1
-dev-python/terminaltables
+app-text/xlsx2csv[${PYTHON_USEDEP}]
+dev-python/augpathlib[${PYTHON_USEDEP}]
+dev-python/dicttoxml[${PYTHON_USEDEP}]
+dev-python/google-api-python-client[${PYTHON_USEDEP}]
+>=dev-python/jsonschema-3.0.1[${PYTHON_USEDEP}]
+dev-python/terminaltables[${PYTHON_USEDEP}]
 "
 #dev-python/nibabel
 #dev-python/pydicom
