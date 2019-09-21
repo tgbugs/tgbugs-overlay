@@ -1,13 +1,10 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-PYTHON_COMPAT=( pypy{3,} python{2_7,3_{4,5,6,7}} )
+PYTHON_COMPAT=( pypy{,3} python{2_7,3_{4,5,6,7}} )
 PYTHON_REQ_USE="sqlite?,threads(+)"
-
-# The usual required for tests
-DISTUTILS_IN_SOURCE_BUILD=1
 
 inherit git-r3 distutils-r1
 
@@ -34,7 +31,7 @@ DEPEND="${RDEPEND}
 
 src_prepare () {
 	# replace package version to keep python quiet
-	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+	sed -i "s/__version__\ =\ .\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
 	default
 }
 
