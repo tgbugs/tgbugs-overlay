@@ -15,11 +15,9 @@ DESCRIPTION="RDF library containing a triple store and parser/serializer"
 HOMEPAGE="https://github.com/RDFLib/rdflib https://github.com/tgbugs/rdflib"
 EGIT_REPO_URI="https://github.com/tgbugs/rdflib.git"
 
-PATCHES="${FILESDIR}/version.patch"
-
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS=""
 IUSE="doc berkdb examples mysql redland sqlite test"
 
 RDEPEND="
@@ -33,6 +31,12 @@ DEPEND="${RDEPEND}
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	test? ( dev-python/sparql-wrapper[${PYTHON_USEDEP}]
 		>=dev-python/nose-1.3.1-r1[${PYTHON_USEDEP}] )"
+
+src_prepare () {
+	# replace package version to keep python quiet
+	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+	default
+}
 
 python_prepare_all() {
 	# Upstream manufactured .pyc files which promptly break distutils' src_test

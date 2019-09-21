@@ -13,7 +13,7 @@ EGIT_REPO_URI="https://github.com/tgbugs/hyputils.git"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS=""
 IUSE="dev memex test zendesk"
 REQUIRE_USE="python_targets_pypy3? ( !memex )"
 

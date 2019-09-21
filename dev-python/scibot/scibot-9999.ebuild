@@ -16,7 +16,7 @@ EGIT_REPO_URI="https://github.com/SciCrunch/scibot.git"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS=""
 IUSE="dev test"
 
 RDEPEND="
