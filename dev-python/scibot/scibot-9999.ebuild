@@ -14,8 +14,6 @@ DESCRIPTION="Web annotation curation pipeline"
 HOMEPAGE="https://github.com/SciCrunch/scibot"
 EGIT_REPO_URI="https://github.com/SciCrunch/scibot.git"
 
-PATCHES="${FILESDIR}/version.patch"
-
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
@@ -40,6 +38,12 @@ pkg_setup() {
 	enewgroup ${PN}
 	enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
 	eend $?
+}
+
+src_prepare () {
+	# replace package version to keep python quiet
+	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+	default
 }
 
 src_install() {

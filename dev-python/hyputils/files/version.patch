@@ -1,7 +1,0 @@
-diff --git a/hyputils/__init__.py b/hyputils/__init__.py
-index 56bd823..1093473 100644
---- a/hyputils/__init__.py
-+++ b/hyputils/__init__.py
-@@ -1 +1 @@
--__version__ = '0.0.4.dev0'
-+__version__ = '9999'

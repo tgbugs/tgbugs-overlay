@@ -1,7 +1,0 @@
-diff --git a/scibot/__init__.py b/scibot/__init__.py
-index ffcc925..1093473 100644
---- a/scibot/__init__.py
-+++ b/scibot/__init__.py
-@@ -1 +1 @@
--__version__ = '0.0.3'
-+__version__ = '9999'

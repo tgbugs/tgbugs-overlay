@@ -11,8 +11,6 @@ DESCRIPTION="Python utilities for the Hypothes.is REST api and websocket interfa
 HOMEPAGE="https://github.com/tgbugs/hyputils"
 EGIT_REPO_URI="https://github.com/tgbugs/hyputils.git"
 
-PATCHES="${FILESDIR}/version.patch"
-
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
@@ -54,3 +52,9 @@ DEPEND="
 RDEPEND="${DEPEND}"
 
 RESTRICT="test"
+
+src_prepare () {
+	# replace package version to keep python quiet
+	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+	default
+}
