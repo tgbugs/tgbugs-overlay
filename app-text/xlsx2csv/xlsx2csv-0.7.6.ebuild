@@ -3,7 +3,6 @@
 
 EAPI="6"
 PYTHON_COMPAT=( pypy{,3} python{2_7,3_5,3_6,3_7} )
-PYTHON_REQ_USE="xml"
 
 inherit distutils-r1
 
@@ -15,7 +14,8 @@ LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
-DEPEND="dev-lang/perl"
+DEPEND="dev-lang/perl
+		dev-lang/python[xml]"
 
 python_compile_all() {
 	emake -C man

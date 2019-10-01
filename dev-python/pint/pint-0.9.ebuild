@@ -18,7 +18,7 @@ IUSE="uncertainties"
 
 DEPEND=""
 RDEPEND="${DEPEND}
-	uncertainties? ( dev-python/uncertainties )
+	uncertainties? ( dev-python/uncertainties[${PYTHON_USEDEP}] )
 "
 
 RESTRICT="test"
