@@ -19,6 +19,7 @@ DEPEND=""
 RDEPEND="${DEPEND}
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
 	dev-python/augpathlib[${PYTHON_USEDEP}]
+	dev-python/boto3[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
 	dev-python/gevent[$(python_gen_usedep python3_{6,7})]
 	dev-python/google-api-python-client[${PYTHON_USEDEP}]
@@ -56,8 +57,8 @@ src_prepare () {
 }
 
 src_install() {
-	newinitd "${S}/resources/filesystem/etc/init.d/sparcur-dashboard" sparcur-dashboard
-	newconfd "${S}/resources/filesystem/etc/conf.d/sparcur-dashboard" sparcur-dashboard
+	doinitd "${S}/resources/filesystem/etc/init.d/sparcur-dashboard"
+	doconfd "${S}/resources/filesystem/etc/conf.d/sparcur-dashboard"
 	keepdir "/var/log/${PN}"
 	keepdir "/var/log/${PN}/dashboard"
 	fowners ${USERGROUP}:${USERGROUP} "/var/log/${PN}"
