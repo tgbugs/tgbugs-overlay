@@ -26,7 +26,7 @@ RDEPEND="${DEPEND}
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.0.1[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.1[${PYTHON_USEDEP}]
-	dev-python/pysercomb[${PYTHON_USEDEP}]
+	>dev-python/pysercomb-0.0.1[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
