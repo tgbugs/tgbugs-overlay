@@ -5,10 +5,7 @@ EAPI=6
 
 PYTHON_COMPAT=( pypy3 python3_{6,7} )
 
-# The usual required for tests
-DISTUTILS_IN_SOURCE_BUILD=1
-
-inherit git-r3 distutils-r1
+inherit git-r3 distutils-r1 user
 
 DESCRIPTION="Web annotation curation pipeline"
 HOMEPAGE="https://github.com/SciCrunch/scibot"
