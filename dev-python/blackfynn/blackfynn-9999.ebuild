@@ -8,7 +8,8 @@ inherit git-r3 distutils-r1
 
 DESCRIPTION="parser combinator library and assorted parsers"
 HOMEPAGE="https://github.com/Blackfynn/blackfynn-python"
-EGIT_REPO_URI="https://github.com/Blackfynn/blackfynn-python.git"
+EGIT_REPO_URI="https://github.com/tgbugs/blackfynn-python.git"
+EGIT_BRANCH="no-np-pd"
 
 PATCHES=(
 	"${FILESDIR}/setup-no-cython-no-test.patch"
