@@ -22,15 +22,16 @@ IUSE="dev test +cli -agent -pandas"
 # questionable setup dependency?
 #	dev-python/cython[${PYTHON_USEDEP}]
 DEPEND="
-	>=dev-python/pytz-2016[${PYTHON_USEDEP}]
 	>=dev-python/boto3-1.4[${PYTHON_USEDEP}]
-	>=dev-python/requests-2.18[${PYTHON_USEDEP}]
-	>=dev-python/protobuf-python-3.2.0[${PYTHON_USEDEP}]
 	>=dev-python/deprecated-1.2.0[${PYTHON_USEDEP}]
+	>=dev-python/future-0.15.0[${PYTHON_USEDEP}]
+	>=dev-python/protobuf-python-3.2.0[${PYTHON_USEDEP}]
+	>=dev-python/pytz-2016[${PYTHON_USEDEP}]
+	>=dev-python/requests-2.18[${PYTHON_USEDEP}]
 	>=dev-python/semver-2.8.0[${PYTHON_USEDEP}]
 	agent? (
-		>=dev-python/websocket-client-0.50.0[${PYTHON_USEDEP}]
 		app-misc/blackfynn-agent-bin
+		>=dev-python/websocket-client-0.50.0[${PYTHON_USEDEP}]
 	)
 	cli? (
 		>=dev-python/docopt-0.6[${PYTHON_USEDEP}]
