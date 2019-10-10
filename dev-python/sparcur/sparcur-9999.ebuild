@@ -19,7 +19,7 @@ DEPEND=""
 RDEPEND="${DEPEND}
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
 	dev-python/augpathlib[${PYTHON_USEDEP}]
-	dev-python/boto3[${PYTHON_USEDEP}]
+	dev-python/blackfynn[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
 	dev-python/gevent[$(python_gen_usedep python3_{6,7})]
 	dev-python/google-api-python-client[${PYTHON_USEDEP}]
