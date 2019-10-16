@@ -17,21 +17,25 @@ IUSE="dev spell test"
 
 #dev-python/ipython[${PYTHON_USEDEP}]  # because who wants to deal with that mess >_<
 DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/appdirs[${PYTHON_USEDEP}]
+	>dev-python/augpathlib-0.0.1[${PYTHON_USEDEP}]
+	dev-python/colorlog[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/git-python[${PYTHON_USEDEP}]
 	dev-python/google-api-python-client[${PYTHON_USEDEP}]
-	dev-python/joblib[${PYTHON_USEDEP}]
-	dev-python/ipython
+	dev-python/htmlfn[${PYTHON_USEDEP}]
+	dev-python/ipython[${PYTHON_USEDEP}]
+	>=dev-python/joblib-0.14.0[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/oauth2client[${PYTHON_USEDEP}]
-	>=dev-python/ontquery-0.0.8[${PYTHON_USEDEP}]
-	dev-python/psutil[${PYTHON_USEDEP}]
-	dev-python/pymysql[${PYTHON_USEDEP}]
+	>=dev-python/ontquery-0.1.0[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
-	dev-python/ttlser[${PYTHON_USEDEP}]
+	dev-python/setuptools[${PYTHON_USEDEP}]
+	dev-python/terminaltables[${PYTHON_USEDEP}]
+	>=dev-python/ttlser-1.1.0[${PYTHON_USEDEP}]
+	dev-python/terminaltables[${PYTHON_USEDEP}]
+	dev-python/werkzeug[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]

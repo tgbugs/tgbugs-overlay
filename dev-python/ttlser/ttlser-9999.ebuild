@@ -20,8 +20,8 @@ KEYWORDS=""
 IUSE="dev test +ttlfmt"
 
 DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-5.0.0[${PYTHON_USEDEP}]
+	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
@@ -32,7 +32,7 @@ DEPEND="
 	)
 	ttlfmt? (
 		dev-python/docopt[${PYTHON_USEDEP}]
-		dev-python/joblib[${PYTHON_USEDEP}]
+		>=dev-python/joblib-0.14.0[${PYTHON_USEDEP}]
 	)
 "
 RDEPEND="${DEPEND}"

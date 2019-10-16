@@ -16,11 +16,12 @@ KEYWORDS="~amd64 ~x86"
 IUSE="dev doc spell test"
 
 DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
-	dev-python/htmlfn[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.1[${PYTHON_USEDEP}]
-	dev-python/robobrowser[${PYTHON_USEDEP}]
+	dev-python/nbformat[${PYTHON_USEDEP}]
+	dev-python/psutil[${PYTHON_USEDEP}]
+	dev-python/pymysql[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.3[${PYTHON_USEDEP}]
+	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/sqlalchemy[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/mysql-connector-python[${PYTHON_USEDEP}]
@@ -30,7 +31,6 @@ DEPEND="
 	)
 	doc? (
 		>=app-editors/emacs-26
-		dev-python/htmlfn[${PYTHON_USEDEP}]
 	)
 	spell? (
 		app-text/hunspell
