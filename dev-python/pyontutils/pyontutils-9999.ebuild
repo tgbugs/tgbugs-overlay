@@ -18,7 +18,7 @@ IUSE="dev spell test"
 #dev-python/ipython[${PYTHON_USEDEP}]  # because who wants to deal with that mess >_<
 DEPEND="
 	dev-python/appdirs[${PYTHON_USEDEP}]
-	>dev-python/augpathlib-0.0.1[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.2[${PYTHON_USEDEP}]
 	dev-python/colorlog[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/git-python[${PYTHON_USEDEP}]
@@ -27,6 +27,7 @@ DEPEND="
 	dev-python/ipython[${PYTHON_USEDEP}]
 	>=dev-python/joblib-0.14.0[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
+	dev-python/nest_asyncio[${PYTHON_USEDEP}]
 	dev-python/oauth2client[${PYTHON_USEDEP}]
 	>=dev-python/ontquery-0.1.0[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
