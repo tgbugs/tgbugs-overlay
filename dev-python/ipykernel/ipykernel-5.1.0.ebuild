@@ -35,8 +35,13 @@ python_install() {
 	distutils-r1_python_install
 
 	# bug 628222, specify python 2 or 3.
-	sed -e "/language/!s:python:${EPYTHON%.*}:" \
-		-i "${ED}"usr/share/jupyter/kernels/${EPYTHON%.*}/kernel.json || die
+	if [[ ${EPYTHON} == *'pypy3'* ]]; then
+		sed -e "/language/!s:python:${EPYTHON%.*}:" \
+			-i "${ED}"usr/share/jupyter/kernels/python3/kernel.json || die
+	else
+		sed -e "/language/!s:python:${EPYTHON%.*}:" \
+			-i "${ED}"usr/share/jupyter/kernels/${EPYTHON%.*}/kernel.json || die
+	fi
 }
 
 python_test() {
