@@ -22,6 +22,7 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS=""
 IUSE="dev spell test"
+RESTRICT="!test? ( test )"
 
 DEPEND="
 	dev-python/appdirs[${PYTHON_USEDEP}]
@@ -58,15 +59,26 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 
-RESTRICT="test"
-
 src_prepare () {
 	# replace package version to keep python quiet
 	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
 	default
 }
 
+python_test() {
+	mkdir -p ${HOME}/.config/pyontutils || die
+	cp "${S}/nifstd/scigraph/curie_map.yaml" ${HOME}/.config/pyontutils || die
+
+	distutils_install_for_testing
+	cd "${TEST_DIR}" || die
+	cp -r "${S}/test" . || die
+	cp "${S}/setup.cfg" . || die
+	mkdir -p "ttlser/test" || die
+	cp "${S}/ttlser/test/nasty.ttl" "ttlser/test" || die
+	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
+}
+
 python_install_all() {
-	local DOCS=( README* docs/*.org )
+	local DOCS=( README* docs/* )
 	distutils-r1_python_install_all
 }

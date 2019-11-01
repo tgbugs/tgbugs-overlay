@@ -14,10 +14,11 @@ S=$WORKDIR/Pint-$PV
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="uncertainties"
+IUSE="babel uncertainties"
 
 DEPEND=""
 RDEPEND="${DEPEND}
+	babel? ( dev-python/Babel[${PYTHON_USEDEP}] )
 	uncertainties? ( dev-python/uncertainties[${PYTHON_USEDEP}] )
 "
 

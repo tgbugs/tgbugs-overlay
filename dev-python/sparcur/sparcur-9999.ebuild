@@ -4,11 +4,19 @@
 EAPI=7
 
 PYTHON_COMPAT=( pypy3 python3_{6,7} )
-inherit git-r3 distutils-r1 user
+inherit distutils-r1 user
+
+if [[ ${PV} == "9999" ]]; then
+	EGIT_REPO_URI="https://github.com/SciCrunch/sparc-curation.git"
+	inherit git-r3
+	KEYWORDS=""
+else
+	SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
+	KEYWORDS="~amd64 ~x86"
+fi
 
 DESCRIPTION="Code for the SPARC curation workflow."
 HOMEPAGE="https://github.com/SciCrunch/sparc-curation"
-EGIT_REPO_URI="https://github.com/SciCrunch/sparc-curation.git"
 
 LICENSE="MIT"
 SLOT="0"
@@ -24,9 +32,10 @@ RDEPEND="${DEPEND}
 	dev-python/gevent[$(python_gen_usedep python3_{6,7})]
 	dev-python/google-api-python-client[${PYTHON_USEDEP}]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
+	dev-python/idlib[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.0.1[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.1[${PYTHON_USEDEP}]
-	>dev-python/pysercomb-0.0.1[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.4[${PYTHON_USEDEP}]
+	>=dev-python/pysercomb-0.0.2[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
@@ -54,6 +63,11 @@ src_prepare () {
 	# replace package version to keep python quiet
 	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
 	default
+}
+
+python_install_all() {
+	local DOCS=( README* docs/* )
+	distutils-r1_python_install_all
 }
 
 src_install() {

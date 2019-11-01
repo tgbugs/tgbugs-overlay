@@ -69,12 +69,9 @@ src_prepare () {
 }
 
 python_test() {
-	mkdir ${HOME}/.cache || die
-
 	distutils_install_for_testing
 	cd "${TEST_DIR}" || die
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
-	cp "${S}/conftest.py" . || die
 	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
 }

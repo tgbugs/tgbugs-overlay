@@ -7,7 +7,7 @@ PYTHON_COMPAT=( pypy3 python3_{6,7} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
-	EGIT_REPO_URI="https://github.com/tgbugs/pyontutils.git"
+	EGIT_REPO_URI="https://github.com/tgbugs/protc.git"
 	inherit git-r3
 	KEYWORDS=""
 else
@@ -15,24 +15,25 @@ else
 	KEYWORDS="~amd64 ~x86"
 fi
 
-DESCRIPTION="A data model for neuron types."
-HOMEPAGE="https://github.com/tgbugs/pyontutils/tree/master/neurondm"
+DESCRIPTION="Web annotation workflows for protocol curation."
+HOMEPAGE="https://github.com/tgbugs/protc/tree/master/protcur"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS=""
-IUSE="dev notebook test"
+IUSE="dev test"
 
 DEPEND="
+	dev-python/flask[${PYTHON_USEDEP}]
+	dev-python/htmlfn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.4[${PYTHON_USEDEP}]
+	dev-python/markdown[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.4[${PYTHON_USEDEP}]
+	>=dev-python/pysercomb-0.2.0[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
-	)
-	notebook? (
-		dev-python/jupyter[${PYTHON_USEDEP}]
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
@@ -45,13 +46,14 @@ RESTRICT="test"
 
 S="${S}/${PN}"
 
+python_configure_all () {
+	if [[ ${PV} == "9999" ]]; then
+		mydistutilsargs=( --release )
+	fi
+}
+
 src_prepare () {
 	# replace package version to keep python quiet
 	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
 	default
-}
-
-python_install_all() {
-	local DOCS=( README* docs/* )
-	distutils-r1_python_install_all
 }

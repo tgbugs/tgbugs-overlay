@@ -1,20 +1,27 @@
 # Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 PYTHON_COMPAT=( python2_7 python3_{4,5,6,7} pypy pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
-inherit git-r3 distutils-r1
+inherit distutils-r1
+
+if [[ ${PV} == "9999" ]]; then
+	EGIT_REPO_URI="https://github.com/pexpect/pexpect.git"
+	inherit git-r3
+	KEYWORDS=""
+else
+	SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
+	KEYWORDS="~amd64 ~x86"
+fi
 
 DESCRIPTION="Python module for spawning child apps and responding to expected patterns"
 HOMEPAGE="https://pexpect.readthedocs.io/ https://pypi.org/project/pexpect/ https://github.com/pexpect/pexpect/"
-EGIT_REPO_URI="https://github.com/pexpect/pexpect.git"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
 IUSE="doc examples test"
 
 RDEPEND=">=dev-python/ptyprocess-0.5[${PYTHON_USEDEP}]"
