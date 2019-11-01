@@ -15,7 +15,10 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-DEPEND="app-text/hunspell"
+DEPEND="
+	app-text/hunspell
+	dev-python/setuptools[${PYTHON_USEDEP}]
+"
 RDEPEND="${DEPEND}"
 
 RESTRICT="test"
