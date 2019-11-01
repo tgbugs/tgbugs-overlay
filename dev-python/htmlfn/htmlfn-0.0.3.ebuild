@@ -25,6 +25,7 @@ IUSE="dev test"
 RESTRICT="!test? ( test )"
 
 DEPEND="
+	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 	)
