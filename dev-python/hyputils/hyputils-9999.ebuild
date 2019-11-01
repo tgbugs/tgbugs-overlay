@@ -75,6 +75,5 @@ python_test() {
 	cd "${TEST_DIR}" || die
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
-	cp "${S}/conftest.py" . || die
 	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
 }

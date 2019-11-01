@@ -47,13 +47,14 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 
-S="${S}/${PN}"
-
-src_prepare () {
-	# replace package version to keep python quiet
-	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
-	default
-}
+if [[ ${PV} == "9999" ]]; then
+	S="${S}/${PN}"
+	src_prepare () {
+		# replace package version to keep python quiet
+		sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+		default
+	}
+fi
 
 python_install_all() {
 	local DOCS=( README* docs/* )
