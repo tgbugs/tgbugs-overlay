@@ -10,7 +10,7 @@ DESCRIPTION="Implementation of the psycopg2 module using cffi. Compatible with P
 HOMEPAGE="https://github.com/chtd/psycopg2cffi"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="LGPL"
+LICENSE="LGPL-3+"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
