@@ -22,7 +22,7 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS=""
 IUSE="dev test"
-RESTRICT="!test? ( test )"
+RESTRICT="test"
 
 DEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
@@ -42,25 +42,3 @@ DEPEND="
 	)
 "
 RDEPEND="${DEPEND}"
-
-if [[ ${PV} == "9999" ]]; then
-	S="${S}/${PN}"
-	python_configure_all () {
-		mydistutilsargs=( --release )
-	}
-
-	src_prepare () {
-		# replace package version to keep python quiet
-		sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
-		default
-	}
-fi
-
-python_test() {
-	distutils_install_for_testing
-	esetup.py install_data --install-dir="${TEST_DIR}"
-	cd "${TEST_DIR}" || die
-	cp -r "${S}/test" . || die
-	cp "${S}/setup.cfg" . || die
-	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
-}
