@@ -24,7 +24,6 @@ PATCHES=(
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
 IUSE="dev test +ttlfmt"
 REQUIRE_USE="test? ( ttlfmt )"
 RESTRICT="!test? ( test )"

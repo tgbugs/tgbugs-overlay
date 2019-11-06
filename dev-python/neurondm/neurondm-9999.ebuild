@@ -20,7 +20,6 @@ HOMEPAGE="https://github.com/tgbugs/pyontutils/tree/master/neurondm"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
 IUSE="dev notebook test"
 RESTRICT="!test? ( test )"
 

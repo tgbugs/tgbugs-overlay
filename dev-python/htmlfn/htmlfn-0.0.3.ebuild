@@ -20,7 +20,6 @@ HOMEPAGE="https://github.com/tgbugs/pyontutils/tree/master/htmlfn"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
 IUSE="dev test"
 RESTRICT="!test? ( test )"
 
@@ -28,6 +27,7 @@ DEPEND="
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
+		dev-python/wheel[${PYTHON_USEDEP}]
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]

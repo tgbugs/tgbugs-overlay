@@ -20,7 +20,6 @@ HOMEPAGE="https://github.com/SciCrunch/sparc-curation"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
 IUSE="dev test"
 
 DEPEND=""
@@ -36,9 +35,11 @@ RDEPEND="${DEPEND}
 	>=dev-python/jsonschema-3.0.1[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.4[${PYTHON_USEDEP}]
 	>=dev-python/pysercomb-0.0.2[${PYTHON_USEDEP}]
+	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
+		dev-python/wheel[${PYTHON_USEDEP}]
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]

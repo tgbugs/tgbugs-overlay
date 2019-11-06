@@ -1,14 +1,14 @@
 # Copyright 1999-2019 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 PYTHON_COMPAT=( pypy3 python3_{6,7} )
 
 inherit distutils-r1 user
 
 if [[ ${PV} == "9999" ]]; then
-	EGIT_REPO_URI="https://github.com/SciCrunch/scibot.git"
+	EGIT_REPO_URI="https://github.com/SciCrunch/${PN}.git"
 	inherit git-r3
 	KEYWORDS=""
 else
@@ -21,7 +21,6 @@ HOMEPAGE="https://github.com/SciCrunch/scibot"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS=""
 IUSE="dev test"
 RESTRICT="!test? ( test )"
 
@@ -35,6 +34,15 @@ RDEPEND="
 	>=dev-python/hyputils-0.0.4[memex,${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.4[${PYTHON_USEDEP}]
+	dev-python/setuptools[${PYTHON_USEDEP}]
+	dev? (
+		dev-python/pytest-cov[${PYTHON_USEDEP}]
+		dev-python/wheel[${PYTHON_USEDEP}]
+	)
+	test? (
+		dev-python/pytest[${PYTHON_USEDEP}]
+		dev-python/pytest-runner[${PYTHON_USEDEP}]
+	)
 "
 DEPEND="${RDEPEND}"
 

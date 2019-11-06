@@ -20,7 +20,6 @@ HOMEPAGE="https://github.com/tgbugs/ontquery"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
 IUSE="dev services test"
 RESTRICT="!test? ( test )"
 
@@ -29,9 +28,11 @@ SVCDEPEND="
 	dev-python/requests[${PYTHON_USEDEP}]
 "
 DEPEND="
-	dev-python/setuptools
+	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		>=dev-python/pyontutils-0.1.4[${PYTHON_USEDEP}]
+		dev-python/pytest-cov[${PYTHON_USEDEP}]
+		dev-python/wheel[${PYTHON_USEDEP}]
 	)
 	services? (
 		${SVCDEPEND}

@@ -20,7 +20,6 @@ HOMEPAGE="https://github.com/tgbugs/augpathlib"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
 IUSE="dev test"
 RESTRICT="!test? ( test )"
 
@@ -29,10 +28,12 @@ DEPEND="
 	>=dev-python/pexpect-4.7.0[${PYTHON_USEDEP}]
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
 	dev-python/pyxattr[${PYTHON_USEDEP}]
+	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
 	|| ( sys-apps/file[python,${PYTHON_USEDEP}] dev-python/python-magic[${PYTHON_USEDEP}] )
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
+		dev-python/wheel[${PYTHON_USEDEP}]
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]

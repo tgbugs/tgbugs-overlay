@@ -20,7 +20,6 @@ HOMEPAGE="https://github.com/tgbugs/protc/tree/master/protcur"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
 IUSE="dev test"
 RESTRICT="test"
 

@@ -7,7 +7,7 @@ PYTHON_COMPAT=( pypy3 python3_{6,7} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
-	EGIT_REPO_URI="https://github.com/tgbugs/ontquery.git"
+	EGIT_REPO_URI="https://github.com/tgbugs/${PN}.git"
 	inherit git-r3
 	KEYWORDS=""
 else
@@ -20,7 +20,6 @@ HOMEPAGE="https://github.com/tgbugs/ontquery"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
 IUSE="dev services test"
 RESTRICT="!test? ( test )"
 

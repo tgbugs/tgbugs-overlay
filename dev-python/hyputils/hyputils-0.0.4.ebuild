@@ -7,7 +7,7 @@ PYTHON_COMPAT=( pypy3 python3_{6,7} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
-	EGIT_REPO_URI="https://github.com/tgbugs/hyputils.git"
+	EGIT_REPO_URI="https://github.com/tgbugs/${PN}.git"
 	inherit git-r3
 	KEYWORDS=""
 else
@@ -20,7 +20,6 @@ HOMEPAGE="https://github.com/tgbugs/hyputils"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
 IUSE="dev memex test zendesk"
 REQUIRE_USE="
 	python_targets_pypy3? ( !memex )
@@ -29,9 +28,9 @@ REQUIRE_USE="
 RESTRICT="!test? ( test )"
 
 DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/certifi[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
+	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/websockets[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
