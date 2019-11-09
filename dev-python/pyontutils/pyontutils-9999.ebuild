@@ -20,8 +20,11 @@ HOMEPAGE="https://github.com/tgbugs/pyontutils"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev spell test"
-RESTRICT="!test? ( test )"
+IUSE="dev -minimal spell test"
+RESTRICT="
+	!test? ( test )
+	minimal? ( test )
+"
 
 DEPEND="
 	dev-python/appdirs[${PYTHON_USEDEP}]
@@ -36,7 +39,6 @@ DEPEND="
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/nest_asyncio[${PYTHON_USEDEP}]
 	dev-python/oauth2client[${PYTHON_USEDEP}]
-	>=dev-python/ontquery-0.2.0[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
@@ -48,6 +50,7 @@ DEPEND="
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
 	)
+	!minimal? ( >=dev-python/ontquery-0.2.0[${PYTHON_USEDEP}] )
 	spell? (
 		app-text/hunspell
 	)

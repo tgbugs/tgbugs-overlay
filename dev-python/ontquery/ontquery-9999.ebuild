@@ -44,19 +44,19 @@ DEPEND="
 		${SVCDEPEND}
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
-	python_configure_all () {
-			mydistutilsargs=( --release )
-	}
-
+	DEPEND="${DEPEND}
+		dev-python/pyontutils[minimal,${PYTHON_USEDEP}]
+	"
 	src_prepare () {
 		# replace package version to keep python quiet
 		sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
 		default
 	}
 fi
+
+RDEPEND="${DEPEND}"
 
 python_test() {
 	distutils_install_for_testing
