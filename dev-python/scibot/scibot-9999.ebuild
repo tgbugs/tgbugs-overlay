@@ -46,18 +46,22 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}"
 
-pkg_setup() {
-	ebegin "Creating scibot user and group"
-	enewgroup ${PN}
-	enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
-	eend $?
-}
+if [[ ${PV} == "9999" ]]; then
+	pkg_setup() {
+		ebegin "Creating scibot user and group"
+		enewgroup ${PN}
+		enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
+		eend $?
+	}
+fi
 
-src_prepare () {
-	# replace package version to keep python quiet
-	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
-	default
-}
+if [[ ${PV} == "9999" ]]; then
+	src_prepare () {
+		# replace package version to keep python quiet
+		sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+		default
+	}
+fi
 
 python_test() {
 	distutils_install_for_testing

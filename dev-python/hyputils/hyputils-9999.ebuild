@@ -61,11 +61,13 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 
-src_prepare () {
-	# replace package version to keep python quiet
-	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
-	default
-}
+if [[ ${PV} == "9999" ]]; then
+	src_prepare () {
+		# replace package version to keep python quiet
+		sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+		default
+	}
+fi
 
 python_test() {
 	mkdir ${HOME}/.cache || die
@@ -74,5 +76,5 @@ python_test() {
 	cd "${TEST_DIR}" || die
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
-	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
+	pytest || die "Tests fail with ${EPYTHON}"
 }

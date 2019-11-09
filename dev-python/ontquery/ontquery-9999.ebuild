@@ -63,7 +63,7 @@ python_test() {
 	cd "${TEST_DIR}" || die
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
-	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
+	pytest || die "Tests fail with ${EPYTHON}"
 }
 
 python_install_all() {

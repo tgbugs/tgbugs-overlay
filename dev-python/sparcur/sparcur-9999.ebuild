@@ -21,6 +21,7 @@ HOMEPAGE="https://github.com/SciCrunch/sparc-curation"
 LICENSE="MIT"
 SLOT="0"
 IUSE="dev test"
+RESTRICT="!test? ( test )"
 
 DEPEND=""
 RDEPEND="${DEPEND}
@@ -49,8 +50,6 @@ RDEPEND="${DEPEND}
 #dev-python/nibabel
 #dev-python/pydicom
 
-RESTRICT="test"
-
 USERGROUP=sparc
 
 pkg_setup() {
@@ -60,10 +59,20 @@ pkg_setup() {
 	eend $?
 }
 
-src_prepare () {
-	# replace package version to keep python quiet
-	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
-	default
+if [[ ${PV} == "9999" ]]; then
+	src_prepare () {
+		# replace package version to keep python quiet
+		sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+		default
+	}
+fi
+
+python_test() {
+	distutils_install_for_testing
+	cd "${TEST_DIR}" || die
+	cp -r "${S}/test" . || die
+	cp "${S}/setup.cfg" . || die
+	pytest || die "Tests fail with ${EPYTHON}"
 }
 
 python_install_all() {
