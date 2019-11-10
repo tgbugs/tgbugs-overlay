@@ -70,10 +70,8 @@ if [[ ${PV} == "9999" ]]; then
 fi
 
 python_test() {
-	mkdir -p ${HOME}/.config/pyontutils || die
-	cp "${S}/nifstd/scigraph/curie_map.yaml" ${HOME}/.config/pyontutils || die
-
 	distutils_install_for_testing
+	esetup.py install_data --install-dir="${TEST_DIR}"
 	cd "${TEST_DIR}" || die
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
