@@ -54,7 +54,16 @@ RDEPEND="${DEPEND}"
 RESTRICT="test"
 
 src_prepare () {
+	if use !agent; then
+		sed -i '/websocket-client/d' requirements.txt
+	fi
+	if use !cli; then
+		sed -i '/\(docopt\|psutil\)/d' requirements.txt
+	fi
+	if use !pandas; then
+		sed -i '/\(numpy\|pandas\)/d' requirements.txt
+	fi
 	# replace package version to keep python quiet
-	sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+	sed -i "s/__version__.\+$/__version__ = '9999.0.0.$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
 	default
 }
