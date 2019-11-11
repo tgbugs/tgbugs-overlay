@@ -54,6 +54,7 @@ RDEPEND="${DEPEND}"
 RESTRICT="test"
 
 src_prepare () {
+	sed -i '/configparser/d' requirements.txt  # only a 2.7 requirement
 	if use !agent; then
 		sed -i '/websocket-client/d' requirements.txt
 	fi
