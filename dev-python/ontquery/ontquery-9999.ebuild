@@ -24,14 +24,14 @@ IUSE="dev services test"
 RESTRICT="!test? ( test )"
 
 SVCDEPEND="
-	dev-python/orthauth[${PYTHON_USEDEP}]
+	>=dev-python/orthauth-0.0.3[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-5.0.0[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 "
 DEPEND="
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
-		>=dev-python/pyontutils-0.1.4[${PYTHON_USEDEP}]
+		>=dev-python/pyontutils-0.1.5[${PYTHON_USEDEP}]
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
 	)
