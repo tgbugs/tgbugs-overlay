@@ -64,7 +64,7 @@ RDEPEND="${DEPEND}"
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
 		# replace package version to keep python quiet
-		sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+		sed -i "s/__version__.\+$/__version__ = '9999.0.0.$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
 		default
 	}
 fi

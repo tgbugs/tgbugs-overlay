@@ -25,6 +25,7 @@ RESTRICT="!test? ( test )"
 
 DEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
+	dev-python/nbconvert[${PYTHON_USEDEP}]
 	dev-python/nbformat[${PYTHON_USEDEP}]
 	dev-python/psutil[${PYTHON_USEDEP}]
 	dev-python/pymysql[${PYTHON_USEDEP}]
@@ -51,10 +52,10 @@ DEPEND="
 RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
-	S="${S}/${PN}"
+	S="${S}/${PN%%-*}"
 	src_prepare () {
 		# replace package version to keep python quiet
-		sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+		sed -i "s/__version__.\+$/__version__ = '9999.0.0.$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
 		default
 	}
 fi
@@ -65,6 +66,15 @@ python_install_all() {
 }
 
 python_test() {
+	CFG=${HOME}/.config/pyontutils/config.yaml
+	mkdir -p $(dirname $CFG) || die
+	echo 'auth-variables:' > $CFG || die
+	echo '  ontology-local-repo:' >> $CFG || die
+	echo '    default: /tmp/NIF-Ontology' >> $CFG || die
+	echo '    environment-variables: ONTOLOGY_REPO' >> $CFG || die
+	if [[ ${PV} == "9999" ]]; then
+		git remote add origin ${EGIT_REPO_URI}
+	fi
 	distutils_install_for_testing
 	cd "${TEST_DIR}" || die
 	cp -r "${S}/test" . || die

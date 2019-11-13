@@ -20,7 +20,7 @@ HOMEPAGE="https://github.com/SciCrunch/sparc-curation"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev test"
+IUSE="dev filetypes test"
 RESTRICT="!test? ( test )"
 
 DEPEND=""
@@ -42,13 +42,16 @@ RDEPEND="${DEPEND}
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
 	)
+	filetypes? (
+		dev-python/nibabel[${PYTHON_USEDEP}]
+		dev-python/pydicom[${PYTHON_USEDEP}]
+		dev-python/scipy[${PYTHON_USEDEP}]
+	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
 		dev-python/pytest-runner[${PYTHON_USEDEP}]
 	)
 "
-#dev-python/nibabel
-#dev-python/pydicom
 
 USERGROUP=sparc
 
@@ -62,7 +65,7 @@ pkg_setup() {
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
 		# replace package version to keep python quiet
-		sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+		sed -i "s/__version__.\+$/__version__ = '9999.0.0.$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
 		default
 	}
 fi
