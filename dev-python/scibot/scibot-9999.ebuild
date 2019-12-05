@@ -4,7 +4,6 @@
 EAPI=7
 
 PYTHON_COMPAT=( pypy3 python3_{6,7} )
-
 inherit distutils-r1 user
 
 if [[ ${PV} == "9999" ]]; then
@@ -46,14 +45,12 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}"
 
-if [[ ${PV} == "9999" ]]; then
-	pkg_setup() {
-		ebegin "Creating scibot user and group"
-		enewgroup ${PN}
-		enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
-		eend $?
-	}
-fi
+pkg_setup() {
+	ebegin "Creating scibot user and group"
+	enewgroup ${PN}
+	enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
+	eend $?
+}
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
@@ -81,6 +78,7 @@ src_install() {
 	fowners ${PN}:${PN} "/var/log/${PN}"
 	newinitd "${FILESDIR}/scibot-bookmarklet.rc" scibot-bookmarklet
 	newconfd "${FILESDIR}/scibot-bookmarklet.confd" scibot-bookmarklet
+	chmod 0600 "${D}"/etc/conf.d/*
 	distutils-r1_src_install
 }
 
