@@ -2,8 +2,8 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-: ${GROUP:=metabase}
-: ${USER:=metabase}
+: ${SVCGROUP:=metabase}
+: ${SVCUSER:=metabase}
 : ${LOG_LOC:="/var/log/${SVCNAME}"}
 : ${CONFIG:="/etc/metabase.conf"}
 
@@ -15,7 +15,7 @@ JAVA_HOME=$(java-config -O)
 SVC_JAR="/usr/share/${SVCNAME}/${SVCNAME}.jar"
 ENV=$(cat ${CONFIG} | grep -v '#' | sed '/^$/d' | sed 's/^/ --env /')
 run_dir=${run_dir:-/run}
-eval run_in="~${USER}"
+eval run_in="~${SVCUSER}"
 
 name="metabase"
 description="metabase daemon"
@@ -24,8 +24,8 @@ command_background="true"
 command_args="-jar \"${SVC_JAR}\""
 start_stop_daemon_args="
 --wait=10000
---group ${GROUP}
---user ${USER}
+--group ${SVCGROUP}
+--user ${SVCUSER}
 --stdout ${LOG}
 --stderr ${LOG}
 --chdir ${run_in}
