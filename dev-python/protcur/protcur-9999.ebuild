@@ -4,7 +4,7 @@
 EAPI=7
 
 PYTHON_COMPAT=( pypy3 python3_{6,7} )
-inherit distutils-r1
+inherit distutils-r1 user
 
 if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/tgbugs/protc.git"
@@ -28,8 +28,8 @@ DEPEND="
 	dev-python/htmlfn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.4[${PYTHON_USEDEP}]
 	dev-python/markdown[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.8[${PYTHON_USEDEP}]
-	>=dev-python/pysercomb-0.2.0[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.9[${PYTHON_USEDEP}]
+	>=dev-python/pysercomb-0.0.3[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
@@ -41,6 +41,13 @@ DEPEND="
 	)
 "
 RDEPEND="${DEPEND}"
+
+pkg_setup() {
+	ebegin "Creating protcur user and group"
+	enewgroup ${PN}
+	enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
+	eend $?
+}
 
 if [[ ${PV} == "9999" ]]; then
 	S="${S}/${PN}"
@@ -62,4 +69,23 @@ python_test() {
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
 	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
+}
+
+python_install_all() {
+	local DOCS=( README* )
+	distutils-r1_python_install_all
+}
+
+src_install() {
+	keepdir "/var/log/${PN}"
+	fowners ${PN}:${PN} "/var/log/${PN}"
+	newinitd "${S}/resources/protcur.rc" protcur
+	newconfd "${S}/resources/protcur.confd" protcur
+	chmod 0600 "${D}"/etc/conf.d/*
+	distutils-r1_src_install
+}
+
+pkg_postinst() {
+	ewarn "In order to run protcur you need to set the hypothes.is"
+	ewarn "group, user, and api token in /etc/conf.d/protcur"
 }
