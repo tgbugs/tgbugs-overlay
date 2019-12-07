@@ -27,7 +27,7 @@ RDEPEND="
 	>=dev-python/billiard-3.6.0[${PYTHON_USEDEP}]
 	<dev-python/billiard-4.0.0[${PYTHON_USEDEP}]
 	dev-python/pytz[${PYTHON_USEDEP}]
-	dev-python/greenlet[${PYTHON_USEDEP}]
+	virtual/python-greenlet[${PYTHON_USEDEP}]
 	>=dev-python/vine-1.3.0[${PYTHON_USEDEP}]
 "
 
