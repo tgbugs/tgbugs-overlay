@@ -1,9 +1,8 @@
 # Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
-
-PYTHON_COMPAT=( pypy3 python2_7 python3_{4,5,6} )
+EAPI=7
+PYTHON_COMPAT=( python2_7 python3_{5,6,7} pypy{,3} )
 
 inherit distutils-r1
 
@@ -20,6 +19,7 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS="amd64 ~arm64 x86"
 IUSE="doc extras test"
+RESTRICT="!test? ( test )"
 
 RDEPEND=""
 DEPEND="
@@ -34,8 +34,19 @@ DEPEND="
 		>=dev-python/pytest-3.0[${PYTHON_USEDEP}]
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/pytest-mock[${PYTHON_USEDEP}]
+		>=dev-python/pytest-rerunfailures-6.0[${PYTHON_USEDEP}]
 	)
 "
+
+python_prepare_all() {
+	# pytest-sugar is not packaged
+	sed -e '/pytest-sugar/d' -i requirements/test.txt || die
+
+	# requires a rabbitmq instance
+	rm t/integration/test_rmq.py || die
+
+	distutils-r1_python_prepare_all
+}
 
 python_compile_all() {
 	use doc && emake -C docs html
