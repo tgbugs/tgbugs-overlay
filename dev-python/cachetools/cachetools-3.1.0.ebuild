@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python2_7 python3_{4,5,6,7} pypy{,3} )
+PYTHON_COMPAT=( python2_7 python3_{5,6,7} pypy{,3} )
 
 inherit distutils-r1
 
@@ -22,5 +22,5 @@ DEPEND="${RDEPEND}
 	test? ( dev-python/pytest[${PYTHON_USEDEP}] )"
 
 python_test() {
-	py.test -v || die "Tests failed under ${EPYTHON}"
+	pytest -vv || die "Tests failed under ${EPYTHON}"
 }

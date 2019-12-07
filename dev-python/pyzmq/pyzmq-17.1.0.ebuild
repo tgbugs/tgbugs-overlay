@@ -3,7 +3,7 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( pypy pypy3 python2_7 python3_{4,5,6} )
+PYTHON_COMPAT=( pypy{,3} python2_7 python3_{5,6,7} )
 PYTHON_REQ_USE="threads(+)"
 
 inherit flag-o-matic distutils-r1 toolchain-funcs

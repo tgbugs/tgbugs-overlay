@@ -3,7 +3,7 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( pypy{3,} python2_7 python3_{4,5,6} )
+PYTHON_COMPAT=( pypy{,3} python2_7 python3_{5,6} )
 inherit distutils-r1
 
 DESCRIPTION="Framework for fast, easy, and documented API development with Flask"

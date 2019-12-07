@@ -1,9 +1,9 @@
-# Copyright 2019 Gentoo Authors
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="6"
+EAPI=7
 
-PYTHON_COMPAT=( python2_7 python3_{4,5,6,7} pypy{,3} )
+PYTHON_COMPAT=( python2_7 python3_{5,6,7} pypy{,3} )
 
 inherit distutils-r1
 
@@ -17,6 +17,8 @@ KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 IUSE="test"
 
 RDEPEND="
+	dev-python/namespace-google[${PYTHON_USEDEP}]
+	>=dev-python/pyasn1-0.1.7[${PYTHON_USEDEP}]
 	>=dev-python/pyasn1-modules-0.2.1[${PYTHON_USEDEP}]
 	>=dev-python/rsa-3.1.4[${PYTHON_USEDEP}]
 	>=dev-python/six-1.9.0[${PYTHON_USEDEP}]
@@ -30,10 +32,14 @@ DEPEND="${RDEPEND}
 		dev-python/pytest-localserver[${PYTHON_USEDEP}]
 	)"
 
-python_test() {
+src_prepare() {
 	# delete stray files included in the tarball
 	find "${S}"/tests -name '*.pyc' -delete || die
-	py.test || die "Tests failed under ${EPYTHON}"
+	distutils-r1_src_prepare
+}
+
+python_test() {
+	pytest -vv || die "Tests failed under ${EPYTHON}"
 }
 
 python_install_all() {

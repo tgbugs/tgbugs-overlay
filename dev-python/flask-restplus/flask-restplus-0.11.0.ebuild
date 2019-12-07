@@ -3,10 +3,10 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( pypy3 python2_7 python3_{4,5,6} )
+PYTHON_COMPAT=( pypy{,3} python2_7 python3_{5,6} )
 inherit distutils-r1
 
-DESCRIPTION="Fully featured framework for fast, easy and documented API development with Flask"
+DESCRIPTION="Framework for fast, easy, and documented API development with Flask"
 HOMEPAGE="https://github.com/noirbizarre/flask-restplus"
 SRC_URI="https://github.com/noirbizarre/${PN}/archive/${PV}.tar.gz"
 
