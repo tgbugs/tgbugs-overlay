@@ -27,10 +27,9 @@ DEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/nbconvert[${PYTHON_USEDEP}]
 	dev-python/nbformat[${PYTHON_USEDEP}]
-	>=dev-python/orthauth-0.0.4[${PYTHON_USEDEP}]
 	dev-python/psutil[${PYTHON_USEDEP}]
 	dev-python/pymysql[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.7[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.11[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/sqlalchemy[${PYTHON_USEDEP}]
 	dev? (
@@ -41,6 +40,7 @@ DEPEND="
 	)
 	doc? (
 		>=app-editors/emacs-26
+		app-text/pandoc
 	)
 	spell? (
 		app-text/hunspell
