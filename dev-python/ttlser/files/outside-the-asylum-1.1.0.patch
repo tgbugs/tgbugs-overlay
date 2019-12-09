@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index 204356e..e0d4f7e 100644
+--- a/setup.py
++++ b/setup.py
+@@ -38,7 +38,7 @@ setup(
+     python_requires='>=3.5',
+     tests_require=tests_require,
+     install_requires=[
+-        'neurdflib>=5.0.1',
++        'rdflib>=5.0.1',
+     ],
+     extras_require={'dev': ['pytest-cov'],
+                     'ttlfmt': ['docopt',
