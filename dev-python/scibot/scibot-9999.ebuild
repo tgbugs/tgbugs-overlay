@@ -32,7 +32,7 @@ RDEPEND="
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.4[memex,${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.4[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.13[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
@@ -55,7 +55,7 @@ pkg_setup() {
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
 		# replace package version to keep python quiet
-		sed -i "s/__version__.\+$/__version__ = '9999.0.0'/" ${PN}/__init__.py
+		sed -i "s/__version__.\+$/__version__ = '9999.0.0.$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
 		default
 	}
 fi
