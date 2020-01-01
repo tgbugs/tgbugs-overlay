@@ -18,8 +18,8 @@ DESCRIPTION="General purpose, multi-paradigm Lisp-Scheme programming language"
 HOMEPAGE="http://racket-lang.org/"
 LICENSE="MIT Apache-2"
 SLOT="0"
-IUSE="cgc cs doc +futures +jit minimal +places +readline +threads +X"
-REQUIRED_USE="futures? ( jit )"
+IUSE="cgc cs doc +futures install-chez +jit minimal +places +readline +threads +X"
+REQUIRED_USE="futures? ( jit ) install-chez? ( cs )"
 
 RDEPEND="dev-db/sqlite:3
 	media-libs/libpng:0
@@ -37,6 +37,10 @@ if [[ ${PV} == "9999" ]]; then
 	S="${WORKDIR}/${P}/${PN}/src"
 else
 	S="${WORKDIR}/${P}/src"
+fi
+
+if [[ ${PV} == "9999" ]]; then
+	PATCHES=( "${FILESDIR}"/install-chez-scheme.patch )
 fi
 
 if [[ ${PV} == "9999" ]]; then
@@ -133,6 +137,11 @@ src_install() {
 	if use cs; then
 		# FIXME TODO the cs executables have the wrong mode set
 		emake install-cs DESTDIR="${D}" CS_SETUP_TARGET=no-setup-install RACKET="${S}/racket/racket3m"
+		if use install-chez; then
+			pushd "${SCHEME_SRC}"
+			emake install
+			popd
+		fi
 	fi
 
 	einstalldocs
