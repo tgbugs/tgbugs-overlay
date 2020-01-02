@@ -16,7 +16,7 @@ fi
 
 DESCRIPTION="General purpose, multi-paradigm Lisp-Scheme programming language"
 HOMEPAGE="http://racket-lang.org/"
-LICENSE="MIT Apache-2"
+LICENSE="MIT Apache-2.0"
 SLOT="0"
 IUSE="cgc cs doc +futures install-chez +jit minimal +places +readline +threads +X"
 REQUIRED_USE="futures? ( jit ) install-chez? ( cs )"
