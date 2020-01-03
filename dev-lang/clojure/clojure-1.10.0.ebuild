@@ -19,8 +19,8 @@ KEYWORDS="~amd64 ~x86 ~x86-linux"
 RESTRICT="test" # patches welcome to fix the test
 
 CDEPEND="
-	dev-clojure/spec-alpha:0.2
-	dev-clojure/core-specs-alpha:0.2
+	dev-java/spec-alpha:0.2
+	dev-java/core-specs-alpha:0.2
 	dev-java/ant-core:0"
 
 RDEPEND="
