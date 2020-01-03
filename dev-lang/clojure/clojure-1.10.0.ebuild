@@ -3,7 +3,7 @@
 
 EAPI=7
 
-JAVA_PKG_IUSE="test"
+JAVA_PKG_IUSE="source test"
 
 inherit java-pkg-2 java-ant-2
 
