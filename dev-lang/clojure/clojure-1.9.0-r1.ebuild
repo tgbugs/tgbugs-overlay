@@ -3,7 +3,7 @@
 
 EAPI=7
 
-JAVA_PKG_IUSE="source test"
+JAVA_PKG_IUSE="test"
 
 inherit java-pkg-2 java-ant-2
 
@@ -11,7 +11,7 @@ EGIT_REF="e5a8cfa"
 
 DESCRIPTION="General-purpose programming language with an emphasis on functional programming"
 HOMEPAGE="https://clojure.org/"
-SRC_URI="https://github.com/clojure/clojure/tarball/${P} -> ${P}.tar.gz"
+SRC_URI="https://github.com/clojure/${PN}/archive/${P}.tar.gz"
 
 LICENSE="EPL-1.0 Apache-2.0 BSD"
 SLOT="1.9"
