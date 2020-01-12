@@ -29,6 +29,7 @@ REQUIRE_USE="test? ( ttlfmt )"
 RESTRICT="!test? ( test )"
 
 DEPEND="
+	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-5.0.1[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
@@ -50,7 +51,7 @@ if [[ ${PV} == "9999" ]]; then
 	S="${S}/${PN}"
 	src_prepare () {
 		# replace package version to keep python quiet
-		sed -i "s/__version__.\+$/__version__ = '9999.0.0.$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
+		sed -i "s/__version__.\+$/__version__ = '9999.0.0+$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
 		default
 	}
 fi
