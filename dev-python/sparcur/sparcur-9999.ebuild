@@ -29,6 +29,7 @@ RDEPEND="${DEPEND}
 	dev-python/augpathlib[${PYTHON_USEDEP}]
 	dev-python/blackfynn[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
+	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	dev-python/gevent[$(python_gen_usedep python3_{6,7})]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	dev-python/idlib[${PYTHON_USEDEP}]
@@ -64,8 +65,14 @@ pkg_setup() {
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
+		sed -i '1 i\import fastentrypoints' setup.py
 		# replace package version to keep python quiet
 		sed -i "s/__version__.\+$/__version__ = '9999.0.0+$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
+		default
+	}
+else
+	src_prepare () {
+		sed -i '1 i\import fastentrypoints' setup.py
 		default
 	}
 fi
