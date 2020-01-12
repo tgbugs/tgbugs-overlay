@@ -65,6 +65,6 @@ src_prepare () {
 		sed -i '/\(numpy\|pandas\)/d' requirements.txt
 	fi
 	# replace package version to keep python quiet
-	sed -i "s/__version__.\+$/__version__ = '9999.0.0.$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
+	sed -i "s/__version__.\+$/__version__ = '9999.0.0+$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
 	default
 }

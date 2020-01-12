@@ -53,7 +53,7 @@ if [[ ${PV} == "9999" ]]; then
 		mkdir resources || die
 		cp ${DISTDIR}/*.ttl resources || die
 		# replace package version to keep python quiet
-		sed -i "s/__version__.\+$/__version__ = '9999.0.0.$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
+		sed -i "s/__version__.\+$/__version__ = '9999.0.0+$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
 		default
 	}
 fi
