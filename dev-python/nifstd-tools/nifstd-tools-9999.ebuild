@@ -4,7 +4,7 @@
 EAPI=7
 
 PYTHON_COMPAT=( pypy3 python3_{6,7} )
-inherit distutils-r1
+inherit distutils-r1 user
 
 if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/tgbugs/pyontutils.git"
@@ -53,6 +53,13 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 
+pkg_setup() {
+	ebegin "Creating protcur user and group"
+	enewgroup ${PN}
+	enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
+	eend $?
+}
+
 if [[ ${PV} == "9999" ]]; then
 	S="${S}/${PN%%-*}"
 	src_prepare () {
@@ -68,11 +75,6 @@ else
 	}
 fi
 
-python_install_all() {
-	local DOCS=( README* )
-	distutils-r1_python_install_all
-}
-
 python_test() {
 	if [[ ${PV} == "9999" ]]; then
 		git remote add origin ${EGIT_REPO_URI}
@@ -82,4 +84,23 @@ python_test() {
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
 	pytest -v --color=yes -s || die "Tests fail with ${EPYTHON}"
+}
+
+python_install_all() {
+	local DOCS=( README* )
+	distutils-r1_python_install_all
+}
+
+src_install() {
+	keepdir "/var/log/${PN}"
+	fowners ${PN}:${PN} "/var/log/${PN}"
+	newinitd "resources/ontree.rc" ontree
+	newconfd "resources/ontree.confd" ontree
+	chmod 0600 "${D}"/etc/conf.d/*
+	distutils-r1_src_install
+}
+
+pkg_postinst() {
+	ewarn "In order to run ontree you need to set the SciGraph"
+	ewarn "api endpoint and possibly api key in /etc/conf.d/ontree"
 }
