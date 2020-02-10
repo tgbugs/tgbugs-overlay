@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit git-2 cmake-utils eutils
+inherit git-r3 cmake-utils eutils
 
 EGIT_REPO_URI="git://github.com/mcellteam/mcell.git"
 
