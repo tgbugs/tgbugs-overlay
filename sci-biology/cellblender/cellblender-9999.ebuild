@@ -4,11 +4,11 @@
 
 EAPI=5
 
-inherit git-2 eutils
+inherit git-r3 eutils
 
 EGIT_REPO_URI="git://github.com/mcellteam/cellblender.git"
 
-DESCRIPTION="MCell blender addon. Create, Simulate, Visualize, and Analyze Realistic 3D Cell Models"
+DESCRIPTION="MCell blender addon. Create, Simulate, Visualize, and Analyze 3D Cell Models"
 HOMEPAGE="http://mcell.org/"
 SRC_URI=""
 
