@@ -29,7 +29,7 @@ RDEPEND="
 	dev-python/elasticsearch-py[${PYTHON_USEDEP}]
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
-	dev-python/flask-restplus[${PYTHON_USEDEP}]
+	dev-python/flask-restx[${PYTHON_USEDEP}]
 	dev-python/flask-sqlalchemy[${PYTHON_USEDEP}]
 	dev-python/gevent[$(python_gen_usedep python3_{6,7})]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
