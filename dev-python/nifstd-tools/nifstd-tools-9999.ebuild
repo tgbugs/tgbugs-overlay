@@ -30,7 +30,7 @@ DEPEND="
 	dev-python/nbformat[${PYTHON_USEDEP}]
 	dev-python/psutil[${PYTHON_USEDEP}]
 	dev-python/pymysql[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.14[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.19[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/sqlalchemy[${PYTHON_USEDEP}]
 	dev? (

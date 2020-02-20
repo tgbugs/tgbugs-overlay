@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -35,7 +35,7 @@ RDEPEND="
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{6,7})
 	$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' pypy3)
-	>=dev-python/pyontutils-0.1.15[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.19[${PYTHON_USEDEP}]
 	>dev-python/rdflib-jsonld-0.4.0[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (

@@ -35,7 +35,7 @@ RDEPEND="${DEPEND}
 	dev-python/idlib[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.0.1[${PYTHON_USEDEP}]
 	>=dev-python/protcur-0.0.4[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.18[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.19[${PYTHON_USEDEP}]
 	>=dev-python/pysercomb-0.0.4[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
