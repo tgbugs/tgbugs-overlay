@@ -31,7 +31,7 @@ RESTRICT="!test? ( test )"
 
 DEPEND="
 	>=dev-python/hyputils-0.0.4[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.7[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.20[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]

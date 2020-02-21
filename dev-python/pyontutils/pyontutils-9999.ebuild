@@ -27,7 +27,7 @@ RESTRICT="
 
 DEPEND="
 	dev-python/appdirs[${PYTHON_USEDEP}]
-	>=dev-python/augpathlib-0.0.10[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.11[${PYTHON_USEDEP}]
 	dev-python/colorlog[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]

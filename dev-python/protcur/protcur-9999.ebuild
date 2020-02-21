@@ -29,8 +29,8 @@ DEPEND="
 	dev-python/htmlfn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.4[${PYTHON_USEDEP}]
 	dev-python/markdown[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.19[${PYTHON_USEDEP}]
-	>=dev-python/pysercomb-0.0.3[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.20[${PYTHON_USEDEP}]
+	>=dev-python/pysercomb-0.0.4[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]

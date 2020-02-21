@@ -26,7 +26,7 @@ RESTRICT="!test? ( test )"
 DEPEND=""
 RDEPEND="${DEPEND}
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
-	>=dev-python/augpathlib-0.0.10[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.11[${PYTHON_USEDEP}]
 	dev-python/blackfynn[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
@@ -35,7 +35,7 @@ RDEPEND="${DEPEND}
 	dev-python/idlib[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.0.1[${PYTHON_USEDEP}]
 	>=dev-python/protcur-0.0.4[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.19[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.20[${PYTHON_USEDEP}]
 	>=dev-python/pysercomb-0.0.4[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]

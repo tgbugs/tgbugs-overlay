@@ -26,7 +26,7 @@ RESTRICT="!test? ( test )"
 DEPEND="
 	dev-python/setuptools
 	rdf? (
-		>=dev-python/pyontutils-0.1.19[${PYTHON_USEDEP}]
+		>=dev-python/pyontutils-0.1.20[${PYTHON_USEDEP}]
 	)
 	units? (
 		dev-python/protcur[${PYTHON_USEDEP}]
