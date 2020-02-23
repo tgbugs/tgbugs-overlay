@@ -1,7 +1,7 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 JAVA_PKG_IUSE=""
 
@@ -102,6 +102,6 @@ src_install() {
 	fi
 
 
-	newinitd "${FILESDIR}/${SERVICES_PN}.rc" scigraph-services
-	newconfd "${FILESDIR}/${SERVICES_PN}.confd" scigraph-services
+	newinitd "${FILESDIR}/${MY_PN}.rc" "${MY_PN}"
+	newconfd "${FILESDIR}/${MY_PN}.confd" "${MY_PN}"
 }

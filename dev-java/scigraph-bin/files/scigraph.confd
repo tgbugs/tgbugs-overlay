@@ -1,6 +1,6 @@
 ## You can modify these variables to fit your system.
 SERVICES_CONFIG="/var/lib/scigraph/services.yaml"
-SERVICES_LOG_LOC="/var/log/scigraph-services"
+SERVICES_LOG_LOC="/var/log/${SVCNAME}"
 DISPLAY=":5"
 
 SERVICES_OPTS="
@@ -19,9 +19,7 @@ SERVICES_OPTS="
 -Xms4G
 -Xmx4G
 -XX:+HeapDumpOnOutOfMemoryError     // dump the heap if we run out of memory
--XX:HeapDumpPath=${SERVICES_LOG_LOC}/head.dump   // dump the heap to this path
 -XX:+PrintGC                        // do extended GC logging
--Xloggc:${SERVICES_LOG_LOC}/gc.log
 -XX:+PrintGCDetails
 -XX:+PrintGCTimeStamps
 -XX:GCLogFileSize=20M
