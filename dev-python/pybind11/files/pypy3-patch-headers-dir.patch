@@ -1,0 +1,12 @@
+--- a/setup.py
++++ b/setup.py
+@@ -49,6 +49,9 @@
+         for header in self.distribution.headers:
+             subdir = os.path.dirname(os.path.relpath(header, 'include/pybind11'))
+             install_dir = os.path.join(self.install_dir, subdir)
++            if not install_dir.endswith('pybind11'):
++                install_dir = os.path.join(self.install_dir, 'pybind11', subdir)
++
+             self.mkpath(install_dir)
+ 
+             (out, _) = self.copy_file(header, install_dir)
