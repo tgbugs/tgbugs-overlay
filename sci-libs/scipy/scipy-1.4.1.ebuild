@@ -25,6 +25,10 @@ IUSE="doc sparse test"
 RESTRICT="!test? ( test )"
 KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 
+PATCHES=(
+	"${FILESDIR}/1.4.1-uarray.patch"
+)
+
 CDEPEND="
 	>=dev-python/numpy-1.10[lapack,${PYTHON_USEDEP}]
 	sci-libs/arpack:0=
