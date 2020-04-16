@@ -28,6 +28,12 @@ SLOT="0"
 IUSE="doc berkdb examples mysql redland sqlite test"
 RESTRICT="!test? ( test )"
 
+PATCHES=(
+	"${FILESDIR}/setuptools-510-fix.patch"
+)
+
+
+
 RDEPEND="
 	dev-python/isodate[${PYTHON_USEDEP}]
 	dev-python/html5lib[${PYTHON_USEDEP}]
