@@ -37,10 +37,10 @@ DEPEND="
 	dev-python/htmlfn[${PYTHON_USEDEP}]
 	dev-python/idlib[${PYTHON_USEDEP}]
 	$(python_gen_cond_dep 'dev-python/ipython[${PYTHON_USEDEP}]' pypy3 python3_6)
-	>=dev-python/joblib-0.14.0[${PYTHON_USEDEP}]
+	>=dev-python/joblib-0.14.1[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/nest_asyncio[${PYTHON_USEDEP}]
-	>=dev-python/orthauth-0.0.10[${PYTHON_USEDEP}]
+	>=dev-python/orthauth-0.0.11[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
