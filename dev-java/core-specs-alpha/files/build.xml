@@ -25,10 +25,10 @@
 
   <!-- package -->
   <target name="package" depends="build" description="Package the application">
-    <jar jarfile="${maven.build.dir}/${maven.build.finalName}.jar" 
-         compress="true" 
-         index="false" 
-         basedir="${maven.build.outputDir}" 
+    <jar jarfile="${maven.build.dir}/${maven.build.finalName}.jar"
+         compress="true"
+         index="false"
+         basedir="${maven.build.outputDir}"
          excludes="**/package.html"/>
   </target>
 
