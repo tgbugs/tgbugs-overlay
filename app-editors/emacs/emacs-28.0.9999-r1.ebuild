@@ -28,7 +28,7 @@ HOMEPAGE="https://www.gnu.org/software/emacs/"
 
 LICENSE="GPL-3+ FDL-1.3+ BSD HPND MIT W3C unicode PSF-2"
 SLOT="28-vcs"
-IUSE="acl alsa aqua athena cairo dbus dynamic-loading games gconf gfile gif +gmp gpm gsettings gtk gtk2 gzip-el harfbuzz imagemagick +inotify jpeg json kerberos lcms libxml2 livecd m17n-lib mailutils motif png selinux sound source ssl svg systemd +threads tiff toolkit-scroll-bars wide-int X Xaw3d xft +xpm xwidgets zlib"
+IUSE="acl alsa aqua athena cairo dbus dynamic-loading games gconf gfile gif +gmp gpm gsettings gtk gtk2 gzip-el harfbuzz imagemagick +inotify jpeg json kerberos lcms libxml2 livecd m17n-lib mailutils motif native png selinux sound source ssl svg systemd +threads tiff toolkit-scroll-bars wide-int X Xaw3d xft +xpm xwidgets zlib"
 REQUIRED_USE="?? ( aqua X )"
 RESTRICT="test"
 
@@ -115,6 +115,7 @@ RDEPEND=">=app-emacs/emacs-common-gentoo-1.5[games?,X?]
 	)"
 
 DEPEND="${RDEPEND}
+	native? ( sys-devel/gcc[jit] )
 	X? ( x11-base/xorg-proto )"
 
 BDEPEND="app-eselect/eselect-emacs
@@ -138,6 +139,11 @@ src_prepare() {
 		einfo "Emacs version number: ${FULL_VERSION}"
 		[[ ${FULL_VERSION} =~ ^${PV%.*}(\..*)?$ ]] \
 			|| die "Upstream version number changed to ${FULL_VERSION}"
+
+	fi
+
+	if use native; then
+		eapply "${FILESDIR}/native-comp-dynlib-Makefile.patch"
 	fi
 
 	eapply_user
@@ -250,6 +256,12 @@ src_configure() {
 		myconf+=" --without-x --without-ns"
 	fi
 
+	if use native; then
+		if [ -z "$EGIT_OVERRIDE_BRANCH_EMACS" ] ; then
+			die "Default branch ${EGIT_BRANCH} does not currently have the native-comp code"
+		fi
+	fi
+
 	econf \
 		--program-suffix="-${EMACS_SUFFIX}" \
 		--includedir="${EPREFIX}"/usr/include/${EMACS_SUFFIX} \
@@ -272,6 +284,7 @@ src_configure() {
 		$(use_with lcms lcms2) \
 		$(use_with libxml2 xml2) \
 		$(use_with mailutils) \
+		$(use_with native nativecomp) \
 		$(use_with selinux) \
 		$(use_with ssl gnutls) \
 		$(use_with systemd libsystemd) \
