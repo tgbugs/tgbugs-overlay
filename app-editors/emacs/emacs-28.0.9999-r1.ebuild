@@ -142,10 +142,6 @@ src_prepare() {
 
 	fi
 
-	if use native; then
-		eapply "${FILESDIR}/native-comp-dynlib-Makefile.patch"
-	fi
-
 	eapply_user
 
 	# Fix filename reference in redirected man page
@@ -158,9 +154,7 @@ src_configure() {
 	strip-flags
 	filter-flags -pie					#526948
 
-	if use sh; then
-		replace-flags "-O[1-9]" -O0		#262359
-	elif use ia64; then
+	if use ia64; then
 		replace-flags "-O[2-9]" -O1		#325373
 	else
 		replace-flags "-O[3-9]" -O2
