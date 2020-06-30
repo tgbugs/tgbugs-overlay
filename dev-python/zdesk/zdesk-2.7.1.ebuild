@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( pypy{,3} python3_{5,6,7} )
+PYTHON_COMPAT=( pypy3 python3_{6..9} )
 inherit distutils-r1
 
 DESCRIPTION="Zendesk API for Python generated from developer.zendesk.com"
