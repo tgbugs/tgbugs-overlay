@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( pypy3 python3_{6,7} )
+PYTHON_COMPAT=( pypy3 python3_{6..9} )
 inherit distutils-r1 user
 
 if [[ ${PV} == "9999" ]]; then
@@ -31,9 +31,9 @@ RDEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/gevent[$(python_gen_usedep python3_{6,7})]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
-	>=dev-python/hyputils-0.0.4[memex,${PYTHON_USEDEP}]
+	>=dev-python/hyputils-0.0.6[memex,${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.20[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.23[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
@@ -41,7 +41,6 @@ RDEPEND="
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
-		dev-python/pytest-runner[${PYTHON_USEDEP}]
 	)
 "
 DEPEND="${RDEPEND}"
