@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( pypy{,3} python{2_7,3_{5,6,7}} )
+PYTHON_COMPAT=( pypy3 python3_{6..9} )
 PYTHON_REQ_USE="sqlite?,threads(+)"
 inherit distutils-r1
 
@@ -34,9 +34,7 @@ RDEPEND="
 	dev-python/html5lib[${PYTHON_USEDEP}]
 	dev-python/pyparsing[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
-	berkdb? ( dev-python/bsddb3[${PYTHON_USEDEP}] )
-	mysql? ( dev-python/mysql-python[$(python_gen_usedep python2_7)] )
-	redland? ( dev-libs/redland-bindings[python,$(python_gen_usedep python2_7)] )"
+	berkdb? ( dev-python/bsddb3[${PYTHON_USEDEP}] )"
 DEPEND="${RDEPEND}
 	test? (
 		dev-python/doctest-ignore-unicode[${PYTHON_USEDEP}]

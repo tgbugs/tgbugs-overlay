@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python2_7 python3_{5,6,7} pypy{,3} )
+PYTHON_COMPAT=( python3_{6..9} pypy3 )
 inherit distutils-r1
 
 DESCRIPTION="Google Authentication Library"
@@ -18,10 +18,10 @@ RDEPEND="
 	dev-python/click[${PYTHON_USEDEP}]
 	dev-python/google-auth[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
-	python_targets_python3_7? (
+	!python_targets_python3_6? (
 		>=dev-python/requests-oauthlib-1.3.0[${PYTHON_USEDEP}]
 	)
-	!python_targets_python3_7? (
+	python_targets_python3_6? (
 		>=dev-python/requests-oauthlib-0.7.0[${PYTHON_USEDEP}]
 	)
 "
