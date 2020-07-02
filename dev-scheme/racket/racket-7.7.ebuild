@@ -1,14 +1,14 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 inherit pax-utils
 
 DESCRIPTION="General purpose, multi-paradigm Lisp-Scheme programming language"
-HOMEPAGE="http://racket-lang.org/"
-SRC_URI="minimal? ( http://pre-release.racket-lang.org/installers/${PN}-minimal-${PV}-src-builtpkgs.tgz ) !minimal? ( http://pre-release.racket-lang.org/installers/${P}-src-builtpkgs.tgz )"
-LICENSE="GPL-3+ LGPL-3"
+HOMEPAGE="https://racket-lang.org/"
+SRC_URI="minimal? ( https://download.racket-lang.org/installers/${PV}/${PN}-minimal-${PV}-src-builtpkgs.tgz ) !minimal? ( https://download.racket-lang.org/installers/${PV}/${P}-src-builtpkgs.tgz )"
+LICENSE="LGPL-3 MIT Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86"
 IUSE="doc +futures +jit minimal +places +readline +threads +X"
@@ -29,8 +29,8 @@ DEPEND="${RDEPEND}"
 S="${WORKDIR}/${P}/src"
 
 src_prepare() {
-	default
 	rm -r foreign/libffi || die 'failed to remove bundled libffi'
+	eapply_user
 }
 
 src_configure() {
@@ -38,12 +38,14 @@ src_configure() {
 	# such that we don't preclude cross-compile. Thus don't use
 	# --enable-lt=/usr/bin/libtool
 	econf \
+		--docdir="${EPREFIX}"/usr/share/doc/${PF} \
 		--enable-shared \
 		--enable-float \
 		--enable-libffi \
 		--enable-foreign \
 		--disable-libs \
 		--disable-strip \
+		--enable-useprefix \
 		$(use_enable X gracket) \
 		$(use_enable doc docs) \
 		$(use_enable jit) \
@@ -86,4 +88,9 @@ src_install() {
 
 		use X && pax-mark m "${D}/usr/$(get_libdir)/racket/gracket"
 	fi
+	# raco needs decompressed files for packages doc installation bug 662424
+	if use doc; then
+		docompress -x /usr/share/doc/${PF}
+	fi
+	find "${ED}" \( -name "*.a" -o -name "*.la" \) -delete || die
 }

@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -116,27 +116,32 @@ src_compile() {
 		emake cs SCHEME_SRC="${SCHEME_SRC}" RACKET="${S}/racket/racket3m" CS_SETUP_TARGET=nothing-after-base
 	fi
 
-	#if ! use minimal; then
-		#pushd "${S}/../../"
-		#emake local-catalog
-		#popd
-	#fi
-
 	default
+
+	if ! use minimal; then
+		emake install PREFIX="/usr" DESTDIR="${D}"
+		pushd "${S}/../../"
+		export LD_LIBRARY_PATH="${D}/usr/lib64"
+		"${D}/usr/bin/racket" -X "${D}/usr/share/racket/collects" -G "${D}/etc/racket" -l- pkg/dirs-catalog --check-metadata build/local/pkgs-catalog
+		"${D}/usr/bin/raco" pkg catalog-copy --force --from-config build/local/pkgs-catalog build/local/catalog
+		unset LD_LIBRARY_PATH
+		#"${S}/racket/racket3m" -l- pkg/dirs-catalog --check-metadata build/local/pkgs-catalog
+		popd
+	fi
 }
 
 src_install() {
 	# FIXME racketcs doesn't set the correct collects location, it remembers
 	# the sandboxed location instead of the ultimate location (sigh)
 	if use cgc; then
-		emake DESTDIR="${D}" install-both
+		emake install-both PREFIX="/usr" DESTDIR="${D}"
 	else
-		emake DESTDIR="${D}" install
+		emake install PREFIX="/usr" DESTDIR="${D}"
 	fi
 
 	if use cs; then
 		# FIXME TODO the cs executables have the wrong mode set
-		emake install-cs DESTDIR="${D}" CS_SETUP_TARGET=no-setup-install RACKET="${S}/racket/racket3m"
+		emake install-cs PREFIX="/usr" DESTDIR="${D}" CS_SETUP_TARGET=no-setup-install RACKET="${S}/racket/racket3m"
 		if use install-chez; then
 			pushd "${SCHEME_SRC}"
 			emake install
