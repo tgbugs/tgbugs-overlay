@@ -14,7 +14,7 @@ SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~ppc-aix ~x64-cygwin ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~m68k-mint ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="adns alt-svc brotli +ftp gopher http2 idn +imap ipv6 kerberos ldap metalink +pop3 +progress-meter rtmp samba +smtp ssh ssl static-libs test telnet +tftp threads"
 IUSE+=" curl_ssl_gnutls curl_ssl_libressl curl_ssl_mbedtls curl_ssl_nss +curl_ssl_openssl curl_ssl_winssl"
-IUSE+=" curl_ssl_default_gnutls curl_ssl_default_libressl curl_ssl_default_mbedtls curl_ssl_default_nss +curl_ssl_default_openssl curl_ssl_default_winssl"
+IUSE+=" curl_default_ssl_gnutls curl_default_ssl_libressl curl_default_ssl_mbedtls curl_default_ssl_nss +curl_default_ssl_openssl curl_default_ssl_winssl"
 IUSE+=" nghttp3 quiche"
 IUSE+=" elibc_Winnt"
 
@@ -83,16 +83,16 @@ REQUIRED_USE="
 	threads? ( !adns )
 	ssl? (
 		^^ (
-		   curl_ssl_libressl
-		   curl_ssl_openssl
+			curl_ssl_libressl
+			curl_ssl_openssl
 		)
 		^^ (
-			curl_ssl_default_gnutls
-			curl_ssl_default_libressl
-			curl_ssl_default_mbedtls
-			curl_ssl_default_nss
-			curl_ssl_default_openssl
-			curl_ssl_default_winssl
+			curl_default_ssl_gnutls
+			curl_default_ssl_libressl
+			curl_default_ssl_mbedtls
+			curl_default_ssl_nss
+			curl_default_ssl_openssl
+			curl_default_ssl_winssl
 		)
 	)"
 
@@ -131,48 +131,48 @@ multilib_src_configure() {
 	myconf+=( --without-ca-fallback --with-ca-bundle="${EPREFIX}"/etc/ssl/certs/ca-certificates.crt  )
 	#myconf+=( --without-default-ssl-backend )
 	if use ssl ; then
-		if use curl_ssl_gnutls || use curl_ssl_default_gnutls; then
+		if use curl_ssl_gnutls || use curl_default_ssl_gnutls; then
 			einfo "SSL provided by gnutls"
 			myconf+=( --with-gnutls --with-nettle )
 		fi
-		if use curl_ssl_libressl || use curl_ssl_default_libressl; then
+		if use curl_ssl_libressl || use curl_default_ssl_libressl; then
 			einfo "SSL provided by LibreSSL"
 			myconf+=( --with-ssl --with-ca-path="${EPREFIX}"/etc/ssl/certs )
 		fi
-		if use curl_ssl_mbedtls || use curl_ssl_default_mbedtls; then
+		if use curl_ssl_mbedtls || use curl_default_ssl_mbedtls; then
 			einfo "SSL provided by mbedtls"
 			myconf+=( --with-mbedtls )
 		fi
-		if use curl_ssl_nss || use curl_ssl_default_nss; then
+		if use curl_ssl_nss || use curl_default_ssl_nss; then
 			einfo "SSL provided by nss"
 			myconf+=( --with-nss )
 		fi
-		if use curl_ssl_openssl || use curl_ssl_default_openssl; then
+		if use curl_ssl_openssl || use curl_default_ssl_openssl; then
 			einfo "SSL provided by openssl"
 			myconf+=( --with-ssl --with-ca-path="${EPREFIX}"/etc/ssl/certs )
 		fi
-		if use curl_ssl_winssl || use curl_ssl_default_winssl; then
+		if use curl_ssl_winssl || use curl_default_ssl_winssl; then
 			einfo "SSL provided by Windows"
 			myconf+=( --with-winssl )
 		fi
 
 		# this is a really dumb way to do this, but let's see if it works
-		if use curl_ssl_default_gnutls; then
+		if use curl_default_ssl_gnutls; then
 			einfo "Default SSL provided by gnutls"
 			myconf+=( --with-default-ssl-backend=gnutls )
-		elif use curl_ssl_default_libressl; then
+		elif use curl_default_ssl_libressl; then
 			einfo "Default SSL provided by LibreSSL"
 			myconf+=( --with-default-ssl-backend=openssl )  # NOTE THE HACK HERE
-		elif use curl_ssl_default_mbedtls; then
+		elif use curl_default_ssl_mbedtls; then
 			einfo "Default SSL provided by mbedtls"
 			myconf+=( --with-default-ssl-backend=mbedtls )
-		elif use curl_ssl_default_nss; then
+		elif use curl_default_ssl_nss; then
 			einfo "Default SSL provided by nss"
 			myconf+=( --with-default-ssl-backend=nss )
-		elif use curl_ssl_default_openssl; then
+		elif use curl_default_ssl_openssl; then
 			einfo "Default SSL provided by openssl"
 			myconf+=( --with-default-ssl-backend=openssl )
-		elif use curl_ssl_default_winssl; then
+		elif use curl_default_ssl_winssl; then
 			einfo "Default SSL provided by Windows"
 			myconf+=( --with-default-ssl-backend=winssl )
 		else
