@@ -30,7 +30,10 @@ DEPEND="${RDEPEND}
 		dev-python/sphinx[${PYTHON_USEDEP}]
 	)"
 
-PATCHES=( "${FILESDIR}"/${PN}-0.15.0-do-not-install-get_version.py.patch )
+PATCHES=(
+	"${FILESDIR}"/${PN}-0.15.0-do-not-install-get_version.py.patch
+	"${FILESDIR}"/${PN}-0.18.0-hy-c-scoping.patch
+	)
 
 src_prepare() {
 	default
