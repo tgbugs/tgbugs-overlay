@@ -30,7 +30,6 @@ DEPEND="
 	>=dev-python/hyputils-0.0.6[${PYTHON_USEDEP}]
 	dev-python/markdown[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.23[${PYTHON_USEDEP}]
-	>=dev-python/pysercomb-0.0.6[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
@@ -40,7 +39,9 @@ DEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
+RDEPEND="${DEPEND}
+	>=dev-python/pysercomb-0.0.6[${PYTHON_USEDEP}]
+"
 
 pkg_setup() {
 	ebegin "Creating protcur user and group"
