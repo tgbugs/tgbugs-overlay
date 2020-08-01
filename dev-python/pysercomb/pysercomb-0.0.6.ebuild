@@ -28,10 +28,6 @@ DEPEND="
 	rdf? (
 		>=dev-python/pyontutils-0.1.23[${PYTHON_USEDEP}]
 	)
-	units? (
-		dev-python/protcur[${PYTHON_USEDEP}]
-		dev-python/pint[babel,uncertainties,${PYTHON_USEDEP}]
-	)
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
@@ -40,7 +36,12 @@ DEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
+RDEPEND="${DEPEND}
+	units? (
+		dev-python/protcur[${PYTHON_USEDEP}]
+		dev-python/pint[babel,uncertainties,${PYTHON_USEDEP}]
+	)
+"
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
