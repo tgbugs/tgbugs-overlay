@@ -40,6 +40,7 @@ DEPEND="
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/nest_asyncio[${PYTHON_USEDEP}]
 	>=dev-python/orthauth-0.0.13[${PYTHON_USEDEP}]
+	dev-python/pyld[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
