@@ -50,6 +50,8 @@ if [[ ${PV} == "9999" ]]; then
 fi
 
 python_test() {
+	git config --global user.email "${USER}@ebuild-testing.${HOSTNAME}"
+	git config --global user.name "Portage Testing"
 	distutils_install_for_testing
 	cd "${TEST_DIR}" || die
 	cp -r "${S}/test" . || die
