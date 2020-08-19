@@ -24,8 +24,8 @@ IUSE="dev services test"
 RESTRICT="!test? ( test )"
 
 SVCDEPEND="
-	>=dev-python/orthauth-0.0.13[yaml,${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.24[${PYTHON_USEDEP}]
+	>=dev-python/orthauth-0.0.14[yaml,${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.25[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-5.0.0[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 "
