@@ -4,7 +4,7 @@
 EAPI=7
 
 # The selftests fail with pypy, and urlgrabber segfaults for me.
-PYTHON_COMPAT=( python2_7 python3_{5,6,7} pypy{,3} )
+PYTHON_COMPAT=( python3_{5,6,7} pypy{,3} )
 
 inherit distutils-r1
 

@@ -3,7 +3,7 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( pypy{,3} python2_7 python3_{5,6,7} )
+PYTHON_COMPAT=( pypy{,3} python3_{5,6,7} )
 inherit git-r3 distutils-r1
 
 DESCRIPTION="rdflib extension adding JSON-LD parser and serializer"
