@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{6,7} pypy{,3} )
+PYTHON_COMPAT=( python3_{6..9} pypy{,3} )
 PYTHON_REQ_USE="threads(+)"
 
 inherit distutils-r1
@@ -44,7 +44,6 @@ RDEPEND="
 		>=dev-python/idna-0.6[${PYTHON_USEDEP}]
 	)
 	serial? ( >=dev-python/pyserial-3.0[${PYTHON_USEDEP}] )
-	soap? ( $(python_gen_cond_dep 'dev-python/soappy[${PYTHON_USEDEP}]' python2_7) )
 	http2? (
 		>=dev-python/hyper-h2-3.0.0[${PYTHON_USEDEP}]
 		<dev-python/hyper-h2-4.0.0[${PYTHON_USEDEP}]
