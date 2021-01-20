@@ -39,7 +39,7 @@ DEPEND="
 RDEPEND="${DEPEND}
 	units? (
 		dev-python/protcur[${PYTHON_USEDEP}]
-		dev-python/pint[babel,uncertainties,${PYTHON_USEDEP}]
+		>=dev-python/pint-0.16.1[babel,uncertainties,${PYTHON_USEDEP}]
 	)
 "
 
