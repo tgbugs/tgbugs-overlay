@@ -3,7 +3,8 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{6..9} pypy3 )
+DISTUTILS_USE_SETUPTOOLS=rdepend
+PYTHON_COMPAT=( python3_{7..9} pypy3 )
 
 inherit distutils-r1
 
@@ -13,8 +14,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 ~arm64 x86 ~amd64-linux ~x86-linux"
-IUSE="test"
+KEYWORDS="amd64 ~arm64 x86"
 
 RDEPEND="
 	dev-python/bleach[${PYTHON_USEDEP}]
@@ -22,7 +22,9 @@ RDEPEND="
 	>=dev-python/entrypoints-0.2.2[${PYTHON_USEDEP}]
 	dev-python/jinja[${PYTHON_USEDEP}]
 	dev-python/jupyter_core[${PYTHON_USEDEP}]
+	dev-python/jupyterlab_pygments[${PYTHON_USEDEP}]
 	>=dev-python/mistune-0.7.4[${PYTHON_USEDEP}]
+	dev-python/nbclient[${PYTHON_USEDEP}]
 	dev-python/nbformat[${PYTHON_USEDEP}]
 	>=dev-python/pandocfilters-1.4.1[${PYTHON_USEDEP}]
 	dev-python/pygments[${PYTHON_USEDEP}]
@@ -42,23 +44,24 @@ BDEPEND="
 
 distutils_enable_tests pytest
 
-PATCHES=(
-	"${FILESDIR}"/${P}-inkscape-1.patch
-	"${FILESDIR}"/${P}-py39.patch
-)
-
-src_prepare() {
-	# assumes old inkscape output?
-	sed -i -e '/SVG\.ipynb/d' \
-		nbconvert/preprocessors/tests/test_execute.py || die
-
-	distutils-r1_src_prepare
+src_test() {
+	mkdir -p "${HOME}/.local" || die
+	cp -r share "${HOME}/.local/" || die
+	distutils-r1_src_test
 }
 
 python_test() {
+	local deselect=(
+		# Missing pyppeteer for now
+		# TODO: Doesn't skip?
+		--deselect exporters/tests/test_webpdf.py
+		# Needs pyppeteer too
+		--deselect 'tests/test_nbconvertapp.py::TestNbConvertApp::test_webpdf_with_chromium'
+	)
+
 	distutils_install_for_testing bdist_egg
 	cd "${TEST_DIR}"/lib || die
-	pytest -vv --pyargs nbconvert || die
+	pytest -vv "${deselect[@]}" --pyargs nbconvert || die "Tests failed with ${EPYTHON}"
 }
 
 pkg_postinst() {

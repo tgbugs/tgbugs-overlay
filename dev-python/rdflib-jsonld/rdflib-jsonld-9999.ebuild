@@ -1,9 +1,9 @@
 # Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-PYTHON_COMPAT=( pypy{,3} python3_{5,6,7} )
+PYTHON_COMPAT=( pypy3 python3_{7..9} )
 inherit git-r3 distutils-r1
 
 DESCRIPTION="rdflib extension adding JSON-LD parser and serializer"
