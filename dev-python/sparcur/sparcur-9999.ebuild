@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( pypy3 python3_{6..9} )
+PYTHON_COMPAT=( pypy3 python3_{7..9} )
 inherit distutils-r1 user
 
 if [[ ${PV} == "9999" ]]; then
@@ -28,15 +28,15 @@ RESTRICT="!test? ( test )"
 DEPEND=""
 RDEPEND="${DEPEND}
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
-	>=dev-python/augpathlib-0.0.19[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.21[${PYTHON_USEDEP}]
 	dev-python/beautifulsoup:4[${PYTHON_USEDEP}]
 	dev-python/blackfynn[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]
-	>=dev-python/protcur-0.0.6[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.22[${PYTHON_USEDEP}]
-	>=dev-python/pysercomb-0.0.6[${PYTHON_USEDEP}]
+	>=dev-python/protcur-0.0.7[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.25[${PYTHON_USEDEP}]
+	>=dev-python/pysercomb-0.0.7[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
 	dev? (

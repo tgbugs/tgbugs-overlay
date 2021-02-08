@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( pypy3 python3_{6..9} )
+PYTHON_COMPAT=( pypy3 python3_{7..9} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -26,7 +26,7 @@ RESTRICT="!test? ( test )"
 
 DEPEND="
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
-	>=dev-python/rdflib-5.0.0_pre0[${PYTHON_USEDEP}]
+	>=dev-python/rdflib-5.0.0[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]

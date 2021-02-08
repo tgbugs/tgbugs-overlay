@@ -1,8 +1,9 @@
-# Copyright 2008-2019 Gentoo Authors
+# Copyright 2008-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="7"
-PYTHON_COMPAT=(python{3_5,3_6,3_7} pypy{,3})
+PYTHON_COMPAT=(python{3_7,3_8,3_9} pypy3)
+DISTUTILS_USE_SETUPTOOLS="bdepend"
 
 inherit distutils-r1
 
@@ -22,14 +23,13 @@ else
 fi
 
 LICENSE="BSD"
-SLOT="0/20"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
+SLOT="0/25"
+KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ppc ppc64 ~sparc ~x86 ~amd64-linux ~x86-linux ~x64-macos"
 IUSE=""
 
 BDEPEND="${PYTHON_DEPS}
 	~dev-libs/protobuf-${PV}
 	dev-python/namespace-google[${PYTHON_USEDEP}]
-	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/six[${PYTHON_USEDEP}]"
 DEPEND="${PYTHON_DEPS}
 	~dev-libs/protobuf-${PV}"
@@ -42,13 +42,17 @@ if [[ "${PV}" == "9999" ]]; then
 	EGIT_CHECKOUT_DIR="${WORKDIR}/protobuf-${PV}"
 fi
 
-python_configure_all() {
-	mydistutilsargs=(--cpp_implementation)
+python_prepare_all() {
+	pushd "${WORKDIR}/protobuf-${PV}" > /dev/null || die
+	eapply "${FILESDIR}/${PN}-3.13.0-google.protobuf.pyext._message.PyUnknownFieldRef.patch"
+	eapply_user
+	popd > /dev/null || die
+
+	distutils-r1_python_prepare_all
 }
 
-python_compile() {
-	python_is_python3 || local -x CXXFLAGS="${CXXFLAGS} -fno-strict-aliasing"
-	distutils-r1_python_compile
+python_configure_all() {
+	mydistutilsargs=(--cpp_implementation)
 }
 
 python_test() {
