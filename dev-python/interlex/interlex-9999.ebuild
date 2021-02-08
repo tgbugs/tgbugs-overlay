@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( pypy3 python3_{6,7} )
+PYTHON_COMPAT=( pypy3 python3_{7,8,9} )
 inherit distutils-r1 user
 
 if [[ ${PV} == "9999" ]]; then
@@ -24,16 +24,16 @@ IUSE="dev +rabbitmq test"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
-	>=dev-python/celery-4.2.2[${PYTHON_USEDEP}]
+	>=dev-python/celery-5.0.5[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/elasticsearch-py[${PYTHON_USEDEP}]
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/flask-restx[${PYTHON_USEDEP}]
 	dev-python/flask-sqlalchemy[${PYTHON_USEDEP}]
-	dev-python/gevent[$(python_gen_usedep python3_{6,7})]
+	dev-python/gevent[$(python_gen_usedep python3_{7,8,9})]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
-	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{6,7})
+	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{7,8,9})
 	$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' pypy3)
 	>=dev-python/pyontutils-0.1.20[${PYTHON_USEDEP}]
 	>dev-python/rdflib-jsonld-0.4.0[${PYTHON_USEDEP}]

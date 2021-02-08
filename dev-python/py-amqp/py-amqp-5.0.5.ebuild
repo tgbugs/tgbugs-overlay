@@ -1,8 +1,9 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
-PYTHON_COMPAT=( python3_{5,6,7} pypy{,3} )
+PYTHON_COMPAT=( python3_{7,8,9} pypy3 )
+DISTUTILS_USE_SETUPTOOLS=bdepend
 
 inherit distutils-r1
 
@@ -23,8 +24,7 @@ RESTRICT="!test? ( test )"
 
 RDEPEND=""
 DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
-	>=dev-python/vine-1.1.3[${PYTHON_USEDEP}]
+	>=dev-python/vine-5.0.0[${PYTHON_USEDEP}]
 	doc? (
 		dev-python/sphinx[${PYTHON_USEDEP}]
 		dev-python/sphinx_celery[${PYTHON_USEDEP}]
@@ -32,6 +32,7 @@ DEPEND="
 	test? (
 		>=dev-python/case-1.3.1[${PYTHON_USEDEP}]
 		>=dev-python/pytest-3.0[${PYTHON_USEDEP}]
+		<=dev-python/pytest-5.3.5[${PYTHON_USEDEP}]
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/pytest-mock[${PYTHON_USEDEP}]
 		>=dev-python/pytest-rerunfailures-6.0[${PYTHON_USEDEP}]

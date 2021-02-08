@@ -1,8 +1,10 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
-PYTHON_COMPAT=( python3_{5,6,7} pypy{,3} )
+
+DISTUTILS_USE_SETUPTOOLS=rdepend
+PYTHON_COMPAT=( python3_{7,8,9} pypy3 )
 
 inherit distutils-r1
 
@@ -18,52 +20,37 @@ LICENSE="MIT"
 SLOT="4"
 KEYWORDS="amd64 ~arm64 ppc x86"
 IUSE="doc examples test"
+RESTRICT="!test? ( test )"
 
 RDEPEND="
 	!dev-python/pyro:0
-	$(python_gen_cond_dep \
-		'dev-python/selectors34[${PYTHON_USEDEP}]' python{2_7,3_3})
-	>=dev-python/serpent-1.19[${PYTHON_USEDEP}]"
+	>=dev-python/serpent-1.27[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}
-	dev-python/setuptools[${PYTHON_USEDEP}]
 	test? (
-		dev-python/coverage[${PYTHON_USEDEP}]
+		>=dev-python/cloudpickle-1.2.1[${PYTHON_USEDEP}]
 		dev-python/dill[${PYTHON_USEDEP}]
 		>=dev-python/msgpack-0.4.6[${PYTHON_USEDEP}]
-		dev-python/nose[${PYTHON_USEDEP}]
 	)"
 
 S="${WORKDIR}/${MY_P}"
 
 python_prepare_all() {
-	sed \
-		-e '/sys.path.insert/a sys.path.insert(1,"PyroTests")' \
-		-i tests/run_testsuite.py || die
-
 	# Disable tests requiring network connection.
 	rm tests/PyroTests/test_naming.py || die
 	sed \
-		-e "s/testOwnloopBasics/_&/" \
 		-e "s/testStartNSfunc/_&/" \
 		-i tests/PyroTests/test_naming2.py || die
 
 	sed \
-		-e "s/testServerConnections/_&/" \
-	    -e "s/testServerParallelism/_&/" \
-		-i tests/PyroTests/test_server.py || die
-
-	sed \
 		-e "s/testBroadcast/_&/" \
 		-e "s/testGetIP/_&/" \
-		-e "s/testGetIpVersion[46]/_&/" \
 		-i tests/PyroTests/test_socket.py || die
+
 	distutils-r1_python_prepare_all
 }
 
 python_test() {
-	pushd "${S}"/tests >/dev/null || die
-	PYTHONPATH=../src ${PYTHON} run_testsuite.py || die
-	popd >/dev/null || die
+	esetup.py test
 }
 
 python_install_all() {

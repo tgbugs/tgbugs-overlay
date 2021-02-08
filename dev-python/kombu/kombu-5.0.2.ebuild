@@ -1,8 +1,9 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
-PYTHON_COMPAT=( python3_{5,6,7} pypy{,3} )
+PYTHON_COMPAT=( python3_{7,8,9} pypy3 )
+DISTUTILS_USE_SETUPTOOLS=bdepend
 
 inherit distutils-r1
 
@@ -14,28 +15,32 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS="amd64 ~arm64 x86"
 IUSE="doc examples mongodb msgpack redis sqs test yaml"
+RESTRICT="!test? ( test )"
 
 # zookeeper backend support possible via dev-python/kazoo
 RDEPEND="
-	>=dev-python/py-amqp-2.5.0[${PYTHON_USEDEP}]
-	<dev-python/py-amqp-3.0[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep 'dev-python/importlib_metadata[${PYTHON_USEDEP}]' python3_{7,8} pypy3 )
+	>=dev-python/py-amqp-5.0.5[${PYTHON_USEDEP}]
+	<dev-python/py-amqp-6.0.0[${PYTHON_USEDEP}]
 	>=dev-python/pyro-4.76:4[${PYTHON_USEDEP}]
 	sqs? ( >=dev-python/boto3-1.4.4[${PYTHON_USEDEP}] )
 	msgpack? ( >=dev-python/msgpack-0.3.0[${PYTHON_USEDEP}] )
-	mongodb? ( >=dev-python/pymongo-3.0.2[${PYTHON_USEDEP}] )
-	redis? ( >=dev-python/redis-py-3.2.0[${PYTHON_USEDEP}] )
+	mongodb? ( >=dev-python/pymongo-3.3.0[${PYTHON_USEDEP}] )
+	redis? ( >=dev-python/redis-py-3.3.11[${PYTHON_USEDEP}] )
 	yaml? ( >=dev-python/pyyaml-3.10[${PYTHON_USEDEP}] )"
 # Fix to https://github.com/celery/kombu/issues/474 obliges dev-python/pymongo to >=-3.0.2
 DEPEND="${RDEPEND}
 	>=dev-python/setuptools-20.6.7[${PYTHON_USEDEP}]
 	test? (
 		>=dev-python/case-1.5.2[${PYTHON_USEDEP}]
-		dev-python/pytest[${PYTHON_USEDEP}]
+		<=dev-python/pytest-5.3.5[${PYTHON_USEDEP}]
 		dev-python/pytz[${PYTHON_USEDEP}]
-		dev-python/unittest2[${PYTHON_USEDEP}] )
+		dev-python/unittest2[${PYTHON_USEDEP}]
+	)
 	doc? (
 		dev-python/sphinx[${PYTHON_USEDEP}]
-		>=dev-python/sphinx_celery-1.1[${PYTHON_USEDEP}] )"
+		>=dev-python/sphinx_celery-1.1[${PYTHON_USEDEP}]
+	)"
 
 # kazoo is optional for tests.
 # Refrain for now, no established demand for it from users
@@ -59,7 +64,7 @@ python_prepare_all() {
 python_compile_all() {
 	# Doc build misses and skips only content re librabbitmq which is not in portage
 	if use doc; then
-		emake -C docs html || die "kombu docs failed installation"
+		emake -C docs html
 	fi
 }
 
