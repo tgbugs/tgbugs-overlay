@@ -20,7 +20,7 @@ HOMEPAGE="https://github.com/tgbugs/interlex"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev +rabbitmq database test"
+IUSE="dev +rabbitmq database elasticsearch test"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
@@ -38,12 +38,16 @@ RDEPEND="
 	>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-jsonld-0.5.0[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
+	database? (
+		>=dev-db/postgresql-10
+		dev-db/pguri
+	)
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
 	)
+	elasticsearch? ( app-misc/elasticsearch )
 	rabbitmq? ( net-misc/rabbitmq-server )
-	database? ( dev-db/pguri )
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
 		dev-python/pytest-runner[${PYTHON_USEDEP}]
