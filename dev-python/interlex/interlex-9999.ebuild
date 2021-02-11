@@ -20,7 +20,7 @@ HOMEPAGE="https://github.com/tgbugs/interlex"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev +rabbitmq test"
+IUSE="dev +rabbitmq database test"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
@@ -43,6 +43,7 @@ RDEPEND="
 		dev-python/wheel[${PYTHON_USEDEP}]
 	)
 	rabbitmq? ( net-misc/rabbitmq-server )
+	database? ( dev-db/pguri )
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
 		dev-python/pytest-runner[${PYTHON_USEDEP}]
