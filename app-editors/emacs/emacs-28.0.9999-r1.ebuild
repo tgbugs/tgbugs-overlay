@@ -266,6 +266,7 @@ src_configure() {
 		if [ -z "$EGIT_OVERRIDE_BRANCH_EMACS" ] ; then
 			die "Default branch ${EGIT_BRANCH} does not currently have the native-comp code"
 		fi
+		export NATIVE_FULL_AOT=1
 	fi
 
 	econf \
