@@ -28,8 +28,11 @@ DEPEND="${RDEPEND}"
 
 S="${WORKDIR}/${P}/src"
 
+PATCHES=( "${FILESDIR}"/racket-8.0-configures.patch )
+
 src_prepare() {
 	rm -r bc/foreign/libffi || die 'failed to remove bundled libffi'
+	default
 	eapply_user
 }
 
@@ -37,9 +40,9 @@ src_configure() {
 	# According to vapier, we should use the bundled libtool
 	# such that we don't preclude cross-compile. Thus don't use
 	# --enable-lt=/usr/bin/libtool
-	# FIXME --enable-bcdefault if cs is not set
 	econf \
 		--docdir="${EPREFIX}"/usr/share/doc/${PF} \
+		--collectsdir="${EPREFIX}"/usr/share/racket/collects \
 		--enable-shared \
 		--enable-float \
 		--enable-libffi \
@@ -47,8 +50,9 @@ src_configure() {
 		--disable-libs \
 		--disable-strip \
 		--enable-useprefix \
+		--disable-bcdefault \
+		--disable-csdefault \
 		$(use_enable bc) \
-		$(use_enable !cs bcdefault) \
 		$(use_enable cs) \
 		$(use_enable X gracket) \
 		$(use_enable doc docs) \
@@ -91,18 +95,37 @@ src_compile() {
 
 src_install() {
 
+	local IMAGE_CS="${PORTAGE_BUILDDIR}/cs/image/"
+	local IMAGE_BC="${PORTAGE_BUILDDIR}/bc/image/"
+	local IMAGE_CGC="${PORTAGE_BUILDDIR}/cgc/image/"
+
+	# install
 	if use cs; then
-		emake DESTDIR="${D}" install-cs || die "died running make install, $FUNCNAME"
+		emake DESTDIR="${IMAGE_CS}" install-cs || die "died running make install, $FUNCNAME"
 	fi
 
 	if use bc; then
-		if use cgc; then
-			emake DESTDIR="${D}" install-both || die "died running make install, $FUNCNAME"
-		else
-			emake DESTDIR="${D}" install-bc || die "died running make install, $FUNCNAME"
-		fi
-	elif use cgc; then
-		emake DESTDIR="${D}" install-cgc || die "died running make install, $FUNCNAME"
+		emake DESTDIR="${IMAGE_BC}" install-bc || die "died running make install, $FUNCNAME"
+	fi
+
+	if use cgc; then
+		emake DESTDIR="${IMAGE_CGC}" install-cgc || die "died running make install, $FUNCNAME"
+	fi
+
+	# copy to image sequentially
+	if use cgc; then
+		cp -au "${IMAGE_CGC}/"* "${D}" || die "copying cgc failed"
+		rm -r "${IMAGE_CGC}"
+	fi
+
+	if use bc; then
+		cp -au "${IMAGE_BC}/"* "${D}" || die "copying bc failed"
+		rm -r "${IMAGE_BC}"
+	fi
+
+	if use cs; then
+		cp -au "${IMAGE_CS}/"* "${D}" || die "copying cs failed"
+		rm -r "${IMAGE_CS}"
 	fi
 
 	if use jit; then
