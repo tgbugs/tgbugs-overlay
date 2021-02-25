@@ -14,7 +14,6 @@ SRC_URI="
 
 LICENSE="LGPL-3 MIT Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86"
 IUSE="+bc cgc cs doc +futures +jit minimal +places +readline +threads +X"
 REQUIRED_USE="futures? ( jit ) || ( bc cgc cs ) "
 
