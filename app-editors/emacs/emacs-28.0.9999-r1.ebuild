@@ -291,7 +291,7 @@ src_configure() {
 		$(use_with lcms lcms2) \
 		$(use_with libxml2 xml2) \
 		$(use_with mailutils) \
-		$(use_with native nativecomp) \
+		$(use_with native native-compilation) \
 		$(use_with selinux) \
 		$(use_with ssl gnutls) \
 		$(use_with systemd libsystemd) \
