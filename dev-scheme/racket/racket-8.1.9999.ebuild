@@ -11,9 +11,10 @@ SRC_URI="
 	minimal? (  https://www.cs.utah.edu/plt/snapshots/current/installers/racket-minimal-src.tgz )
 	!minimal? ( https://www.cs.utah.edu/plt/snapshots/current/installers/racket-src.tgz )
 "
+RESTRICT="MIRROR"
 
 LICENSE="LGPL-3 MIT Apache-2.0"
-SLOT="0"
+SLOT="0/8.1.9999"
 IUSE="+bc cgc cs doc +futures +jit minimal +places +readline +threads +X"
 REQUIRED_USE="futures? ( jit ) || ( bc cgc cs ) "
 
@@ -44,6 +45,7 @@ src_configure() {
 	econf \
 		--docdir="${EPREFIX}"/usr/share/doc/${PF} \
 		--collectsdir="${EPREFIX}"/usr/share/racket/collects \
+		--pkgsdir="${EPREFIX}"/usr/share/racket/pkgs \
 		--enable-shared \
 		--enable-float \
 		--enable-libffi \

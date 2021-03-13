@@ -17,9 +17,9 @@ fi
 DESCRIPTION="General purpose, multi-paradigm Lisp-Scheme programming language"
 HOMEPAGE="http://racket-lang.org/"
 LICENSE="MIT Apache-2.0"
-SLOT="0"
-IUSE="cgc cs doc +futures install-chez +jit minimal +places +readline +threads +X"
-REQUIRED_USE="futures? ( jit ) install-chez? ( cs )"
+SLOT="0/9999"
+IUSE="+bc cgc cs doc +futures +jit minimal +places +readline +threads +X"
+REQUIRED_USE="futures? ( jit ) || ( bc cgc cs )"
 
 RDEPEND="dev-db/sqlite:3
 	media-libs/libpng:0
@@ -39,55 +39,39 @@ else
 	S="${WORKDIR}/${P}/src"
 fi
 
-if [[ ${PV} == "9999" ]]; then
-	PATCHES=( "${FILESDIR}"/install-chez-scheme.patch )
-fi
-
-if [[ ${PV} == "9999" ]]; then
-	src_unpack() {
-		git-r3_src_unpack
-		if use cs; then
-			export SCHEME_SRC="${WORKDIR}/ChezScheme"
-			mkdir "${SCHEME_SRC}"
-			unset EGIT_DIR
-			export EGIT_REPO_URI="https://github.com/racket/ChezScheme.git"
-			export EGIT_CHECKOUT_DIR="${SCHEME_SRC}"
-			git-r3_src_unpack
-		fi
-	}
-fi
-
 src_prepare() {
+	rm -r bc/foreign/libffi || die 'failed to remove bundled libffi'
 	default
-	rm -r foreign/libffi || die 'failed to remove bundled libffi'
-	if [[ ${PV} == "9999" ]]; then
-		if use cs; then
-			ln -s ${SCHEME_SRC} .  # alternate fix for the configure step
-		fi
-	fi
+	eapply_user
 }
 
 src_configure() {
 	# According to vapier, we should use the bundled libtool
 	# such that we don't preclude cross-compile. Thus don't use
 	# --enable-lt=/usr/bin/libtool
-	# racketcs does not currently support shared libs
-	# https://github.com/racket/racket/issues/2993
+	# FIXME boothelp only if 9999
 	econf \
+		--docdir="${EPREFIX}"/usr/share/doc/${PF} \
+		--collectsdir="${EPREFIX}"/usr/share/racket/collects \
+		--pkgsdir="${EPREFIX}"/usr/share/racket/pkgs \
 		--enable-shared \
 		--enable-float \
 		--enable-libffi \
 		--enable-foreign \
 		--disable-libs \
 		--disable-strip \
-		$(use_enable X gracket) \
+		--enable-useprefix \
+		--disable-bcdefault \
+		--disable-csdefault \
+		$(use_enable bc) \
 		$(use_enable cs) \
+		$(if [[ ${PV} == "9999" ]]; then use_enable cs boothelp; else echo ""; fi) \
+		$(use_enable X gracket) \
 		$(use_enable doc docs) \
 		$(use_enable jit) \
 		$(use_enable places) \
 		$(use_enable futures) \
-		$(use_enable threads pthread) \
-		$(if [[ ${PV} == "9999" ]]; then echo --enable-useprefix; else echo; fi)
+		$(use_enable threads pthread)
 }
 
 src_compile() {
@@ -98,7 +82,7 @@ src_compile() {
 		# following order for racketcgc and racket3m was determined by
 		# digging through the Makefile in src/racket to find out which
 		# targets would build those binaries but not use them.
-		pushd racket
+		pushd bc
 		emake cgc-core
 		pax-mark m .libs/racketcgc
 		pushd gc2
@@ -112,44 +96,50 @@ src_compile() {
 		emake cgc
 	fi
 
-	if use cs; then
-		emake cs SCHEME_SRC="${SCHEME_SRC}" RACKET="${S}/racket/racket3m" CS_SETUP_TARGET=nothing-after-base
+	#if use bc || { [[ "${PV}" == "9999" ]] && use cs }; then  # not sure if need or if boothelp config enables
+	if use bc; then
+		emake bc
 	fi
 
-	default
-
-	if ! use minimal; then
-		emake install PREFIX="/usr" DESTDIR="${D}"
-		pushd "${S}/../../"
-		export LD_LIBRARY_PATH="${D}/usr/lib64"
-		"${D}/usr/bin/racket" -X "${D}/usr/share/racket/collects" -G "${D}/etc/racket" -l- pkg/dirs-catalog --check-metadata build/local/pkgs-catalog
-		"${D}/usr/bin/raco" pkg catalog-copy --force --from-config build/local/pkgs-catalog build/local/catalog
-		unset LD_LIBRARY_PATH
-		#"${S}/racket/racket3m" -l- pkg/dirs-catalog --check-metadata build/local/pkgs-catalog
-		popd
+	if use cs; then
+		emake cs
 	fi
 }
 
 src_install() {
-	# FIXME racketcs doesn't set the correct collects location, it remembers
-	# the sandboxed location instead of the ultimate location (sigh)
+
+	local IMAGE_CS="${PORTAGE_BUILDDIR}/cs/image/"
+	local IMAGE_BC="${PORTAGE_BUILDDIR}/bc/image/"
+	local IMAGE_CGC="${PORTAGE_BUILDDIR}/cgc/image/"
+
+	# install
+	if use cs; then
+		emake DESTDIR="${IMAGE_CS}" install-cs || die "died running make install, $FUNCNAME"
+	fi
+
+	if use bc; then
+		emake DESTDIR="${IMAGE_BC}" install-bc || die "died running make install, $FUNCNAME"
+	fi
+
 	if use cgc; then
-		emake install-both PREFIX="/usr" DESTDIR="${D}"
-	else
-		emake install PREFIX="/usr" DESTDIR="${D}"
+		emake DESTDIR="${IMAGE_CGC}" install-cgc || die "died running make install, $FUNCNAME"
+	fi
+
+	# copy to image sequentially
+	if use cgc; then
+		cp -au "${IMAGE_CGC}/"* "${D}" || die "copying cgc failed"
+		rm -r "${IMAGE_CGC}"
+	fi
+
+	if use bc; then
+		cp -au "${IMAGE_BC}/"* "${D}" || die "copying bc failed"
+		rm -r "${IMAGE_BC}"
 	fi
 
 	if use cs; then
-		# FIXME TODO the cs executables have the wrong mode set
-		emake install-cs PREFIX="/usr" DESTDIR="${D}" CS_SETUP_TARGET=no-setup-install RACKET="${S}/racket/racket3m"
-		if use install-chez; then
-			pushd "${SCHEME_SRC}"
-			emake install
-			popd
-		fi
+		cp -au "${IMAGE_CS}/"* "${D}" || die "copying cs failed"
+		rm -r "${IMAGE_CS}"
 	fi
-
-	einstalldocs
 
 	if use jit; then
 		# The final binaries need to be pax-marked, too, if you want to
@@ -165,4 +155,5 @@ src_install() {
 	if use doc; then
 		docompress -x /usr/share/doc/${PF}
 	fi
+	find "${ED}" \( -name "*.a" -o -name "*.la" \) -delete || die
 }
