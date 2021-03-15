@@ -58,6 +58,7 @@ src_configure() {
 		--disable-bcdefault \
 		--disable-csdefault \
 		$(use_enable bc) \
+		$(if ! use bc; then use_enable cgc bc; fi) \
 		$(use_enable cs) \
 		$(use_enable X gracket) \
 		$(use_enable doc docs) \
