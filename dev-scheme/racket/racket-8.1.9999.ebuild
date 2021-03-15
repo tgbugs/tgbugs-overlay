@@ -11,14 +11,16 @@ SRC_URI="
 	minimal? (  https://www.cs.utah.edu/plt/snapshots/current/installers/racket-minimal-src.tgz )
 	!minimal? ( https://www.cs.utah.edu/plt/snapshots/current/installers/racket-src.tgz )
 "
-RESTRICT="MIRROR"
+RESTRICT="mirror"
 
 LICENSE="LGPL-3 MIT Apache-2.0"
 SLOT="0/8.1.9999"
-IUSE="+bc cgc cs doc +futures +jit minimal +places +readline +threads +X"
-REQUIRED_USE="futures? ( jit ) || ( bc cgc cs ) "
+IUSE="bc cgc +cs doc +futures +jit minimal +places +readline +threads +X"
+REQUIRED_USE="futures? ( jit ) || ( bc cgc cs )"
 
-RDEPEND="dev-db/sqlite:3
+RDEPEND="
+	app-eselect/eselect-racket
+	dev-db/sqlite:3
 	media-libs/libpng:0
 	x11-libs/cairo[X?]
 	x11-libs/pango[X?]
@@ -98,37 +100,37 @@ src_compile() {
 
 src_install() {
 
-	local IMAGE_CS="${PORTAGE_BUILDDIR}/cs/image/"
-	local IMAGE_BC="${PORTAGE_BUILDDIR}/bc/image/"
-	local IMAGE_CGC="${PORTAGE_BUILDDIR}/cgc/image/"
+	local PATH_CS="${PORTAGE_BUILDDIR}/cs"
+	local PATH_BC="${PORTAGE_BUILDDIR}/bc"
+	local PATH_CGC="${PORTAGE_BUILDDIR}/cgc"
 
 	# install
 	if use cs; then
-		emake DESTDIR="${IMAGE_CS}" install-cs || die "died running make install, $FUNCNAME"
+		emake DESTDIR="${PATH_CS}/image/" install-cs || die "died running make install, $FUNCNAME"
 	fi
 
 	if use bc; then
-		emake DESTDIR="${IMAGE_BC}" install-bc || die "died running make install, $FUNCNAME"
+		emake DESTDIR="${PATH_BC}/image/" install-bc || die "died running make install, $FUNCNAME"
 	fi
 
 	if use cgc; then
-		emake DESTDIR="${IMAGE_CGC}" install-cgc || die "died running make install, $FUNCNAME"
+		emake DESTDIR="${PATH_CGC}/image/" install-cgc || die "died running make install, $FUNCNAME"
 	fi
 
 	# copy to image sequentially
 	if use cgc; then
-		cp -au "${IMAGE_CGC}/"* "${D}" || die "copying cgc failed"
-		rm -r "${IMAGE_CGC}"
+		cp -au "${PATH_CGC}/image/"* "${D}" || die "copying cgc failed"
+		rm -r "${PATH_CGC}"
 	fi
 
 	if use bc; then
-		cp -au "${IMAGE_BC}/"* "${D}" || die "copying bc failed"
-		rm -r "${IMAGE_BC}"
+		cp -au "${PATH_BC}/image/"* "${D}" || die "copying bc failed"
+		rm -r "${PATH_BC}"
 	fi
 
 	if use cs; then
-		cp -au "${IMAGE_CS}/"* "${D}" || die "copying cs failed"
-		rm -r "${IMAGE_CS}"
+		cp -au "${PATH_CS}/image/"* "${D}" || die "copying cs failed"
+		rm -r "${PATH_CS}"
 	fi
 
 	if use jit; then
