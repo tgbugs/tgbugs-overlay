@@ -12,7 +12,7 @@ LICENSE="LGPL-3 MIT Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86"
 IUSE="bc cgc +cs doc +futures +jit minimal +places +readline +threads +X"
-REQUIRED_USE="futures? ( jit ) || ( bc cgc cs )"
+REQUIRED_USE="futures? ( || ( jit cs ) ) || ( bc cgc cs )"
 
 RDEPEND="
 	app-eselect/eselect-racket
@@ -55,6 +55,7 @@ src_configure() {
 		--disable-bcdefault \
 		--disable-csdefault \
 		$(use_enable bc) \
+		$(if ! use bc; then use_enable cgc bc; fi) \
 		$(use_enable cs) \
 		$(use_enable X gracket) \
 		$(use_enable doc docs) \
@@ -65,7 +66,7 @@ src_configure() {
 }
 
 src_compile() {
-	if use jit; then
+	if use bc || use cgc && use jit; then
 		# When the JIT is enabled, a few binaries need to be pax-marked
 		# on hardened systems (bug 613634). The trick is to pax-mark
 		# them before they're used later in the build system. The
