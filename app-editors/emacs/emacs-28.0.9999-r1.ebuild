@@ -319,7 +319,7 @@ src_install() {
 	# avoid collision between slots, see bug #169033 e.g.
 	rm "${ED}"/usr/share/emacs/site-lisp/subdirs.el
 	rm -rf "${ED}"/usr/share/{appdata,applications,icons}
-	rm -rf "${ED}/usr/$(get_libdir)"
+	rm -rf "${ED}/usr/$(get_libdir)/systemd"
 	rm -rf "${ED}"/var
 
 	# remove unused <version>/site-lisp dir
