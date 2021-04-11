@@ -1,9 +1,9 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=7
 
-PYTHON_COMPAT=( python{3_4,3_5,3_6} pypy pypy3 )
+PYTHON_COMPAT=( python3_{7..9} pypy3 )
 
 inherit distutils-r1
 
@@ -22,7 +22,7 @@ IUSE="doc test"
 
 # Depend on an ebuild of translationstring with Python 3 support.
 RDEPEND=">=dev-python/translationstring-1.1[${PYTHON_USEDEP}]
-         dev-python/iso8601[${PYTHON_USEDEP}]"
+	dev-python/iso8601[${PYTHON_USEDEP}]"
 
 DEPEND="${RDEPEND}
 	dev-python/setuptools[${PYTHON_USEDEP}]
