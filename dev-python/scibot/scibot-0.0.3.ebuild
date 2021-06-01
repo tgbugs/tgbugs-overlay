@@ -19,7 +19,7 @@ RDEPEND="
 	dev-python/curio[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
-	dev-python/gevent[$(python_gen_usedep python3_{6,7})]
+	dev-python/gevent[$(python_gen_usedep python3_{7..9})]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.3[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
