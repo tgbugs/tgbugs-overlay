@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python2_7 python3_4 python3_5 python3_6 python3_7 )
+PYTHON_COMPAT=( python3_{7..10} )
 
 inherit multilib python-single-r1
 

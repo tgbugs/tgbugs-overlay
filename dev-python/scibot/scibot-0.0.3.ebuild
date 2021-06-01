@@ -3,7 +3,7 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( pypy3 python3_{6,7} )
+PYTHON_COMPAT=( pypy3 python3_{7..9} )
 inherit distutils-r1 user
 
 DESCRIPTION="Web annotation curation pipeline"
