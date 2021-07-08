@@ -45,10 +45,13 @@ checkconfig () {
 
 start_pre() {
     checkconfig || return 1
+    if [ ! -d "${SERVICES_LOG_LOC}" ]; then
+        mkdir -p ${SERVICES_LOG_LOC}
+    fi
     if [ -f "${SERVICES_LOG}" ]; then
        touch "${SERVICES_LOG}"
     fi
-    chown ${SVCUSER}:${SVCGROUP} ${SERVICES_LOG}
+    chown -R ${SVCUSER}:${SVCGROUP} ${SERVICES_LOG_LOC}
     if [ -f "/tmp/X${DISPLAY}.lock" ] ; then
         Xvfb ${DISPLAY} -screen 0 1024x768x24 &
     fi
