@@ -1,0 +1,4 @@
+JVM_OPTIONS="-Xmx4g"
+BLAZEGRAPH_PORT=9999
+BLAZEGRAPH_JOURNAL=/var/lib/blazegraph/blazegraph.jnl
+BLAZEGRAPH_PREFIXES=/var/lib/blazegraph/prefixes.conf
