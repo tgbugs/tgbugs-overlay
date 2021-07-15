@@ -22,7 +22,7 @@ description="${SVCNAME} daemon"
 command="${JAVA_HOME}/bin/java"
 command_background="true"
 command_args="${JVM_OPTIONS}
--Djetty.port=${SVCPORT}
+-Djetty.port=${BLAZEGRAPH_PORT}
 -Dcom.bigdata.journal.AbstractJournal.file=${BLAZEGRAPH_JOURNAL}
 -Dcom.bigdata.rdf.sail.sparql.PrefixDeclProcessor.additionalDeclsFile=${BLAZEGRAPH_PREFIXES}
 -server -jar \"${SVC_JAR}\""
