@@ -23,9 +23,16 @@ COMMON_DEP=""
 
 RDEPEND=">=virtual/jre-1.8
 		x11-misc/xvfb-run"
-DEPEND=">=virtual/jdk-1.8
-		>=dev-java/maven-bin-3.3
-		app-arch/unzip"
+
+IDEPEND="
+	acct-group/scigraph
+	acct-user/scigraph"
+
+# FIXME waiting on EAPI 8 support in java-pkg-2.eclass for IDEPEND
+DEPEND="${IDEPEND}
+	>=virtual/jdk-1.8
+	>=dev-java/maven-bin-3.3
+	app-arch/unzip"
 
 SERVICES_PN="${MY_PN}-services"
 SERVICES="${SERVICES_PN}-bin-${SLOT}"
@@ -39,13 +46,6 @@ CORE_FOLDER="/usr/share/${CORE_PN}"
 GRAPHLOAD_EXECUTABLE="/usr/bin/scigraph-load"
 
 SCIGRAPH_HOME="/var/lib/scigraph"
-
-pkg_setup() {
-	ebegin "Creating scigraph user and group"
-	enewgroup scigraph
-	enewuser scigraph -1 -1 "${SCIGRAPH_HOME}" scigraph
-	eend $?
-}
 
 src_unpack() {
 	git-r3_src_unpack
@@ -67,10 +67,8 @@ src_unpack() {
 }
 
 src_install() {
-	keepdir "${SCIGRAPH_HOME}"
-	fowners scigraph:scigraph "${SCIGRAPH_HOME}"
 	keepdir "/var/log/${MY_PN}"
-	fowners scigraph:scigraph "/var/log/${MY_PN}"
+	fowners ${MY_PN}:${MY_PN} "/var/log/${MY_PN}"
 
 	SERVICES_P="${SERVICES_PN}-${HASH}"
 
