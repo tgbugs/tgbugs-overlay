@@ -5,14 +5,14 @@ EAPI=7
 
 JAVA_PKG_IUSE=""
 
-inherit java-pkg-2 user
+inherit java-pkg-2
 
 MY_PN="${PN%%-bin}"
 MY_P="${MY_PN}-${PV}"
 MY_TAG_PV="${PV%%_pre*}"
 TAG_NAME="${MY_PN^^}_${MY_TAG_PV//./_}_RC"
 
-DESCRIPTION="An ultra high-performance graph database supporting Blueprints and RDF/SPARQL APIs."
+DESCRIPTION="A high-performance graph database supporting Blueprints and RDF/SPARQL APIs."
 HOMEPAGE="https://www.blazegraph.com/"
 SRC_URI="https://github.com/blazegraph/database/releases/download/${TAG_NAME}/blazegraph.jar -> ${MY_P}.jar"
 
@@ -23,8 +23,16 @@ IUSE=""
 
 COMMON_DEP=""
 
-RDEPEND=">=virtual/jre-1.8"
-DEPEND=">=virtual/jdk-1.8"
+RDEPEND="
+	>=virtual/jre-1.8"
+
+IDEPEND="
+	acct-group/blazegraph
+	acct-user/blazegraph"
+
+# FIXME waiting on EAPI 8 support in java-pkg-2.eclass for IDEPEND
+DEPEND="${IDEPEND}
+	>=virtual/jdk-1.8"
 
 PACKAGE="${PN}-${SLOT}"
 PACKAGE_SHARE="/usr/share/${PACKAGE}"
@@ -32,19 +40,12 @@ PACKAGE_FOLDER="/usr/share/${MY_PN}"
 
 EXECUTABLE="/usr/bin/${MY_PN}"
 
-pkg_setup() {
-	ebegin "Creating ${MY_PN} user and group"
-	enewgroup ${MY_PN}
-	enewuser ${MY_PN} -1 -1 "/var/lib/${MY_PN}" ${MY_PN}
-	eend $? || die
-}
-
 src_unpack() {
 	mkdir "${S}"
 }
 
 src_compile() {
-	einfo "Nothing to do"
+	:
 }
 
 src_install() {
