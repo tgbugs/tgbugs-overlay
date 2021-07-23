@@ -10,6 +10,7 @@ LimitNOFILE=1048576
 WorkingDirectory=/var/lib/scigraph
 StandardOutput=syslog
 StandardError=syslog
+Environment=DISPLAY=:5
 Environment=SERVICES_LOG_LOC=/var/log/%N
 Environment=SERVICES_CONFIG=/var/lib/%N/services.yaml
 ExecStart=/usr/bin/java \
