@@ -1,7 +1,7 @@
 # Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 inherit autotools elisp-common flag-o-matic readme.gentoo-r1 toolchain-funcs
 
@@ -40,7 +40,7 @@ DESCRIPTION="The extensible, customizable, self-documenting real-time display ed
 HOMEPAGE="https://www.gnu.org/software/emacs/"
 
 LICENSE="GPL-3+ FDL-1.3+ BSD HPND MIT W3C unicode PSF-2"
-IUSE="acl alsa aqua athena cairo dbus dynamic-loading games gconf gfile gif +gmp gpm gsettings gtk gui gzip-el harfbuzz imagemagick +inotify jpeg json kerberos lcms libxml2 livecd m17n-lib mailutils native png selinux sound source ssl svg systemd +threads tiff toolkit-scroll-bars wide-int Xaw3d xft +xpm xwidgets zlib"
+IUSE="acl alsa aqua athena cairo dbus dynamic-loading games gconf gfile gif +gmp gpm gsettings gtk gui gzip-el harfbuzz imagemagick +inotify jit jpeg json kerberos lcms libxml2 livecd m17n-lib mailutils png selinux sound source ssl svg systemd +threads tiff toolkit-scroll-bars wide-int Xaw3d xft +xpm xwidgets zlib"
 RESTRICT="test"
 
 RDEPEND="app-emacs/emacs-common[games?,gui(-)?]
@@ -52,6 +52,7 @@ RDEPEND="app-emacs/emacs-common[games?,gui(-)?]
 	gmp? ( dev-libs/gmp:0= )
 	gpm? ( sys-libs/gpm )
 	!inotify? ( gfile? ( >=dev-libs/glib-2.28.6 ) )
+	jit? ( sys-devel/gcc:=[jit(-)] )
 	json? ( dev-libs/jansson )
 	kerberos? ( virtual/krb5 )
 	lcms? ( media-libs/lcms:2 )
@@ -115,16 +116,15 @@ RDEPEND="app-emacs/emacs-common[games?,gui(-)?]
 	) )"
 
 DEPEND="${RDEPEND}
-	native? ( sys-devel/gcc[jit] )
 	gui? ( !aqua? ( x11-base/xorg-proto ) )"
 
-BDEPEND="app-eselect/eselect-emacs
-	sys-apps/texinfo
+BDEPEND="sys-apps/texinfo
 	virtual/pkgconfig
 	gzip-el? ( app-arch/gzip )"
 
-RDEPEND="${RDEPEND}
-	app-eselect/eselect-emacs"
+IDEPEND="app-eselect/eselect-emacs"
+
+RDEPEND+=" ${IDEPEND}"
 
 EMACS_SUFFIX="emacs-${SLOT}"
 SITEFILE="20${EMACS_SUFFIX}-gentoo.el"
@@ -141,7 +141,19 @@ src_prepare() {
 			|| die "Upstream version number changed to ${FULL_VERSION}"
 	fi
 
-	eapply_user
+	if use jit; then
+		# These files ignore LDFLAGS. We assign the variable here, because
+		# for live ebuilds FULL_VERSION doesn't exist in global scope
+		QA_FLAGS_IGNORED="usr/$(get_libdir)/emacs/${FULL_VERSION}/native-lisp/.*"
+
+		# gccjit doesn't play well with ccache #801580
+		# For now, work around the problem with an explicit LIBRARY_PATH
+		has ccache ${FEATURES} && tc-is-gcc \
+			&& export LIBRARY_PATH=$("$(tc-getCC)" -print-search-dirs \
+				| sed -n '/^libraries:/{s:^[^/]*::;p}')
+	fi
+
+	default
 
 	# Fix filename reference in redirected man page
 	sed -i -e "/^\\.so/s/etags/&-${EMACS_SUFFIX}/" doc/man/ctags.1 || die
@@ -234,7 +246,7 @@ src_configure() {
 			"USE flag \"xwidgets\" has no effect if \"gtk\" is not set."
 	fi
 
-	if use native; then
+	if use jit; then
 		export NATIVE_FULL_AOT=1
 	fi
 
@@ -266,12 +278,12 @@ src_configure() {
 		$(use_with games gameuser ":gamestat") \
 		$(use_with gmp libgmp) \
 		$(use_with gpm) \
+		$(use_with jit native-compilation) \
 		$(use_with json) \
 		$(use_with kerberos) $(use_with kerberos kerberos5) \
 		$(use_with lcms lcms2) \
 		$(use_with libxml2 xml2) \
 		$(use_with mailutils) \
-		$(use_with native native-compilation) \
 		$(use_with selinux) \
 		$(use_with ssl gnutls) \
 		$(use_with systemd libsystemd) \
@@ -314,16 +326,16 @@ src_install() {
 	fi
 
 	# avoid collision between slots, see bug #169033 e.g.
-	rm "${ED}"/usr/share/emacs/site-lisp/subdirs.el
-	rm -rf "${ED}"/usr/share/{appdata,applications,icons}
-	rm -rf "${ED}/usr/$(get_libdir)/systemd"
-	rm -rf "${ED}"/var
+	rm "${ED}"/usr/share/emacs/site-lisp/subdirs.el || die
+	rm -rf "${ED}"/usr/share/{applications,icons} || die
+	rm -rf "${ED}/usr/$(get_libdir)/systemd" || die
+	rm -rf "${ED}"/var || die
 
 	# remove unused <version>/site-lisp dir
-	rm -rf "${ED}"/usr/share/emacs/${FULL_VERSION}/site-lisp
+	rm -rf "${ED}"/usr/share/emacs/${FULL_VERSION}/site-lisp || die
 
 	# remove COPYING file (except for etc/COPYING used by describe-copying)
-	rm "${ED}"/usr/share/emacs/${FULL_VERSION}/lisp/COPYING
+	rm "${ED}"/usr/share/emacs/${FULL_VERSION}/lisp/COPYING || die
 
 	if use systemd; then
 		insinto /usr/lib/systemd/user
@@ -376,7 +388,7 @@ src_install() {
 
 	if use gui && use aqua; then
 		dodir /Applications/Gentoo
-		rm -rf "${ED}"/Applications/Gentoo/${EMACS_SUFFIX^}.app
+		rm -rf "${ED}"/Applications/Gentoo/${EMACS_SUFFIX^}.app || die
 		mv nextstep/Emacs.app \
 			"${ED}"/Applications/Gentoo/${EMACS_SUFFIX^}.app || die
 	fi
@@ -422,9 +434,6 @@ pkg_postinst() {
 		# force an update of the emacs symlink for the livecd/dvd,
 		# because some microemacs packages set it with USE=livecd
 		eselect emacs update
-	elif [[ $(readlink "${EROOT}"/usr/bin/emacs) = ${EMACS_SUFFIX} ]]; then
-		# refresh symlinks in case any installed files have changed
-		eselect emacs set ${EMACS_SUFFIX}
 	else
 		eselect emacs update ifunset
 	fi
