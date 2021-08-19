@@ -78,6 +78,10 @@ sbcl_apply_features() {
 	sbcl_feature "$(usep unicode)" ":sb-unicode"
 	sbcl_feature "$(usep zlib)" ":sb-core-compression"
 	sbcl_feature "$(usep debug)" ":sb-xref-for-internals"
+	if elibc_musl; then
+		sbcl_featrue "true" ":sb-linkable-runtime"
+		sbcl_featrue "true" ":sb-prelink-linkage-table"
+	fi
 	sed 's/^X//' >> "${CONFIG}" <<-'EOF'
 	X    )
 	X  list)
@@ -102,6 +106,10 @@ src_prepare() {
 	eapply "${FILESDIR}"/etags-2.1.0.patch
 
 	eapply "${FILESDIR}"/verbose-build-2.0.3.patch
+
+	if use elibc_musl; then
+		eapply "${FILESDIR}"/sbcl-2.1.7-static.patch
+	fi
 
 	eapply_user
 
