@@ -79,8 +79,8 @@ sbcl_apply_features() {
 	sbcl_feature "$(usep zlib)" ":sb-core-compression"
 	sbcl_feature "$(usep debug)" ":sb-xref-for-internals"
 	if use elibc_musl; then
-		sbcl_featrue "true" ":sb-linkable-runtime"
-		sbcl_featrue "true" ":sb-prelink-linkage-table"
+		sbcl_feature "true" ":sb-linkable-runtime"
+		sbcl_feature "true" ":sb-prelink-linkage-table"
 	fi
 	sed 's/^X//' >> "${CONFIG}" <<-'EOF'
 	X    )
