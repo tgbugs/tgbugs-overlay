@@ -1,0 +1,1398 @@
+diff --git a/.gitignore b/.gitignore
+index df659c05c..c4cd86e38 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,6 +22,7 @@ src/compiler/target
+ src/runtime/Config
+ src/runtime/TAGS
+ src/runtime/genesis
++src/runtime/linkage-table-prelink-info.c
+ src/runtime/openbsd-sigcontext.h
+ src/runtime/sbcl
+ src/runtime/sbcl.exe
+diff --git a/README.static-executable b/README.static-executable
+new file mode 100644
+index 000000000..ffd12f35f
+--- /dev/null
++++ b/README.static-executable
+@@ -0,0 +1,250 @@
++This branch of SBCL is maintained by Eric Timmons (@daewok) and contains a set
++of patches necessary to build a completely static executable with SBCL. Such an
++executable has all necessary foreign libraries statically linked into the
++runtime and has no support for dynamic loading and unloading of
++libraries. While the lack of dynamic loading support is certainly constraining,
++the benefit of building an executable this way is it requires no libraries to
++be installed by the user of the executable. This makes it ideal for archival
++purposes, distributing executables to a non-technical audience, distributing an
++executable where you must know the exact versions of foreign libraries used at
++runtime, or distributing executables that Just Work^TM (like many executables
++written in golang).
++
++While other solutions exist to statically link foreign libraries into the SBCL
++runtime, to the best of my knowledge there has been no publicly advertised
++method of building SBCL with libc statically linked. The lack of static linking
++for libc means that the user of the executable must have a compatible libc
++installed. Unfortunately, the most commonly used libc in the Linux world
++(glibc) is frequently not backward compatible with itself. For evidence of
++this, see the fact that SBCLs built on Debian Buster (like the official
++releases since 1.5.6) do not run on Debian Stretch.
++
++Unfortunately, glibc doesn't even really support static linking at
++all. Therefore, I recommend that static SBCL executables be built with musl
++libc. Musl is designed with static linking in mind and is broadly compatible
++with most libraries that don't do tricksy things with libc. And if you find a
++library not compatible with musl libc, it seems most maintainers are welcoming
++to patches that add support.
++
++Alpine Linux is a great OS for building statically linked executables as it
++uses musl libc by default. I further recommend using Docker for building static
++executables so that you don't need to maintain a separate Alpine install. Plus,
++you can use the clfoundation/sbcl:alpine3.13 image as a starting point.
++
++THEORY
++
++The biggest issue with creating a static executable is ensuring that foreign
++symbols are accessible from the Lisp core. In normal, dynamic use, SBCL uses
++dlsym to look up the address of symbols and stores them in a vector in foreign
++memory called the "linkage table". The lisp core then maintains a hash table
++mapping foreign symbol names to their index in the linkage table. This is
++called the linkage info.
++
++In a static executable, we cannot count on having a working dlsym, even if
++libdl is linked into the runtime. When performing static linkage, musl libc
++replaces all libdl functions with stubs that simply return errors. Therefore,
++we have to use the system linker to resolve the references for us. But in order
++to have the linker do that for us, we need to know at link time which foreign
++symbols our lisp code will want to use!
++
++EXTRACTING LINKAGE INFO
++
++There are two approaches described below to generate a static executable. Both
++of them require a file describing the desired linkage info. While you could
++generate this by hand, it is easiest to extract it from a core.
++
++In order to extract the linkage info from a running core, use
++tools-for-build/dump-linkage-info.lisp. After loading that into the core,
++evaluate (sb-dump-linkage-info:dump-to-file #p"/path/to/output.sexp"). It also
++takes an keyword argument :make-undefined, a list of symbol names to make
++undefined in the output. This is useful for approach two below.
++
++The sexp written to the output file is a single list of lists. Each sublist has
++three elements. The first is a string naming the symbol. The second is T if the
++symbol is entered into the linkage info as data (it is a foreign variable) and
++NIL otherwise (it is a foreign function). The third is T if the symbol is
++undefined and NIL otherwise. It is critical that undefined symbols be
++maintained for approach one below.
++
++The following two sections describe two approaches on how to generate a static
++executable, step-by-step. The demo static executable contains the sb-gmp
++contrib and runs its test quite when executed. It requires that the static
++libraries for libgmp and libz are installed on your system. There is some
++weirdness with how the tests are loaded. This is because the tests do not seem
++to work after being dumped: I have not yet figured out why this is.
++
++BUILDING A STATIC EXECUTABLE - APPROACH ONE
++
++This approach to building a static executable is preferred if you're you want
++to minimize the amount of time compiling C and Lisp code. It takes advantage of
++the fact that musl inserts stub functionality for libdl such that it can still
++be linked against.
++
++The general process for this approach is:
++
++0. Build SBCL with the :sb-prelink-linkage-table feature (:sb-linkable-runtime
++is also strongly recommended).
++
++1. Build a core containing the lisp code you want to package in the static
++executable.
++
++2. Dump the linkage info to a file.
++
++3. Dump the core to a file (with save-lisp-and-die).
++
++4. Generate a C file that contains the info needed to build the linkage table.
++
++5. Relink the runtime. This time statically *and* with the object file
++generated from the C file in step 4.
++
++6. Load the saved core into the new static runtime, dumping again with
++:executable t if desired.
++
++Some notes about this approach:
++
+++ The build IDs of the dynamic runtime (used to generate the core in step 1)
++and the static runtime *must* match. The easiest way to achieve this is to
++install SBCL with the feature :sb-linkable-runtime. This installs sbcl.o (the
++SBCL runtime in a ingle object file) along with everything else.
++
+++ No modifications must be made to the linkage info file generated in step 2
++and no symbols can be filtered out of it.
++
++Here is a step-by-step procedure to build the demo static executable using this
++approach.
++
++Step 0:
++
++    sh make.sh --fancy --with-sb-linkable-runtime --with-sb-prelink-linkage-table
++    sh install.sh
++
++Steps 1-3:
++
++    sbcl --non-interactive \
++         --no-sysinit --no-userinit \
++         --eval '(require :uiop)' \
++         --eval '(require :sb-gmp)' \
++         --eval '(require :sb-rt)' \
++         --eval '(defvar *sb-gmp-tests* (uiop:read-file-string "contrib/sb-gmp/tests.lisp"))' \
++         --load tools-for-build/dump-linkage-info.lisp \
++         --eval '(sb-dump-linkage-info:dump-to-file "/tmp/linkage-info.sexp")' \
++         --eval '(sb-ext:save-lisp-and-die "/tmp/sb-gmp-tester.core")'
++
++Step 4:
++
++    sbcl --no-sysinit --no-userinit \
++         --script tools-for-build/create-linkage-table-prelink-info-override.lisp \
++         /tmp/linkage-info.sexp \
++         /tmp/linkage-table-prelink-info-override.c
++
++Step 5:
++
++    # Get all the variables SBCL used to build defined in the current environment.
++    while read l; do
++      eval "${l%%=*}=\"${l#*=}\"";
++    done < /usr/local/lib/sbcl/sbcl.mk
++    
++    $CC $CFLAGS -Wno-builtin-declaration-mismatch -o /tmp/linkage-table-prelink-info-override.o -c /tmp/linkage-table-prelink-info-override.c
++    $CC -no-pie -static $LINKFLAGS -o /tmp/static-sbcl /usr/local/lib/sbcl/$LIBSBCL /tmp/linkage-table-prelink-info-override.o -lgmp $LIBS
++
++Step 6:
++
++    /tmp/static-sbcl --core /tmp/sb-gmp-tester.core \
++                     --non-interactive \
++                     --no-sysinit --no-userinit \
++                     --eval '(sb-ext:save-lisp-and-die "/tmp/sb-gmp-tester" :executable t :toplevel (lambda () (uiop:load-from-string *sb-gmp-tests*) (sb-rt:do-tests) (exit)) :compression t)'
++
++
++Look at the dumped executable. You should see that it is a static executable.
++
++    ldd /tmp/sb-gmp-tester
++
++Test that it works!
++
++    /tmp/sb-gmp-tester
++    
++BUILDING A STATIC EXECUTABLE - APPROACH TWO
++
++This approach results in an executable that is not linked with libdl at
++all. This makes it a little bit more "pure" than than the previous approach,
++but that comes at the cost of needing to fully recompile both the runtime and
++core after the necessary foreign symbols are determined.
++
++The general process for this approach is:
++
++1. Build a core containing the lisp code you want to package in the static
++executable.
++
++2. Dump the linkage info to a file.
++
++3. Recompile SBCL, passing in the linkage info during build.
++
++4. Rebuild your core with the new runtime and corresponding core.
++
++5. Dump with :executable t.
++
++Some notes about this approach:
++
+++ The libdl symbols must be stripped out of the linkage info file generated in
++step 2. The easiest way to do this is pass sb-dump-linkage-info:*libdl-symbols*
++as the :make-undefined argument to dump-to-file.
++
+++ Further modifications can be made to the linkage info file generated in step
++2. You can reorder the symbols at will. You can add new symbols. You probably
++don't want to remove any (besides libdl functions).
++
++Steps 1-2:
++
++    sh run-sbcl.sh --non-interactive \
++                   --no-sysinit --no-userinit \
++                   --eval '(require :uiop)' \
++                   --eval '(require :sb-gmp)' \
++                   --eval '(require :sb-rt)' \
++                   --eval '(defvar *sb-gmp-tests* (uiop:read-file-string "contrib/sb-gmp/tests.lisp"))' \
++                   --load tools-for-build/dump-linkage-info.lisp \
++                   --eval '(sb-dump-linkage-info:dump-to-file "/tmp/linkage-info.sexp" :remove-symbols sb-dump-linkage-info:*libdl-symbols*)'
++
++Step 3:
++
++    LDLIBS="-lgmp" LINKFLAGS="-no-pie -static" IGNORE_CONTRIB_FAILURES="yes" sh make.sh --extra-linkage-table-entries=/tmp/linkage-info.sexp --without-os-provides-dlopen --without-os-provides-dladdr --fancy
++
++Steps 4-5:
++
++    sh run-sbcl.sh --non-interactive \
++                   --no-sysinit --no-userinit \
++                   --eval '(require :uiop)' \
++                   --eval '(require :sb-gmp)' \
++                   --eval '(require :sb-rt)' \
++                   --eval '(defvar *sb-gmp-tests* (uiop:read-file-string "contrib/sb-gmp/tests.lisp"))' \
++                   --eval '(sb-ext:save-lisp-and-die "/tmp/sb-gmp-tester" :executable t :toplevel (lambda () (uiop:load-from-string *sb-gmp-tests*) (sb-rt:do-tests) (exit)) :compression t)'
++
++Look at the dumped executable. You should see that it is a static executable.
++
++    ldd /tmp/sb-gmp-tester
++
++Test that it works!
++
++    /tmp/sb-gmp-tester
++
++BUILDING A STATIC EXECUTABLE WITH DOCKER
++
++See the Dockerfile at tools-for-build/Dockerfile.static-executable-example for
++an example of how to build the demo executable using Docker and approach
++one. The benefit of Docker is that it is a cheap way to build with musl libc
++even if you use glibc locally.
++
++The following commands will build the demo executable inside docker and extract
++it from the image, placing it at /tmp/sb-gmp-tester on your local file
++system. The following commands also try to avoid polluting your Docker
++namespace by not tagging the image or naming the container used to extract the
++executable.
++
++    IMAGE_ID_FILE="$(mktemp)"
++    CONTAINER_ID_FILE="$(mktemp)"
++    rm "$CONTAINER_ID_FILE"
++    docker build --iidfile "$IMAGE_ID_FILE" -f tools-for-build/Dockerfile.static-executable-example .
++    docker create --cidfile "$CONTAINER_ID_FILE" "$(cat "$IMAGE_ID_FILE")"
++    docker cp "$(cat "$CONTAINER_ID_FILE"):/tmp/sb-gmp-tester" /tmp/sb-gmp-tester
++    docker rm "$(cat "$CONTAINER_ID_FILE")"
++    rm "$IMAGE_ID_FILE"
++    rm "$CONTAINER_ID_FILE"
+diff --git a/contrib/sb-bsd-sockets/sb-bsd-sockets.asd b/contrib/sb-bsd-sockets/sb-bsd-sockets.asd
+index 2bdaf22d5..847e0be3a 100644
+--- a/contrib/sb-bsd-sockets/sb-bsd-sockets.asd
++++ b/contrib/sb-bsd-sockets/sb-bsd-sockets.asd
+@@ -6,7 +6,7 @@
+ ;;; 1003.1-2003 defines an alternative API, which is specified in the
+ ;;; RFC to be thread-safe. If it seems to be available, use it.
+ 
+-(when (sb-alien::find-dynamic-foreign-symbol-address "getaddrinfo")
++(when (sb-alien::find-foreign-symbol-address "getaddrinfo")
+   (pushnew :sb-bsd-sockets-addrinfo *features*))
+ 
+ (defsystem "sb-bsd-sockets"
+diff --git a/contrib/sb-gmp/gmp.lisp b/contrib/sb-gmp/gmp.lisp
+index b63b53a47..dd0b7fff9 100644
+--- a/contrib/sb-gmp/gmp.lisp
++++ b/contrib/sb-gmp/gmp.lisp
+@@ -84,6 +84,7 @@
+             #-(or win32 darwin) '("libgmp.so" "libgmp.so.10" "libgmp.so.3")
+             #+darwin '("libgmp.dylib" "libgmp.10.dylib" "libgmp.3.dylib")
+             #+win32 '("libgmp.dll" "libgmp-10.dll" "libgmp-3.dll"))
++      (sb-alien::find-foreign-symbol-address "__gmp_version")
+       (warn "GMP not loaded.")))
+ 
+ (defvar *gmp-features* nil)
+diff --git a/make-config.sh b/make-config.sh
+index 3c8015816..b9a8dc0c3 100755
+--- a/make-config.sh
++++ b/make-config.sh
+@@ -88,7 +88,10 @@ do
+         ;;
+       --without)
+         WITHOUT_FEATURES="$WITHOUT_FEATURES :$optarg"
+-	;;
++	    ;;
++      --extra-linkage-table-entries=)
++        $optarg_ok && SBCL_EXTRA_LINKAGE_TABLE_ENTRIES=$optarg
++        ;;
+       --fancy)
+         WITH_FEATURES="$WITH_FEATURES $FANCY_FEATURES"
+         # Lower down we add :sb-thread for platforms where it can be built.
+@@ -213,6 +216,17 @@ Options:
+                   Transfer the files to/from directory /home/user/sbcl
+                   on host-machine.
+ 
++  --extra-linkage-table-entries=<path> Specify extra C symbols to include in
++                                       the linkage table
++
++      Path to a file specifying symbols that must be included in the
++      SBCL linkage table. Useful for statically linking libraries
++      into the runtime and ensuring the linker does not remove them.
++      The file must contain a single list of two element lists. Each
++      sublist must have a string naming a C symbol as its first
++      element and NIL or T (if the symbol names a variable) as its
++      second element.
++
+ EOF
+   exit 1
+ fi
+@@ -254,6 +268,11 @@ find_gnumake
+ 
+ ./generate-version.sh
+ 
++# Copy the extra linkage entries to output folder for Genesis to find.
++if [ -n "$SBCL_EXTRA_LINKAGE_TABLE_ENTRIES" ] && [ -f "$SBCL_EXTRA_LINKAGE_TABLE_ENTRIES" ]; then
++    cp "$SBCL_EXTRA_LINKAGE_TABLE_ENTRIES" output/extra-linkage-table-entries.lisp-expr
++fi
++
+ # Now that we've done our option parsing and found various
+ # dependencies, write them out to a file to be sourced by other
+ # scripts.
+diff --git a/make-genesis-2.lisp b/make-genesis-2.lisp
+index cb17160e1..bdcacfe4e 100644
+--- a/make-genesis-2.lisp
++++ b/make-genesis-2.lisp
+@@ -24,7 +24,10 @@
+          :core-file-name "output/cold-sbcl.core"
+          ;; The map file is not needed by the system, but can be
+          ;; very handy when debugging cold init problems.
+-         :map-file-name "output/cold-sbcl.map")
++         :map-file-name "output/cold-sbcl.map"
++         :linkage-table-prefill-info-c-name "src/runtime/linkage-table-prelink-info.c"
++         :extra-linkage-table-entries (when (probe-file "output/extra-linkage-table-entries.lisp-expr")
++                                        (read-from-file "output/extra-linkage-table-entries.lisp-expr")))
+ #+cmu (ext:quit)
+ #+clisp (ext:quit)
+ #+abcl (ext:quit)
+diff --git a/make-host-1.sh b/make-host-1.sh
+index 66f75120f..eabb3a1cc 100755
+--- a/make-host-1.sh
++++ b/make-host-1.sh
+@@ -32,3 +32,16 @@ export LANG LC_ALL
+ # environment.
+ echo //building cross-compiler, and doing first genesis
+ echo '(load "loader.lisp") (load-sbcl-file "make-host-1.lisp")' | $SBCL_XC_HOST
++
++# Use a little C program to grab stuff from the C header files and
++# smash it into Lisp source code.
++$GNUMAKE -C src/runtime clean
++$GNUMAKE -C src/runtime sbcl.h
++$GNUMAKE -C tools-for-build -I../src/runtime grovel-headers
++tools-for-build/grovel-headers > output/stuff-groveled-from-headers.lisp
++
++$GNUMAKE -C src/runtime after-grovel-headers
++
++if [ -n "$SBCL_HOST_LOCATION" ]; then
++    rsync -a output/stuff-groveled-from-headers.lisp "$SBCL_HOST_LOCATION/output"
++fi
+diff --git a/make-target-1.sh b/make-target-1.sh
+index dfd7a0203..91a1de28e 100755
+--- a/make-target-1.sh
++++ b/make-target-1.sh
+@@ -40,13 +40,6 @@ $GNUMAKE -C src/runtime clean
+ # $GNUMAKE -C src/runtime depend
+ $GNUMAKE $SBCL_MAKE_JOBS -C src/runtime all
+ 
+-# Use a little C program to grab stuff from the C header files and
+-# smash it into Lisp source code.
+-$GNUMAKE -C tools-for-build -I../src/runtime grovel-headers
+-tools-for-build/grovel-headers > output/stuff-groveled-from-headers.lisp
+-
+-$GNUMAKE -C src/runtime after-grovel-headers
+-
+ if [ -n "$SBCL_HOST_LOCATION" ]; then
+     echo //copying target-1 output files to host
+     rsync -a output/stuff-groveled-from-headers.lisp "$SBCL_HOST_LOCATION/output"
+diff --git a/make-target-2-load.lisp b/make-target-2-load.lisp
+index 454ca4246..3de920c87 100644
+--- a/make-target-2-load.lisp
++++ b/make-target-2-load.lisp
+@@ -35,6 +35,10 @@
+           ;; more-or-less confined to serve-event, except for a test which now
+           ;; detects whether COMPUTE-POLLFDS is defined and therefore testable.
+           :OS-PROVIDES-POLL
++          ;; Used by genesis and C. Genesis uses presence of this feature to
++          ;; determine if a C file should be written to contain the linkage
++          ;; info.
++          :SB-PRELINK-LINKAGE-TABLE
+           ;; The final batch of symbols is strictly for C. The LISP_FEATURE_
+           ;; prefix on the corresponding #define is unfortunate.
+           :GCC-TLS :USE-SYS-MMAP
+diff --git a/make-target-contrib.sh b/make-target-contrib.sh
+index f0e9ec07a..0a39ecec6 100755
+--- a/make-target-contrib.sh
++++ b/make-target-contrib.sh
+@@ -115,6 +115,6 @@ EOF
+   fi
+ done
+ 
+-if [ $HEADER_HAS_BEEN_PRINTED = true ]; then
++if [ $HEADER_HAS_BEEN_PRINTED = true ] && [ "$IGNORE_CONTRIB_FAILURES" != "yes" ]; then
+   exit 1
+ fi
+diff --git a/make.sh b/make.sh
+index 9a8522631..5e3fe705f 100755
+--- a/make.sh
++++ b/make.sh
+@@ -77,8 +77,8 @@
+     fi
+ }
+ maybetime sh -x make-host-1.sh
+-maybetime sh -x make-target-1.sh
+ maybetime sh -x make-host-2.sh
++maybetime sh -x make-target-1.sh
+ maybetime sh -x make-target-2.sh
+ maybetime sh -x make-target-contrib.sh
+ 
+diff --git a/src/cold/package-data-list.lisp-expr b/src/cold/package-data-list.lisp-expr
+index e978d913a..8a76f3b6f 100644
+--- a/src/cold/package-data-list.lisp-expr
++++ b/src/cold/package-data-list.lisp-expr
+@@ -2785,6 +2785,8 @@ SB-KERNEL) have been undone, but probably more remain."
+                "FIND-DYNAMIC-FOREIGN-SYMBOL-ADDRESS"
+                "FIND-FOREIGN-SYMBOL-ADDRESS"
+                "FIND-FOREIGN-SYMBOL-IN-TABLE"
++               "FIND-LINKAGE-TABLE-FOREIGN-SYMBOL-ADDRESS"
++               "FIXUP-PRELINKED-LINKAGE-TABLE-ENTRIES"
+                "FOREIGN-SYMBOL-SAP"
+                "FOREIGN-SYMBOL-ADDRESS"
+                "FOREIGN-SYMBOL-DATAREF-SAP"
+@@ -2795,6 +2797,8 @@ SB-KERNEL) have been undone, but probably more remain."
+                "INVALIDATE-DESCRIPTOR"
+                "INVOKE-INTERRUPTION"
+                "IO-TIMEOUT"
++               "LINKAGE-TABLE-ADDRESS"
++               "LINKAGE-TABLE-INDEX"
+                "MACRO" "MAKE-FD-STREAM"
+                "MEMORY-FAULT-ERROR"
+                "MEMMOVE"
+diff --git a/src/code/debug-int.lisp b/src/code/debug-int.lisp
+index bde009e5f..148d4da45 100644
+--- a/src/code/debug-int.lisp
++++ b/src/code/debug-int.lisp
+@@ -3534,7 +3534,7 @@ register."
+   #+arm64 (error "Breakpoints do not work on ARM64")
+   #-arm64
+   (macrolet ((symbol-addr (name)
+-               `(find-dynamic-foreign-symbol-address ,name))
++               `(find-foreign-symbol-address ,name))
+              (trap-offset ()
+                `(- (symbol-addr "fun_end_breakpoint_trap") src-start)))
+     ;; These are really code labels, not variables: but this way we get
+diff --git a/src/code/foreign-load.lisp b/src/code/foreign-load.lisp
+index 5d0fbde98..d3ab6ad44 100644
+--- a/src/code/foreign-load.lisp
++++ b/src/code/foreign-load.lisp
+@@ -144,8 +144,9 @@ Experimental."
+ ;;; Open libraries in *SHARED-OBJECTS* and the runtime. Called during
+ ;;; initialization.
+ (defun reopen-shared-objects ()
+-  ;; Ensure that the runtime is open
+-  (setf *runtime-dlhandle* (dlopen-or-lose))
++  ;; Try to open the runtime. If we can't, errors will be produced later on
++  ;; when it's actually used.
++  (setf *runtime-dlhandle* (ignore-errors (dlopen-or-lose)))
+   ;; Without this many symbols aren't accessible.
+   #+android (load-shared-object "libc.so" :dont-save t)
+   ;; Reopen stuff.
+diff --git a/src/code/foreign.lisp b/src/code/foreign.lisp
+index 6aa32fd19..648ab3e64 100644
+--- a/src/code/foreign.lisp
++++ b/src/code/foreign.lisp
+@@ -14,7 +14,10 @@
+ (defun find-foreign-symbol-address (name)
+   "Returns the address of the foreign symbol NAME, or NIL. Does not enter the
+ symbol in the linkage table, and never returns an address in the linkage-table."
+-  (find-dynamic-foreign-symbol-address name))
++  (or
++   #+os-provides-dlopen
++   (find-dynamic-foreign-symbol-address name)
++   (find-linkage-table-foreign-symbol-address name)))
+ 
+ ;;; Note that much conditionalization is for nothing at this point, because all
+ ;;; platforms that we care about implement dlopen(). But if one did not, only
+@@ -32,7 +35,12 @@ Returns a secondary value T for historical reasons.
+ The returned address is always a linkage-table address.
+ Symbols are entered into the linkage-table if they aren't there already."
+   (declare (ignorable datap))
+-  (values (ensure-foreign-symbol-linkage name datap) t))
++  (values
++   (or (linkage-table-address name datap)
++       #+os-provides-dlopen
++       (ensure-foreign-symbol-linkage name datap)
++       (error 'undefined-alien-error :name name))
++   t))
+ 
+ (defun foreign-symbol-sap (symbol &optional datap)
+   "Returns a SAP corresponding to the foreign symbol. DATAP must be true if the
+@@ -50,8 +58,9 @@ if the symbol isn't found."
+         (int-sap addr))))
+ 
+ (defun foreign-reinit ()
++  (fixup-prelinked-linkage-table-entries)
+   #+os-provides-dlopen (reopen-shared-objects)
+-  (update-linkage-table t))
++  #+os-provides-dlopen (update-linkage-table t))
+ 
+ ;;; Cleanups before saving a core
+ (defun foreign-deinit ()
+@@ -100,7 +109,7 @@ if the symbol isn't found."
+         and reference across (symbol-value 'sb-vm::+required-foreign-symbols+)
+         do (setf (gethash reference (car *linkage-info*)) table-offset))
+   #+os-provides-dlopen
+-  (setf *runtime-dlhandle* (dlopen-or-lose))
++  (setf *runtime-dlhandle* (ignore-errors (dlopen-or-lose)))
+   #+os-provides-dlopen
+   (setf *shared-objects* nil))
+ 
+diff --git a/src/code/linkage-table.lisp b/src/code/linkage-table.lisp
+index 6ae3f2326..4c41241ca 100644
+--- a/src/code/linkage-table.lisp
++++ b/src/code/linkage-table.lisp
+@@ -22,6 +22,9 @@
+ (define-alien-routine arch-write-linkage-table-entry void
+   (index int) (real-address unsigned) (datap int))
+ 
++(define-alien-routine arch-read-linkage-table-entry (* t)
++  (index int) (datap int))
++
+ (define-load-time-global *linkage-info*
+     ;; CDR of the cons is the list of undefineds
+     (list (make-hash-table :test 'equal :synchronized t)))
+@@ -29,6 +32,7 @@
+ 
+ (define-alien-variable undefined-alien-address unsigned)
+ 
++#+os-provides-dlopen
+ (macrolet ((dlsym-wrapper (&optional warn)
+              ;; Produce two values: an indicator of whether the foreign symbol was
+              ;; found; and the address as an integer if found, or a guard address
+@@ -114,3 +118,55 @@
+             (recheck key (the (not null) (gethash key ht)))))
+       (setf (cdr info) notdef)))))
+ )
++
++;; TODO: Is there a way to avoid this? This is needed because on some
++;; platforms, the undefined alien function handler is not available at compile
++;; time (it's an assembly routine created in Lisp).
++(defun fixup-prelinked-linkage-table-entries ()
++  "Called during reinit. Used to rewrite NULL function references to the
++correct undefined alien function handler."
++  (let* ((n-prelinked (extern-alien "lisp_linkage_table_n_prelinked" int))
++         (info *linkage-info*)
++         (ht (car info))
++         (notdef))
++    (with-system-mutex ((hash-table-lock ht))
++      (dohash ((key index) ht)
++        (when (< index n-prelinked)
++          (let* ((datap (listp key))
++                 (sap (alien-sap (arch-read-linkage-table-entry index (if datap 1 0)))))
++            (when (zerop (sap-int sap))
++              (push key notdef)
++              (arch-write-linkage-table-entry index
++                                              (if datap
++                                                  undefined-alien-address
++                                                  (or
++                                                   (sb-fasl:get-asm-routine 'sb-vm::undefined-alien-tramp)
++                                                   (find-foreign-symbol-address "undefined_alien_function")
++                                                   (bug "unreachable")))
++                                              (if datap 1 0)))))))
++    (setf (cdr info) notdef)))
++
++(defun linkage-table-index (name datap)
++  "Returns the index of the foreign symbol in the linkage table or NIL if it is
++not present."
++  (let* ((key (if datap (list name) name))
++         (info *linkage-info*)
++         (ht (car info)))
++    (with-system-mutex ((hash-table-lock ht))
++      (gethash key ht))))
++
++(defun linkage-table-address (name datap)
++  "Returns the address of the foreign symbol's entry in the linkage table or NIL
++if it is not present."
++  (awhen (linkage-table-index name datap)
++    (sb-vm::linkage-table-entry-address it)))
++
++(defun find-linkage-table-foreign-symbol-address (name)
++  "Returns the address of the foreign symbol NAME, or NIL. Consults only the
++linkage table to find the address."
++  (multiple-value-bind (index datap)
++      (or (linkage-table-index name nil)
++          (values (linkage-table-index name t) t))
++    (when (and index
++               (not (member (if datap (list name) name) (cdr *linkage-info*) :test #'equal)))
++      (sap-int (alien-sap (arch-read-linkage-table-entry index (if datap 1 0)))))))
+diff --git a/src/code/unix-foreign-load.lisp b/src/code/unix-foreign-load.lisp
+index 862c8bd23..73d9953a4 100644
+--- a/src/code/unix-foreign-load.lisp
++++ b/src/code/unix-foreign-load.lisp
+@@ -65,21 +65,15 @@
+ 
+ (defun find-dynamic-foreign-symbol-address (symbol)
+   (dlerror)                             ; clear old errors
+-  (unless *runtime-dlhandle*
+-    (bug "Cannot resolve foreign symbol: lost *runtime-dlhandle*"))
+   ;; On real ELF & dlsym platforms the EXTERN-ALIEN-NAME is a no-op,
+   ;; but on platforms where dlsym is simulated we use the mangled name.
+-  (let* ((extern (extern-alien-name symbol))
+-         (result (sap-int (dlsym *runtime-dlhandle* extern)))
+-         (err (dlerror)))
+-    (if (or (not (zerop result)) (not err))
++  (let ((extern (extern-alien-name symbol))
+         result
+-        (dolist (obj *shared-objects*)
+-          (let ((sap (shared-object-handle obj)))
+-            (when sap
+-              (setf result (sap-int (dlsym sap extern))
+-                    err (dlerror))
+-              (when (or (not (zerop result)) (not err))
+-                (return result))))))))
+-
+-
++        err)
++    (dolist (handle (cons *runtime-dlhandle*
++                          (mapcar #'shared-object-handle *shared-objects*)))
++      (when handle
++        (setf result (sap-int (dlsym handle extern))
++              err (dlerror))
++        (when (or (not (zerop result)) (not err))
++          (return result))))))
+diff --git a/src/cold/shared.lisp b/src/cold/shared.lisp
+index 5e3c944fb..34fb9fe70 100644
+--- a/src/cold/shared.lisp
++++ b/src/cold/shared.lisp
+@@ -320,7 +320,7 @@
+          ("(not (or elf mach-o win32))"
+           "No execute object file format feature defined")
+          ("(and cons-profiling (not sb-thread))" ":CONS-PROFILING requires :SB-THREAD")
+-         ("(and sb-linkable-runtime (not (or x86 x86-64)))"
++         ("(and sb-linkable-runtime (not (or arm arm64 x86 x86-64)))"
+           ":SB-LINKABLE-RUNTIME not supported on selected architecture")
+          ("(and sb-linkable-runtime (not (or darwin linux win32)))"
+           ":SB-LINKABLE-RUNTIME not supported on selected operating system")
+@@ -340,7 +340,10 @@
+           "Can't enable SB-FUTEX on platforms lacking thread support")
+          ;; There is still hope to make multithreading on DragonFly x86-64
+          ("(and sb-thread x86 dragonfly)"
+-          ":SB-THREAD not supported on selected architecture")))
++          ":SB-THREAD not supported on selected architecture")
++         ;; We need SOME way to fill the linkage table...
++         ("(and (not os-provides-dlopen) (not sb-prelink-linkage-table))"
++          "Can't disable both os-provides-dlopen and sb-prelink-linkage-table")))
+       (failed-test-descriptions nil))
+   (dolist (test feature-compatibility-tests)
+     (let ((*readtable* *xc-readtable*))
+diff --git a/src/compiler/generic/genesis.lisp b/src/compiler/generic/genesis.lisp
+index 2b1935a2d..6c072c89e 100644
+--- a/src/compiler/generic/genesis.lisp
++++ b/src/compiler/generic/genesis.lisp
+@@ -2259,6 +2259,44 @@ Legal values for OFFSET are -4, -8, -12, ..."
+                (cold-cons (cold-intern (first rtn)) (make-fixnum-descriptor (cdr rtn))))
+              '*!initial-assembler-routines*)))
+ 
++#+sb-prelink-linkage-table
++(defun foreign-symbols-to-c (output-pathname)
++  (with-open-file (output output-pathname
++                          :direction :output
++                          :if-exists :supersede)
++    (let ((sorted-pairs (sort (%hash-table-alist *cold-foreign-symbol-table*) #'< :key #'cdr)))
++      ;; Needed for uintptr_t. We use the raw uintptr_t as we don't want to have
++      ;; to include any SBCL headers just to get at lispobj.
++      (format output "#include <stdint.h>~%~%")
++
++      ;; Write out the extern definitions. Everything is a void function (even
++      ;; variables) because compilers don't like void variables. Remove
++      ;; lisp_linkage_values as we need to write to it, so we should use the
++      ;; actual type.
++      (format output "extern void ~{~A()~^, ~};~%~%"
++              (remove "lisp_linkage_values"
++                      (mapcar (lambda (x)
++                                (if (listp (car x))
++                                    (caar x)
++                                    (car x)))
++                              sorted-pairs)
++                      :test #'equal))
++
++      #-win32
++      (format output "uintptr_t __attribute__((weak)) lisp_linkage_values[] = {~%")
++      #+win32
++      (format output "uintptr_t lisp_linkage_values[] = {~%")
++
++      (format output "  ~D,~%" (length sorted-pairs))
++      (dolist (pair sorted-pairs)
++        (when (listp (car pair))
++          ;; This is data, put -1 in to indicate that.
++          (format output "  (uintptr_t)-1,~%"))
++        (format output "  (uintptr_t)&~A,~%" (if (listp (car pair))
++                                                 (caar pair)
++                                                 (car pair))))
++      (format output "};~%"))))
++
+ 
+ ;;;; general machinery for cold-loading FASL files
+ 
+@@ -3650,12 +3688,16 @@ III. initially undefined function references (alphabetically):
+ ;;;   CORE-FILE-NAME gets a Lisp core.
+ ;;;   C-HEADER-DIR-NAME gets the path in which to place generated headers
+ ;;;   MAP-FILE-NAME gets the name of the textual 'cold-sbcl.map' file
++;;;   LINKAGE-TABLE-PREFILL-INFO-C-NAME gets a .c file used to store the
++;;;     data used to link the runtime before entering Lisp.
+ (defun sb-cold:genesis (&key object-file-names tls-init
+                              defstruct-descriptions
+                              build-id
+                              core-file-name c-header-dir-name map-file-name
+-                             symbol-table-file-name (verbose t))
+-  (declare (ignorable symbol-table-file-name))
++                             symbol-table-file-name (verbose t)
++                             linkage-table-prefill-info-c-name
++                             extra-linkage-table-entries)
++  (declare (ignorable symbol-table-file-name linkage-table-prefill-info-c-name))
+ 
+   (when verbose
+     (format t
+@@ -3665,6 +3707,9 @@ III. initially undefined function references (alphabetically):
+     ;; Prefill some linkage table entries perhaps
+     (loop for (name datap) in sb-vm::*linkage-space-predefined-entries*
+           do (linkage-table-note-symbol name datap))
++    (loop for (name datap undefinedp) in extra-linkage-table-entries
++          unless undefinedp
++            do (linkage-table-note-symbol name datap))
+ 
+     ;; Now that we've successfully read our only input file (by
+     ;; loading the symbol table, if any), it's a good time to ensure
+@@ -3836,6 +3881,9 @@ III. initially undefined function references (alphabetically):
+       (resolve-deferred-known-funs)
+       (resolve-static-call-fixups)
+       (foreign-symbols-to-core)
++      #+sb-prelink-linkage-table
++      (when linkage-table-prefill-info-c-name
++        (foreign-symbols-to-c linkage-table-prefill-info-c-name))
+       #+(or x86 immobile-space)
+       (dolist (pair (sort (%hash-table-alist *code-fixup-notes*) #'< :key #'car))
+         (write-wordindexed (make-random-descriptor (car pair))
+diff --git a/src/compiler/target-main.lisp b/src/compiler/target-main.lisp
+index e3b22265e..79ac6134b 100644
+--- a/src/compiler/target-main.lisp
++++ b/src/compiler/target-main.lisp
+@@ -47,7 +47,7 @@
+                    (make-compilation
+                     :msan-unpoison
+                     (and (member :msan *features*)
+-                         (find-dynamic-foreign-symbol-address "__msan_unpoison"))
++                         (find-foreign-symbol-address "__msan_unpoison"))
+                     :block-compile nil))
+                   (*current-path* nil)
+                   (*last-message-count* (list* 0 nil nil))
+diff --git a/src/runtime/Config.arm-linux b/src/runtime/Config.arm-linux
+index cc9b62861..7c52ca62f 100644
+--- a/src/runtime/Config.arm-linux
++++ b/src/runtime/Config.arm-linux
+@@ -34,6 +34,11 @@ ifdef LISP_FEATURE_LARGEFILE
+ endif
+ LINKFLAGS += -Wl,--export-dynamic
+ 
++ifdef LISP_FEATURE_SB_LINKABLE_RUNTIME
++  LIBSBCL = sbcl.o
++  USE_LIBSBCL = sbcl.o
++endif
++
+ # Nothing to do for after-grovel-headers.
+ .PHONY: after-grovel-headers
+ after-grovel-headers:
+diff --git a/src/runtime/Config.arm64-linux b/src/runtime/Config.arm64-linux
+index a073f6844..c03f649d6 100644
+--- a/src/runtime/Config.arm64-linux
++++ b/src/runtime/Config.arm64-linux
+@@ -32,6 +32,11 @@ ifdef LISP_FEATURE_LARGEFILE
+ endif
+ LINKFLAGS += -Wl,--export-dynamic
+ 
++ifdef LISP_FEATURE_SB_LINKABLE_RUNTIME
++  LIBSBCL = sbcl.o
++  USE_LIBSBCL = sbcl.o
++endif
++
+ # Nothing to do for after-grovel-headers.
+ .PHONY: after-grovel-headers
+ after-grovel-headers:
+diff --git a/src/runtime/GNUmakefile b/src/runtime/GNUmakefile
+index bda27b9ce..60e201202 100644
+--- a/src/runtime/GNUmakefile
++++ b/src/runtime/GNUmakefile
+@@ -82,13 +82,24 @@ ifndef LISP_FEATURE_WIN32
+ COMMON_SRC += run-program.c sprof.c
+ endif
+ 
++ifdef LISP_FEATURE_SB_PRELINK_LINKAGE_TABLE
++COMMON_SRC += linkage-table-prelink-info.c
++endif
++
+ C_SRC = $(COMMON_SRC) ${ARCH_SRC} ${OS_SRC} ${GC_SRC}
+ 
+ SRCS = $(C_SRC) ${ASSEM_SRC}
+ 
+ OBJS = $(C_SRC:.c=.o) $(ASSEM_SRC:.S=.o)
+ 
++# "Commas ... cannot appear in the text of an argument as written"
++comma := ,
++
++ifeq ($(or $(LISP_FEATURE_OS_PROVIDES_DLOPEN),$(LISP_FEATURE_OS_PROVIDES_DLADDR)),1)
+ LIBS = ${OS_LIBS} $(LDLIBS) -lm
++else
++LIBS = $(filter-out -ldl,$(filter-out -Wl$(comma)-no-as-needed,$(OS_LIBS))) $(LDLIBS) -lm
++endif
+ 
+ targets: $(TARGET) $(OBJTARGET) sbcl.mk
+ 
+@@ -113,6 +124,9 @@ unit-tests: gc-unit-tests.o libsbcl.a
+ sbcl.o: $(OBJS)
+ 	$(LD) $(__LDFLAGS__) -r -o $@ $^
+ 
++linkage-table-prelink-info.o: linkage-table-prelink-info.c
++	$(CC) $(CFLAGS) $(CPPFLAGS) -Wno-builtin-declaration-mismatch  -c -o $@ $<
++
+ libsbcl.a: $(OBJS)
+ 	rm -f $@ ; ar rcs $@ $^
+ 
+@@ -134,10 +148,13 @@ shrinkwrap-sbcl.s shrinkwrap-sbcl-core.o: $(SHRINKWRAP_DEPS)
+ pie-shrinkwrap-sbcl.s pie-shrinkwrap-sbcl-core.o: $(SHRINKWRAP_DEPS)
+ 	../../run-sbcl.sh --script ../../tools-for-build/editcore.lisp split --pie \
+ 		../../output/sbcl.core pie-shrinkwrap-sbcl.s
+-comma := , # "Commas ... cannot appear in the text of an argument as written"
++
+ shrinkwrap-sbcl: shrinkwrap-sbcl.s shrinkwrap-sbcl-core.o $(LIBSBCL)
+ 	$(CC) -no-pie $(filter-out -Wl$(comma)--export-dynamic, $(LINKFLAGS)) \
+  $(CFLAGS) -o $@ $^ $(LIBS)
++static-shrinkwrap-sbcl: shrinkwrap-sbcl.s shrinkwrap-sbcl-core.o $(LIBSBCL)
++	$(CC) -no-pie -static $(filter-out -Wl$(comma)--export-dynamic, $(LINKFLAGS)) \
++ $(CFLAGS) -o $@ $^ $(LIBS)
+ pie-shrinkwrap-sbcl: pie-shrinkwrap-sbcl.s pie-shrinkwrap-sbcl-core.o $(PIC_OBJS)
+ 	$(CC) -pie -o $@ $^ $(LIBS)
+ semiwrap-sbcl: shrinkwrap-sbcl.s $(LIBSBCL)
+diff --git a/src/runtime/arch.h b/src/runtime/arch.h
+index e6965902d..847cbdf6b 100644
+--- a/src/runtime/arch.h
++++ b/src/runtime/arch.h
+@@ -66,5 +66,6 @@ extern void arch_handle_single_step_trap(os_context_t *context, int trap);
+ #endif
+ 
+ extern void arch_write_linkage_table_entry(int index, void *target_addr, int datap);
++extern void *arch_read_linkage_table_entry(int index, int datap);
+ 
+ #endif /* __ARCH_H__ */
+diff --git a/src/runtime/arm-arch.c b/src/runtime/arm-arch.c
+index 9984bf5c9..676afaa88 100644
+--- a/src/runtime/arm-arch.c
++++ b/src/runtime/arm-arch.c
+@@ -169,3 +169,15 @@ void arch_write_linkage_table_entry(int index, void *target_addr, int datap)
+ 
+   os_flush_icache((os_vm_address_t) reloc_addr, (char*) inst_ptr - reloc_addr);
+ }
++
++void
++*arch_read_linkage_table_entry(int index, int datap)
++{
++  char *reloc_addr =
++      (char *)LINKAGE_TABLE_SPACE_END - (index + 1) * LINKAGE_TABLE_ENTRY_SIZE;
++  if (datap) {
++    return (unsigned long*) *(unsigned long *)reloc_addr;
++  }
++
++  return *(void**)((int*)reloc_addr+3);
++}
+diff --git a/src/runtime/arm64-arch.c b/src/runtime/arm64-arch.c
+index 9b42b0911..6c0c4ee6b 100644
+--- a/src/runtime/arm64-arch.c
++++ b/src/runtime/arm64-arch.c
+@@ -183,3 +183,14 @@ void arch_write_linkage_table_entry(int index, void *target_addr, int datap)
+  DONE:
+   THREAD_JIT(1);
+ }
++
++void
++*arch_read_linkage_table_entry(int index, int datap)
++{
++  char *reloc_addr = (char*)LINKAGE_TABLE_SPACE_START + index * LINKAGE_TABLE_ENTRY_SIZE;
++  if (datap) {
++    return (unsigned long*) *(unsigned long *)reloc_addr;
++  }
++
++  return *(void**)((int*)reloc_addr+2);
++}
+diff --git a/src/runtime/coreparse.c b/src/runtime/coreparse.c
+index 2f6e36d9e..cc082c99d 100644
+--- a/src/runtime/coreparse.c
++++ b/src/runtime/coreparse.c
+@@ -741,30 +741,7 @@ process_directory(int count, struct ndir_entry *entry,
+                (uword_t)&lisp_code_start, (uword_t)&lisp_code_end,
+                varyobj_free_pointer);
+ #endif
+-        // Prefill the Lisp linkage table so that shrinkwrapped executables which link in
+-        // all their C library dependencies can avoid linking with -ldl.
+-        // All data references are potentially needed because aliencomp doesn't emit
+-        // SAP-REF-n in a way that admits elision of the linkage entry. e.g.
+-        //     MOV RAX, [#x20200AA0] ; some_c_symbol
+-        //     MOV RAX, [RAX]
+-        // might be rendered as
+-        //     MOV RAX, some_c_symbol(%rip)
+-        // but that's more of a change to the asm instructions than I'm comfortable making;
+-        // whereas "CALL linkage_entry_for_f" -> "CALL f" is quite straightforward.
+-        // (Rarely would a jmp indirection be used; maybe for newly compiled code?)
+-        lispobj* ptr = &lisp_linkage_values;
+-        gc_assert(ptr);
+-        int entry_index = 0;
+-        int count;
+-        extern int lisp_linkage_table_n_prelinked;
+-        count = lisp_linkage_table_n_prelinked = *ptr++;
+-        for ( ; count-- ; entry_index++ ) {
+-            boolean datap = *ptr == (lispobj)-1; // -1 can't be a function address
+-            if (datap)
+-                ++ptr;
+-            arch_write_linkage_table_entry(entry_index, (void*)*ptr++, datap);
+-        }
+-
++        os_link_from_pointer_table(&lisp_linkage_values);
+         // unprotect the pages
+         os_protect((void*)VARYOBJ_SPACE_START, varyobj_space_size, OS_VM_PROT_ALL);
+     } else
+diff --git a/src/runtime/mips-arch.c b/src/runtime/mips-arch.c
+index 3516fb4d0..bab110581 100644
+--- a/src/runtime/mips-arch.c
++++ b/src/runtime/mips-arch.c
+@@ -440,3 +440,11 @@ arch_write_linkage_table_entry(int index, void *target_addr, int datap)
+         (char*)LINKAGE_TABLE_SPACE_END - (index + 1) * LINKAGE_TABLE_ENTRY_SIZE;
+     *(unsigned int *)reloc_addr = (unsigned int)target_addr;
+ }
++
++void
++*arch_read_linkage_table_entry(int index, int datap)
++{
++    char *reloc_addr =
++        (char*)LINKAGE_TABLE_SPACE_END - (index + 1) * LINKAGE_TABLE_ENTRY_SIZE;
++    return *(unsigned int *)reloc_addr;
++}
+diff --git a/src/runtime/os-common.c b/src/runtime/os-common.c
+index 316a84b5f..019092d41 100644
+--- a/src/runtime/os-common.c
++++ b/src/runtime/os-common.c
+@@ -16,6 +16,7 @@
+ #include "sbcl.h"
+ #include "globals.h"
+ #include "runtime.h"
++#include "gc-assert.h"
+ #include "genesis/config.h"
+ #include "genesis/constants.h"
+ #include "genesis/cons.h"
+@@ -186,7 +187,33 @@ os_sem_destroy(os_sem_t *sem)
+  * table entry for each element of REQUIRED_FOREIGN_SYMBOLS.
+  */
+ 
+-#ifndef LISP_FEATURE_WIN32
++void os_link_from_pointer_table(lispobj* table_ptr)
++{
++    // Prefill the Lisp linkage table so that shrinkwrapped executables which link in
++    // all their C library dependencies can avoid linking with -ldl.
++    // All data references are potentially needed because aliencomp doesn't emit
++    // SAP-REF-n in a way that admits elision of the linkage entry. e.g.
++    //     MOV RAX, [#x20200AA0] ; some_c_symbol
++    //     MOV RAX, [RAX]
++    // might be rendered as
++    //     MOV RAX, some_c_symbol(%rip)
++    // but that's more of a change to the asm instructions than I'm comfortable making;
++    // whereas "CALL linkage_entry_for_f" -> "CALL f" is quite straightforward.
++    // (Rarely would a jmp indirection be used; maybe for newly compiled code?)
++    gc_assert(table_ptr);
++    int entry_index = 0;
++    int count;
++    extern int lisp_linkage_table_n_prelinked;
++    count = lisp_linkage_table_n_prelinked = *table_ptr++;
++    for ( ; count-- ; entry_index++ ) {
++        boolean datap = *table_ptr == (lispobj)-1; // -1 can't be a function address
++        if (datap)
++            ++table_ptr;
++        arch_write_linkage_table_entry(entry_index, (void*)*table_ptr++, datap);
++    }
++}
++
++#if !defined(LISP_FEATURE_WIN32) && defined(LISP_FEATURE_OS_PROVIDES_DLOPEN)
+ void *
+ os_dlsym_default(char *name)
+ {
+@@ -195,19 +222,24 @@ os_dlsym_default(char *name)
+ }
+ #endif
+ 
++#ifdef LISP_FEATURE_SB_PRELINK_LINKAGE_TABLE
++extern lispobj lisp_linkage_values;
++#endif
++
+ int lisp_linkage_table_n_prelinked;
+ void os_link_runtime()
+ {
+-    int entry_index = 0;
+-    lispobj symbol_name;
+-    char *namechars;
+-    boolean datap;
+-    void* result;
+-    int j;
++    int __attribute__((unused)) entry_index = 0;
++    lispobj __attribute__((unused)) symbol_name;
++    char __attribute__((unused)) *namechars;
++    boolean __attribute__((unused)) datap;
++    void* __attribute__((unused)) result;
++    int __attribute__((unused)) j;
+ 
+     if (lisp_linkage_table_n_prelinked)
+         return; // Linkage was already performed by coreparse
+ 
++#ifndef LISP_FEATURE_SB_PRELINK_LINKAGE_TABLE
+     struct vector* symbols = VECTOR(SymbolValue(REQUIRED_FOREIGN_SYMBOLS,0));
+     lisp_linkage_table_n_prelinked = vector_len(symbols);
+     for (j = 0 ; j < lisp_linkage_table_n_prelinked ; ++j)
+@@ -226,6 +258,9 @@ void os_link_runtime()
+ 
+         ++entry_index;
+     }
++#else
++    os_link_from_pointer_table(&lisp_linkage_values);
++#endif
+ }
+ 
+ void os_unlink_runtime()
+diff --git a/src/runtime/ppc-arch.c b/src/runtime/ppc-arch.c
+index 3de45ed90..6c3e1561b 100644
+--- a/src/runtime/ppc-arch.c
++++ b/src/runtime/ppc-arch.c
+@@ -835,3 +835,43 @@ arch_write_linkage_table_entry(int index, void *target_addr, int datap)
+ 
+   os_flush_icache((os_vm_address_t) reloc_addr, (char*) inst_ptr - reloc_addr);
+ }
++
++void
++*arch_read_linkage_table_entry(int index, int datap)
++{
++  char *reloc_addr = (char*)LINKAGE_TABLE_SPACE_START + index * LINKAGE_TABLE_ENTRY_SIZE;
++  if (datap) {
++    return *(unsigned long *)reloc_addr;
++  }
++
++#if defined LISP_FEATURE_64_BIT
++#ifdef LISP_FEATURE_LITTLE_ENDIAN
++  int* inst_ptr;
++  unsigned long a0, a16, a32, a48;
++
++  inst_ptr = (int*) reloc_addr;
++
++  a48 = *inst_ptr++ & 0xffff;
++  a32 = *inst_ptr++ & 0xffff;
++  inst_ptr++;
++  a16 = *inst_ptr++ & 0xffff;
++  a0 = *inst_ptr++ & 0xffff;
++
++  return (void*) (a0 + (a16 << 16) + (a32 << 32) + (a48 << 48));
++#else
++  void *target_addr;
++  memcpy(target_addr, reloc_addr, 24);
++  return target_addr;
++#endif
++#endif
++  int* inst_ptr;
++  unsigned long hi;
++  unsigned long lo;
++
++  inst_ptr = (int*) reloc_addr;
++
++  hi = *inst_ptr++ & 0xffff;
++  lo = *inst_ptr++ & 0xffff;
++
++  return (void*) (lo + (hi << 16));
++}
+diff --git a/src/runtime/riscv-arch.c b/src/runtime/riscv-arch.c
+index f110d4143..08792c395 100644
+--- a/src/runtime/riscv-arch.c
++++ b/src/runtime/riscv-arch.c
+@@ -152,6 +152,14 @@ void arch_write_linkage_table_entry(int index, void *target_addr, int datap)
+     *(uword_t*)reloc_addr = (uword_t)target_addr;
+ }
+ 
++void
++*arch_read_linkage_table_entry(int index, int datap)
++{
++    char *reloc_addr =
++        (char*)LINKAGE_TABLE_SPACE_END - (index + 1) * LINKAGE_TABLE_ENTRY_SIZE;
++    return *(uword_t *)reloc_addr;
++}
++
+ lispobj call_into_lisp(lispobj fun, lispobj *args, int nargs) {
+     return ((lispobj(*)(lispobj, lispobj *, int, struct thread*))SYMBOL(CALL_INTO_LISP)->value)
+       (fun, args, nargs, get_sb_vm_thread());
+diff --git a/src/runtime/runtime.h b/src/runtime/runtime.h
+index 43f801617..72491eb59 100644
+--- a/src/runtime/runtime.h
++++ b/src/runtime/runtime.h
+@@ -404,6 +404,8 @@ extern char *copied_string (char *string);
+ # define GENCGC_IS_PRECISE 0
+ #endif
+ 
++void os_link_from_pointer_table(lispobj *table_ptr);
++
+ void *os_dlsym_default(char *name);
+ 
+ struct lisp_startup_options {
+diff --git a/src/runtime/sparc-arch.c b/src/runtime/sparc-arch.c
+index 66cf823fe..b631c3617 100644
+--- a/src/runtime/sparc-arch.c
++++ b/src/runtime/sparc-arch.c
+@@ -433,3 +433,22 @@ arch_write_linkage_table_entry(int index, void *target_addr, int datap)
+ 
+   os_flush_icache((os_vm_address_t) reloc_addr, (char*) inst_ptr - reloc_addr);
+ }
++
++void
++*arch_read_linkage_table_entry(int index, int datap)
++{
++  char *reloc_addr = (char*)LINKAGE_TABLE_SPACE_START + index * LINKAGE_TABLE_ENTRY_SIZE;
++  if (datap) {
++    return (unsigned long*) *(unsigned long *)reloc_addr;
++  }
++
++  int* inst_ptr;
++  unsigned long hi;
++  unsigned long lo;
++
++  inst_ptr = (int*) reloc_addr;
++  hi = *inst_ptr++ & 0x3fffff;
++  lo = *inst_ptr & 0x3ff;
++
++  return (void*)(lo + (hi << 10));
++}
+diff --git a/src/runtime/validate.c b/src/runtime/validate.c
+index 5eb2cfbdc..cc0228fa0 100644
+--- a/src/runtime/validate.c
++++ b/src/runtime/validate.c
+@@ -144,9 +144,7 @@ allocate_lisp_dynamic_space(boolean did_preinit)
+     if (!did_preinit)
+       allocate_hardwired_spaces(1);
+ 
+-#ifdef LISP_FEATURE_OS_PROVIDES_DLOPEN
+     ensure_undefined_alien();
+-#endif
+ }
+ 
+ static inline void
+diff --git a/src/runtime/x86-64-arch.c b/src/runtime/x86-64-arch.c
+index ba989e114..df485dbec 100644
+--- a/src/runtime/x86-64-arch.c
++++ b/src/runtime/x86-64-arch.c
+@@ -515,6 +515,17 @@ arch_write_linkage_table_entry(int index, void *target_addr, int datap)
+     *(void**)(reloc_addr+8) = target_addr;
+ }
+ 
++void
++*arch_read_linkage_table_entry(int index, int datap)
++{
++  char *reloc_addr = (char*)LINKAGE_TABLE_SPACE_START + index * LINKAGE_TABLE_ENTRY_SIZE;
++  if (datap) {
++    return (void*) *(uword_t *)reloc_addr;
++  }
++
++  return *(void**)(reloc_addr+8);
++}
++
+ /* These setup and check *both* the sse2 and x87 FPUs. While lisp code
+    only uses the sse2 FPU, other code (such as libc) may use the x87 FPU.
+  */
+diff --git a/src/runtime/x86-arch.c b/src/runtime/x86-arch.c
+index dc60434e7..7d04fbe62 100644
+--- a/src/runtime/x86-arch.c
++++ b/src/runtime/x86-arch.c
+@@ -405,3 +405,17 @@ arch_write_linkage_table_entry(int index, void *target_addr, int datap)
+     /* write a nop for good measure. */
+     *reloc_addr = 0x90;
+ }
++
++void
++*arch_read_linkage_table_entry(int index, int datap)
++{
++  char *reloc_addr = (char*)LINKAGE_TABLE_SPACE_START + index * LINKAGE_TABLE_ENTRY_SIZE;
++  if (datap) {
++    return (unsigned long*) *(unsigned long *)reloc_addr;
++  }
++
++  long offset = 0;
++
++  offset = reloc_addr[1] + (reloc_addr[2] << 8) + (reloc_addr[3] << 16) + (reloc_addr[4] << 24);
++  return (void*) (offset + reloc_addr + 5);
++}
+diff --git a/tests/foreign.test.sh b/tests/foreign.test.sh
+index 35fb3cd79..d535da112 100755
+--- a/tests/foreign.test.sh
++++ b/tests/foreign.test.sh
+@@ -486,5 +486,27 @@ cat > $TEST_FILESTEM.alien.enum.lisp <<EOF
+ EOF
+ expect_clean_compile $TEST_FILESTEM.alien.enum.lisp
+ 
++# If dlopen is available, check that the address we get for a symbol
++# from dlsym and from backing it out of the linkage table match.
++run_sbcl <<EOF
++  (eval-when (:compile-toplevel :load-toplevel :execute)
++    (setq *features* (union *features* sb-impl:+internal-features+)))
++  #+os-provides-dlopen
++  (progn
++    (extern-alien "posix_argv" (* (* char)))
++    (extern-alien "sin" (function double double))
++
++    ;; Test that data pointers are the same.
++    (assert (= (sb-sys:find-dynamic-foreign-symbol-address "posix_argv")
++               (sb-sys:find-linkage-table-foreign-symbol-address "posix_argv")))
++
++    ;; Test that function pointers are the same.
++    (assert (= (sb-sys:find-dynamic-foreign-symbol-address "sin")
++               (sb-sys:find-linkage-table-foreign-symbol-address "sin"))))
++
++  (exit :code $EXIT_LISP_WIN)
++EOF
++check_status_maybe_lose "arch-read-linkage-table-entry" $?
++
+ # success convention for script
+ exit $EXIT_TEST_WIN
+diff --git a/tools-for-build/Dockerfile.static-executable-example b/tools-for-build/Dockerfile.static-executable-example
+new file mode 100644
+index 000000000..0ec5e3f9e
+--- /dev/null
++++ b/tools-for-build/Dockerfile.static-executable-example
+@@ -0,0 +1,63 @@
++# Example Dockerfile to build a static executable with SBCL. The example
++# executable simply runs the sb-gmp contrib tests. The exeutable has libc,
++# libgmp, and libz staticially linked in. It is simple, however it demonstrates
++# that a static executable can run on ~any Linux system.
++
++FROM clfoundation/sbcl:alpine3.13
++
++COPY . /usr/local/src/sbcl/
++
++WORKDIR /usr/local/src/sbcl
++
++# Install build prereq and build SBCL with sb-linkable-runtime and
++# sb-prelink-linkage-table
++RUN set -x \
++    # I frequently build arm executables on an arm64 computer. Need to add this
++    # otherwise SBCL can get confused
++    && case "$(cat /etc/apk/arch)" in \
++         armv7) SBCL_ARCH=arm;; \
++         aarch64) SBCL_ARCH=arm64;; \
++         x86_64) SBCL_ARCH=x86-64;; \
++         *) echo "Unknown arch" >&2; exit 1;; \
++       esac \
++    && export SBCL_ARCH \
++    && apk add --no-cache ca-certificates curl openssl make gcc musl-dev linux-headers gnupg patch zlib-dev zlib-static \
++    # Remove the hardcoding of armv5 as target arch. Use the default provided
++    # by the base image. Required when building for ARM on Alpine 3.12.
++    && sed -i -e "s/CFLAGS += -marm -march=armv5/CFLAGS += -marm/" src/runtime/Config.arm-linux \
++    && sh make.sh --fancy --with-sb-linkable-runtime --with-sb-prelink-linkage-table \
++    && sh install.sh
++
++# Load sb-gmp into an image, save the foreign symbols it requires, and dump the
++# core.
++RUN set -x \
++    && apk add --no-cache gmp-dev \
++    && sbcl --non-interactive \
++            --eval '(require :uiop)' \
++            --eval '(require :sb-gmp)' \
++            --eval '(require :sb-rt)' \
++            --eval '(defvar *sb-gmp-tests* (uiop:read-file-string "contrib/sb-gmp/tests.lisp"))' \
++            --load tools-for-build/dump-linkage-info.lisp \
++            --eval '(sb-dump-linkage-info:dump-to-file "/tmp/linkage-info.sexp")' \
++            --eval '(sb-ext:save-lisp-and-die "/tmp/sb-gmp-tester.core")'
++
++# Build a static runtime, with libgmp linked and the required symbols in the
++# linkage table.
++RUN set -x \
++    && sbcl --script tools-for-build/create-linkage-table-prelink-info-override.lisp \
++            /tmp/linkage-info.sexp \
++            /tmp/linkage-table-prelink-info-override.c \
++    && while read l; do \
++         eval "${l%%=*}=\"${l#*=}\""; \
++       done < /usr/local/lib/sbcl/sbcl.mk \
++    && $CC $CFLAGS -Wno-builtin-declaration-mismatch -o /tmp/linkage-table-prelink-info-override.o -c /tmp/linkage-table-prelink-info-override.c \
++    && $CC -no-pie -static $LINKFLAGS -o /tmp/static-sbcl /usr/local/lib/sbcl/$LIBSBCL /tmp/linkage-table-prelink-info-override.o -lgmp $LIBS
++
++# Use the new static runtime to load the previous core and then dump a
++# compressed executable with the toplevel function set to run the sb-gmp test
++# suite.
++RUN set -x \
++    && /tmp/static-sbcl \
++        --core /tmp/sb-gmp-tester.core \
++        --non-interactive \
++        --eval '(sb-ext:save-lisp-and-die "/tmp/sb-gmp-tester" :executable t :toplevel (lambda () (uiop:load-from-string *sb-gmp-tests*) (sb-rt:do-tests) (exit)) :compression t)'
+diff --git a/tools-for-build/create-linkage-table-prelink-info-override.lisp b/tools-for-build/create-linkage-table-prelink-info-override.lisp
+new file mode 100644
+index 000000000..2e563af27
+--- /dev/null
++++ b/tools-for-build/create-linkage-table-prelink-info-override.lisp
+@@ -0,0 +1,43 @@
++(in-package :cl-user)
++
++(defun foreign-symbols-to-c (output-pathname sorted-symbols)
++  (with-open-file (output output-pathname
++                          :direction :output
++                          :if-exists :supersede)
++    ;; Needed for uintptr_t. We use the raw uintptr_t as we don't want to have
++    ;; to include any SBCL headers just to get at lispobj.
++    (format output "#include <stdint.h>~%~%")
++
++    ;; Write out the extern definitions. Everything is a void function (even
++    ;; variables) because compilers don't like void variables. Remove
++    ;; lisp_linkage_values as we need to write to it, so we should use the
++    ;; actual type.
++    (format output "extern void ~{~A()~^, ~};~%~%"
++            (remove "lisp_linkage_values"
++                    (mapcar #'first
++                            (remove t sorted-symbols :key #'third))
++                    :test #'equal))
++
++    (format output "uintptr_t lisp_linkage_values[] = {~%")
++
++    (format output "  ~D,~%" (length sorted-symbols))
++    (dolist (symbol sorted-symbols)
++      (destructuring-bind (name datap undefinedp) symbol
++        (when datap
++          ;; This is data, put -1 in to indicate that.
++          (format output "  (uintptr_t)-1,~%"))
++        (if undefinedp
++            (format output "  (uintptr_t)0,~%")
++            (format output "  (uintptr_t)&~A,~%" name))))
++    (format output "};~%")))
++
++(defun main (&optional (args (cdr sb-ext:*posix-argv*)))
++  (foreign-symbols-to-c (second args)
++                        (with-open-file (s (first args))
++                          (read s))))
++
++(eval-when (:execute)
++  (let ((args (cdr sb-ext:*posix-argv*)))
++    (when args
++      (let ((*print-pretty* nil))
++        (main args)))))
+diff --git a/tools-for-build/dump-linkage-info.lisp b/tools-for-build/dump-linkage-info.lisp
+new file mode 100644
+index 000000000..c71fef609
+--- /dev/null
++++ b/tools-for-build/dump-linkage-info.lisp
+@@ -0,0 +1,26 @@
++(defpackage #:sb-dump-linkage-info
++  (:use #:cl)
++  (:export #:*libdl-symbols*
++           #:dump-to-file))
++
++(in-package #:sb-dump-linkage-info)
++
++(defparameter *libdl-symbols* '("dladdr" "dlclose" "dlerror" "dlopen" "dlsym"))
++
++(defun dump-to-file (pn &key (make-undefined nil))
++  (let ((ht (car sb-sys:*linkage-info*))
++        (undefined-entries (cdr sb-sys:*linkage-info*))
++        out)
++    (loop
++      :for key :being :the :hash-keys :in ht :using (hash-value idx)
++      :for datap := (listp key)
++      :for name := (if datap (first key) key)
++      :for undefinedp := (not (null (or (member key undefined-entries :test #'equal)
++                                        (member name make-undefined :test #'equal))))
++      :do (push (cons idx (list name datap undefinedp)) out))
++    (ensure-directories-exist pn)
++    (with-open-file (s pn :direction :output :if-exists :supersede)
++      (let ((*print-pretty* nil))
++        (prin1 (mapcar #'cdr (sort out #'< :key #'car)) s))
++      (terpri s)))
++  pn)
