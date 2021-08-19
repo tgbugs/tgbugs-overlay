@@ -3,11 +3,11 @@
 
 EAPI=6
 
-inherit multilib eutils flag-o-matic pax-utils toolchain-funcs
+inherit multilib flag-o-matic pax-utils toolchain-funcs
 
 #same order as http://www.sbcl.org/platform-table.html
 BV_X86=1.4.3
-BV_AMD64=2.0.11
+BV_AMD64=2.1.7
 BV_PPC=1.2.7
 BV_SPARC=1.0.28
 BV_ALPHA=1.0.28
@@ -38,12 +38,11 @@ SRC_URI="mirror://sourceforge/sbcl/${P}-source.tar.bz2
 LICENSE="MIT"
 SLOT="0/${PV}"
 KEYWORDS="~amd64 ~ppc ~sparc ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-solaris"
-IUSE="debug doc source +threads +unicode pax_kernel zlib"
+IUSE="debug doc source +threads +unicode zlib"
 
 CDEPEND=">=dev-lisp/asdf-3.3:="
 DEPEND="${CDEPEND}
-		doc? ( sys-apps/texinfo >=media-gfx/graphviz-2.26.0 )
-		pax_kernel? ( sys-apps/elfix )"
+		doc? ( sys-apps/texinfo >=media-gfx/graphviz-2.26.0 )"
 RDEPEND="${CDEPEND}
 		!prefix? ( elibc_glibc? ( >=sys-libs/glibc-2.6 ) )"
 
@@ -99,6 +98,8 @@ src_prepare() {
 	eapply "${FILESDIR}"/bsd-sockets-test-2.0.5.patch
 	# bugs #560276, #561018
 	eapply "${FILESDIR}"/sb-posix-test-1.2.15.patch
+	# bug #767742
+	eapply "${FILESDIR}"/etags-2.1.0.patch
 
 	eapply "${FILESDIR}"/verbose-build-2.0.3.patch
 
@@ -139,18 +140,6 @@ src_prepare() {
 	sed  "s,/etc/sbclrc,${EPREFIX}/etc/sbclrc,g" -i src/code/toplevel.lisp || die
 
 	find . -type f -name .cvsignore -delete
-
-	if use zlib && [[ "${CBUILD}" != "${CHOST}" ]]; then
-		# we are in a crossdev environment e.g. glibc building musl
-		# and sbcl uses the c compiler to detect certain properties of
-		# the system, if zlib was enabled then it will dynamically link
-		# against libz and it will try to use the CBUILD lib instead of
-		# the CHOST lib which will fail for make-target-1.sh and make-config.sh
-		die "Support for cross compiling with zlib support has not be implemented yet."
-		sed "s,^tools-for-build,LD_LIBRARY_PATH=${LD_LIBRARY_PATH} tools-for-build," -i make-*.sh || die
-	fi
-
-
 }
 
 src_configure() {
@@ -164,15 +153,6 @@ src_configure() {
 
 src_compile() {
 	local bindir="${WORKDIR}"/sbcl-binary
-
-	if use pax_kernel ; then
-		# To disable PaX on hardened systems
-		pax-mark -mr "${bindir}"/src/runtime/sbcl
-
-		# Hack to disable PaX on second GENESIS stage
-		sed -i -e '/^[ \t]*echo \/\/doing warm init - compilation phase$/a\    paxmark.sh -mr \.\/src\/runtime\/sbcl' \
-			"${S}"/make-target-2.sh || die "Cannot disable PaX on second GENESIS runtime"
-	fi
 
 	# clear the environment to get rid of non-ASCII strings, see bug #174702
 	# set HOME for paludis
@@ -246,6 +226,9 @@ src_install() {
 	if use source; then
 		./clean.sh
 		cp -av src "${ED}/usr/$(get_libdir)/sbcl/" || die
+		for d in contrib/*/; do
+			cp -av "$d" "${ED}/usr/$(get_libdir)/sbcl/" || die
+		done
 	fi
 
 	# necessary for running newly-saved images
