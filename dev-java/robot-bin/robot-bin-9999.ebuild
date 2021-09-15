@@ -27,7 +27,6 @@ IDEPEND=""
 
 # FIXME waiting on EAPI 8 support in java-pkg-2.eclass for IDEPEND
 DEPEND="${IDEPEND}
-	dev-libs/nss
 	>=virtual/jdk-1.8
 	>=dev-java/maven-bin-3.3"
 
