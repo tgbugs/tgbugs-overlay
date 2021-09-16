@@ -23,12 +23,12 @@ IUSE=""
 
 COMMON_DEP=""
 
-RDEPEND="
-	>=virtual/jre-1.8"
-
 IDEPEND="
 	acct-group/blazegraph
 	acct-user/blazegraph"
+
+RDEPEND="${IDEPEND}
+	>=virtual/jre-1.8"
 
 # FIXME waiting on EAPI 8 support in java-pkg-2.eclass for IDEPEND
 DEPEND="${IDEPEND}

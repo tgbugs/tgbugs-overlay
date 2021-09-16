@@ -1,4 +1,4 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -21,12 +21,13 @@ IUSE="+core"
 
 COMMON_DEP=""
 
-RDEPEND=">=virtual/jre-1.8
-		x11-misc/xvfb-run"
-
 IDEPEND="
 	acct-group/scigraph
 	acct-user/scigraph"
+
+RDEPEND="${IDEPEND}
+	>=virtual/jre-1.8
+	x11-misc/xvfb-run"
 
 # FIXME waiting on EAPI 8 support in java-pkg-2.eclass for IDEPEND
 DEPEND="${IDEPEND}
