@@ -26,7 +26,7 @@ run_dir=${run_dir:-/run}
 pidfile="${run_dir}/${SVCNAME}/pid"
 SVC_LOG_OPTS="-XX:HeapDumpPath=${SERVICES_LOG_LOC}/heap.dump
 -Xloggc:${SERVICES_LOG_LOC}/gc.log"
-command_args="${SERVICES_OPTS} ${SVC_LOG_OPTS} -jar \"${SVC_JAR}\" server ${SERVICES_CONFIG} >> \"${SERVICES_LOG}\" 2>&1"
+command_args="${SERVICES_OPTS} ${SVC_LOG_OPTS} -jar \"${SVC_JAR}\" server ${SERVICES_CONFIG}"
 start_stop_daemon_args="
 --wait=5000
 --group ${SVCGROUP}
