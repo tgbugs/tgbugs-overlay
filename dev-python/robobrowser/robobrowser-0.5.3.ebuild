@@ -1,9 +1,9 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=8
 
-PYTHON_COMPAT=( pypy{,3} python3_{5,6,7} )
+PYTHON_COMPAT=( pypy3 python3_{8..10} )
 inherit distutils-r1
 
 DESCRIPTION="Your friendly neighborhood web scraper"
@@ -16,7 +16,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 DEPEND=""
-RDEPEND="dev-python/beautifulsoup:4[${PYTHON_USEDEP}]
+RDEPEND="dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 dev-python/requests[${PYTHON_USEDEP}]
 dev-python/six[${PYTHON_USEDEP}]
 dev-python/werkzeug[${PYTHON_USEDEP}]
