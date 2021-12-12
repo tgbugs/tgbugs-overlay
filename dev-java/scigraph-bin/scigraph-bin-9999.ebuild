@@ -1,11 +1,11 @@
 # Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 JAVA_PKG_IUSE=""
 
-inherit java-pkg-2 user git-r3
+inherit java-pkg-2 git-r3
 
 MY_PN="${PN%%-bin}"
 MY_P="${MY_PN}-${PV}"
@@ -29,8 +29,7 @@ RDEPEND="${IDEPEND}
 	>=virtual/jre-1.8
 	x11-misc/xvfb-run"
 
-# FIXME waiting on EAPI 8 support in java-pkg-2.eclass for IDEPEND
-DEPEND="${IDEPEND}
+DEPEND="
 	>=virtual/jdk-1.8
 	>=dev-java/maven-bin-3.3
 	app-arch/unzip"
@@ -61,9 +60,6 @@ src_unpack() {
 	#eapply_user
 	# why isn't this in src_compile you ask? network-sandbox is the answer
 	mvn -DskipTests -DskipITs clean install || die "compile failed"
-	pushd SciGraph-services
-	mvn -DskipTests -DskipITs install || die "compile failed"
-	popd
 	popd
 }
 
