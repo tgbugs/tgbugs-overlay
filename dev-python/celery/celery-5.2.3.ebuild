@@ -33,9 +33,9 @@ RDEPEND="
 	>=dev-python/click-8.0.3[${PYTHON_USEDEP}]
 	<dev-python/click-9.0.0[${PYTHON_USEDEP}]
 	>=dev-python/click-plugins-1.1.1[${PYTHON_USEDEP}]
+	>=dev-python/click-didyoumean-0.0.3[${PYTHON_USEDEP}]
+	>=dev-python/click-repl-0.2.0[${PYTHON_USEDEP}]
 "
-# click-did-you-mean
-# click-repl
 
 DEPEND="
 	dev-python/setuptools[${PYTHON_USEDEP}]
