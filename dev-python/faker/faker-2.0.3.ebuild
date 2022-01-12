@@ -30,7 +30,6 @@ DEPEND="
 		dev-python/mock[${PYTHON_USEDEP}]
 		>=dev-python/pytest-3.8.0[${PYTHON_USEDEP}]
 		<=dev-python/pytest-3.9[${PYTHON_USEDEP}]
-		dev-python/pytest-runner[${PYTHON_USEDEP}]
 		<dev-python/random2-1.1[${PYTHON_USEDEP}]
 		<dev-python/freezegun-0.4[${PYTHON_USEDEP}]
 	)

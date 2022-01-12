@@ -29,7 +29,7 @@ RDEPEND="
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
-	dev-python/gevent[$(python_gen_usedep python3_{7..9})]
+	dev-python/gevent[$(python_gen_usedep python3_{8..10})]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.6[memex,${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]

@@ -1,9 +1,9 @@
 # Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-PYTHON_COMPAT=( pypy3 python3_{7..9} )
+PYTHON_COMPAT=( pypy3 python3_{8..10} )
 inherit distutils-r1 user
 
 DESCRIPTION="Web annotation curation pipeline"
@@ -19,7 +19,7 @@ RDEPEND="
 	dev-python/curio[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
-	dev-python/gevent[$(python_gen_usedep python3_{7..9})]
+	dev-python/gevent[$(python_gen_usedep python3_{8..10})]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.3[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
@@ -31,7 +31,6 @@ RDEPEND="
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
-		dev-python/pytest-runner[${PYTHON_USEDEP}]
 	)
 "
 DEPEND="${RDEPEND}"

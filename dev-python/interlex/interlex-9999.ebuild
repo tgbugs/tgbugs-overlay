@@ -50,7 +50,6 @@ RDEPEND="
 	rabbitmq? ( net-misc/rabbitmq-server )
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
-		dev-python/pytest-runner[${PYTHON_USEDEP}]
 	)
 "
 DEPEND="${RDEPEND}"

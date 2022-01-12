@@ -42,7 +42,6 @@ DEPEND="
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
-		dev-python/pytest-runner[${PYTHON_USEDEP}]
 	)
 "
 RDEPEND="${DEPEND}"
