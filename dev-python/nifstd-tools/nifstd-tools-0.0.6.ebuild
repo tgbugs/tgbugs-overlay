@@ -3,7 +3,7 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( pypy3 python3_{6..9} )
+PYTHON_COMPAT=( pypy3 python3_{8..10} )
 inherit distutils-r1 user
 
 if [[ ${PV} == "9999" ]]; then
@@ -53,7 +53,7 @@ DEPEND="
 RDEPEND="${DEPEND}"
 
 pkg_setup() {
-	ebegin "Creating protcur user and group"
+	ebegin "Creating ${PN} user and group"
 	enewgroup ${PN}
 	enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
 	eend $?
