@@ -1,31 +1,29 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=8
 
-PYTHON_COMPAT=( pypy{,3} python3_{5,6,7} )
-
+PYTHON_COMPAT=( python3_{8..10} pypy3 )
 inherit distutils-r1
 
 DESCRIPTION="GitDB is a pure-Python git object database"
 HOMEPAGE="
 	https://github.com/gitpython-developers/gitdb
-	https://pypi.org/project/gitdb2/"
+	https://pypi.org/project/gitdb/"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 arm64 ~x86"
-IUSE="test"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~m68k ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
-	!dev-python/gitdb[${PYTHON_USEDEP}]
-	>=dev-python/smmap2-2.0.1[${PYTHON_USEDEP}]"
-DEPEND="${RDEPEND}
+	>=dev-python/smmap-3.0.1[${PYTHON_USEDEP}]"
+BDEPEND="
 	test? (
-		dev-python/nose[${PYTHON_USEDEP}]
 		dev-vcs/git
 	)"
+
+distutils_enable_tests nose
 
 src_test() {
 	local i
