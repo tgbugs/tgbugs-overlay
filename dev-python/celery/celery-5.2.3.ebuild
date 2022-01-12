@@ -73,6 +73,10 @@ DEPEND="
 DISTUTILS_IN_SOURCE_BUILD=1
 
 python_prepare_all() {
+	# Fix setuptools version limits that were set for bad reasons
+	sed -e '/setuptools/d' \
+		-i requirements/*.txt || die
+
 	# Suppress KeyError: 'refdoc'
 	sed -e 's|^[[:space:]]*return domain.resolve_xref(env, node\['\''refdoc'\''\], app.builder,$|            if '\''refdoc'\'' not in node:\n                return None\n\0|' \
 		-i docs/_ext/celerydocs.py || die
