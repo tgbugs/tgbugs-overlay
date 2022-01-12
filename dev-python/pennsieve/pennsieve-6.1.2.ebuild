@@ -49,9 +49,15 @@ RDEPEND="${DEPEND}"
 
 RESTRICT="!test? ( test )"
 
+PATCHES=(
+	"${FILESDIR}"/setup-notest.patch
+	"${FILESDIR}"/manifest-notest.patch
+)
+
 distutils_enable_tests pytest
 
 src_prepare () {
 	default
+	rm -r "${S}"/tests  # nothing else seems to work
 	sed -i "s/PACKAGE_VERSION/${PV}/" ${S}/${PN}/__init__.py
 }

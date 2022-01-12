@@ -1,0 +1,14 @@
+diff --git a/cloudpickle/compat.py b/cloudpickle/compat.py
+index afa285f..2bc0c6e 100644
+--- a/cloudpickle/compat.py
++++ b/cloudpickle/compat.py
+@@ -8,6 +8,9 @@ if sys.version_info < (3, 8):
+     except ImportError:
+         import pickle  # noqa: F401
+         from pickle import _Pickler as Pickler  # noqa: F401
++elif hasattr(sys, 'pypy_version_info'):
++    import pickle  # noqa: F401
++    from pickle import Pickler  # noqa: F401
+ else:
+     import pickle  # noqa: F401
+     from _pickle import Pickler  # noqa: F401

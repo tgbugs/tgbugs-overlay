@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index 0d14268..401a19b 100644
+--- a/setup.py
++++ b/setup.py
+@@ -30,7 +30,7 @@ setup(
+     author_email="joost@pennsieve.com",
+     description="Python client for the Pennsieve Platform",
+     long_description=long_description,
+-    packages=find_packages(),
++    packages=find_packages(exclude=('tests',)),
+     package_dir={"pennsieve": "pennsieve"},
+     setup_requires=["cython"],
+     install_requires=reqs,

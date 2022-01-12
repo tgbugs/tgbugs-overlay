@@ -26,6 +26,7 @@ IUSE="dev filetypes server test"
 RESTRICT="!test? ( test )"
 
 DEPEND=""
+BDEPEND="app-editors/emacs"
 RDEPEND="${DEPEND}
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
 	>=dev-python/augpathlib-0.0.21[${PYTHON_USEDEP}]

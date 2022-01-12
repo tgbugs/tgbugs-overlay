@@ -1,0 +1,9 @@
+diff --git a/MANIFEST.in b/MANIFEST.in
+index dc9b6f2..02308f6 100644
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -2,3 +2,4 @@ include requirements.txt
+ include README.rst
+ include INSTALL.rst
+ include LICENSE
++recursive-exclude tests *
