@@ -31,12 +31,12 @@ RDEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/flask-restx[${PYTHON_USEDEP}]
 	dev-python/flask-sqlalchemy[${PYTHON_USEDEP}]
-	dev-python/gevent[$(python_gen_usedep python3_{7,8,9})]
+	dev-python/gevent[$(python_gen_usedep python3_{8..10})]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
-	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{7,8,9})
+	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{8..10})
 	$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' pypy3)
 	>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
-	>=dev-python/rdflib-jsonld-0.5.0[${PYTHON_USEDEP}]
+	>=dev-python/rdflib-6.0.2[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	database? (
 		>=dev-db/postgresql-10
