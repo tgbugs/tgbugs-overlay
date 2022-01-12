@@ -30,7 +30,7 @@ RDEPEND="${DEPEND}
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
 	>=dev-python/augpathlib-0.0.21[${PYTHON_USEDEP}]
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
-	dev-python/blackfynn[${PYTHON_USEDEP}]
+	dev-python/pennsieve[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]

@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..9} pypy3 )
+PYTHON_COMPAT=( python3_{8..10} pypy3 )
 inherit distutils-r1
 
 MY_P=google-auth-library-python-oauthlib-${PV}
