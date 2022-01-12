@@ -27,7 +27,7 @@ IUSE="test"
 RESTRICT="!test? ( test )"
 
 DEPEND="
-	dev-python/frozendict[${PYTHON_USEDEP}]
+	<=dev-python/frozendict-2.0.0[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
