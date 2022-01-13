@@ -124,7 +124,7 @@ pkg_postinst() {
 	optfeature "redis support" dev-db/redis dev-python/redis-py
 	optfeature "gevent support" dev-python/gevent
 	optfeature "auth support" dev-python/pyopenssl
-	optfeature "pyro support" dev-python/pyro:4
+	optfeature "pyro support" dev-python/Pyro4
 	optfeature "yaml support" dev-python/pyyaml
 	optfeature "memcache support" dev-python/pylibmc
 	optfeature "mongodb support" dev-python/pymongo
