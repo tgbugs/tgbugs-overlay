@@ -1,11 +1,11 @@
 # Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 JAVA_PKG_IUSE=""
 
-inherit java-pkg-2 user git-r3
+inherit java-pkg-2 git-r3
 
 MY_PN="${PN%%-bin}"
 MY_P="${MY_PN}-${PV}"
@@ -25,8 +25,7 @@ RDEPEND=">=virtual/jre-1.8"
 
 IDEPEND=""
 
-# FIXME waiting on EAPI 8 support in java-pkg-2.eclass for IDEPEND
-DEPEND="${IDEPEND}
+BDEPEND="
 	>=virtual/jdk-1.8
 	>=dev-java/maven-bin-3.3"
 

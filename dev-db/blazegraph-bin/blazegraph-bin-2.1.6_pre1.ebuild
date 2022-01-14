@@ -1,7 +1,7 @@
 # Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 JAVA_PKG_IUSE=""
 
@@ -27,11 +27,10 @@ IDEPEND="
 	acct-group/blazegraph
 	acct-user/blazegraph"
 
-RDEPEND="${IDEPEND}
+RDEPEND="
 	>=virtual/jre-1.8"
 
-# FIXME waiting on EAPI 8 support in java-pkg-2.eclass for IDEPEND
-DEPEND="${IDEPEND}
+BDEPEND="
 	>=virtual/jdk-1.8"
 
 PACKAGE="${PN}-${SLOT}"

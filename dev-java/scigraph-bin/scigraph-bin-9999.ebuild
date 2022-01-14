@@ -25,14 +25,13 @@ IDEPEND="
 	acct-group/scigraph
 	acct-user/scigraph"
 
-RDEPEND="${IDEPEND}
+RDEPEND="
 	>=virtual/jre-1.8
 	x11-misc/xvfb-run"
 
-DEPEND="
+BDEPEND="
 	>=virtual/jdk-1.8
-	>=dev-java/maven-bin-3.3
-	app-arch/unzip"
+	>=dev-java/maven-bin-3.3"
 
 SERVICES_PN="${MY_PN}-services"
 SERVICES="${SERVICES_PN}-bin-${SLOT}"
