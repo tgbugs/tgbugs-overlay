@@ -1,10 +1,10 @@
 # Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 PYTHON_COMPAT=( pypy3 python3_{8..10} )
-inherit distutils-r1 user
+inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/SciCrunch/sparc-curation.git"
@@ -26,7 +26,13 @@ IUSE="dev filetypes server test"
 RESTRICT="!test? ( test )"
 
 DEPEND=""
+
+IDEPEND="
+	acct-group/sparc
+	acct-user/sparc"
+
 BDEPEND="app-editors/emacs"
+
 RDEPEND="${DEPEND}
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
 	>=dev-python/augpathlib-0.0.21[${PYTHON_USEDEP}]
@@ -35,6 +41,7 @@ RDEPEND="${DEPEND}
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]
+	dev-python/openpyxl[${PYTHON_USEDEP}]
 	>=dev-python/protcur-0.0.7[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.25[${PYTHON_USEDEP}]
 	>=dev-python/pysercomb-0.0.7[${PYTHON_USEDEP}]
@@ -51,7 +58,7 @@ RDEPEND="${DEPEND}
 	)
 	server? (
 		dev-python/flask[${PYTHON_USEDEP}]
-		dev-python/gevent[$(python_gen_usedep python3_{8..10})]
+		$(python_gen_cond_dep dev-python/gevent[${PYTHON_USEDEP}])
 		www-servers/gunicorn[${PYTHON_USEDEP}]
 	)
 	test? (
@@ -60,13 +67,6 @@ RDEPEND="${DEPEND}
 "
 
 USERGROUP=sparc
-
-pkg_setup() {
-	ebegin "Creating sparc user and group"
-	enewgroup ${USERGROUP}
-	enewuser ${USERGROUP} -1 -1 "/var/lib/${USERGROUP}" ${USERGROUP}
-	eend $?
-}
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {

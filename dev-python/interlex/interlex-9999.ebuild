@@ -1,10 +1,10 @@
 # Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 PYTHON_COMPAT=( pypy3 python3_{7..10} )
-inherit distutils-r1 user
+inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="git@github.com:tgbugs/${PN}.git"
@@ -23,6 +23,10 @@ SLOT="0"
 IUSE="dev +rabbitmq database elasticsearch test"
 RESTRICT="!test? ( test )"
 
+IDEPEND="
+	acct-group/interlex
+	acct-user/interlex"
+
 RDEPEND="
 	>=dev-python/celery-5.0.5[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
@@ -31,7 +35,7 @@ RDEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/flask-restx[${PYTHON_USEDEP}]
 	dev-python/flask-sqlalchemy[${PYTHON_USEDEP}]
-	dev-python/gevent[$(python_gen_usedep python3_{8..10})]
+	$(python_gen_cond_dep 'dev-python/gevent[${PYTHON_USEDEP}]' python3_{8..10})
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{8..10})
 	$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' pypy3)
@@ -54,12 +58,7 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}"
 
-pkg_setup() {
-	ebegin "Creating ${PN} user and group"
-	enewgroup ${PN}
-	enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
-	eend $?
-}
+USERGROUP=interlex
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
@@ -90,7 +89,7 @@ python_install_all() {
 
 src_install() {
 	keepdir "/var/log/${PN}"
-	fowners ${PN}:${PN} "/var/log/${PN}"
+	fowners ${USERGROUP}:${USERGROUP} "/var/log/${PN}"
 	newinitd "resources/interlex.rc" interlex
 	newconfd "resources/interlex.confd" interlex
 	chmod 0600 "${D}"/etc/conf.d/*
