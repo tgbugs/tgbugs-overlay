@@ -45,6 +45,7 @@ RDEPEND="
 	database? (
 		>=dev-db/postgresql-10
 		dev-db/pguri
+		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
