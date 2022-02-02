@@ -11,7 +11,7 @@ EGIT_REPO_URI="https://github.com/open-physiology/open-physiology-viewer.git"
 
 LICENSE="Apache-2.0"
 SLOT="9999"
-KEYWORDS="~amd64"
+KEYWORDS=""
 
 DEPEND="
 	net-libs/nodejs"
