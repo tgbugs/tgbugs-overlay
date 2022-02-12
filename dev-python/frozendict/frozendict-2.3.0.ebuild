@@ -16,3 +16,19 @@ KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 
 BDEPEND=""
 RDEPEND=""
+
+distutils_enable_tests pytest
+
+
+EPYTEST_IGNORE=(
+	test/test_coold.py
+	test/test_coold_subclass.py
+)
+EPYTEST_DESELECT=(
+	test/test_frozendict_c.py::test_c_extension
+)
+
+src_prepare () {
+	default
+	sed -i 's/custom_arg\ =\ None/custom_arg = "py"/' setup.py || die
+}
