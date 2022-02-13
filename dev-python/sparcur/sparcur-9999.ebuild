@@ -58,7 +58,7 @@ RDEPEND="${DEPEND}
 	)
 	server? (
 		dev-python/flask[${PYTHON_USEDEP}]
-		$(python_gen_cond_dep dev-python/gevent[${PYTHON_USEDEP}])
+		$(python_gen_cond_dep dev-python/gevent[${PYTHON_USEDEP}] 'python3*')
 		www-servers/gunicorn[${PYTHON_USEDEP}]
 	)
 	test? (

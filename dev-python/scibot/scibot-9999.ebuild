@@ -1,10 +1,10 @@
 # Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 PYTHON_COMPAT=( pypy3 python3_{8..10} )
-inherit distutils-r1 user
+inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/SciCrunch/${PN}.git"
@@ -23,13 +23,17 @@ SLOT="0"
 IUSE="dev test"
 RESTRICT="!test? ( test )"
 
+IDEPEND="
+	acct-group/scibot
+	acct-user/scibot"
+
 RDEPEND="
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/curio[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
-	dev-python/gevent[$(python_gen_usedep python3_{8..10})]
+	$(python_gen_cond_dep dev-python/gevent[${PYTHON_USEDEP}] 'python3*')
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.6[memex,${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
@@ -47,8 +51,6 @@ DEPEND="${RDEPEND}"
 
 pkg_setup() {
 	ebegin "Creating scibot user and group"
-	enewgroup ${PN}
-	enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
 	eend $?
 }
 
