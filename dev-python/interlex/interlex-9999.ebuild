@@ -20,7 +20,7 @@ HOMEPAGE="https://github.com/tgbugs/interlex"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev +rabbitmq database elasticsearch test"
+IUSE="alt dev +rabbitmq database elasticsearch test"
 RESTRICT="!test? ( test )"
 
 IDEPEND="
@@ -42,6 +42,9 @@ RDEPEND="
 	>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-6.0.2[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
+	alt? (
+		dev-python/pymysql[${PYTHON_USEDEP}]
+	)
 	database? (
 		>=dev-db/postgresql-10
 		dev-db/pguri
