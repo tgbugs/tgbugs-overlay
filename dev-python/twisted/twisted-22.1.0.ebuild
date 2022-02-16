@@ -1,7 +1,7 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 PYTHON_COMPAT=( python3_{8..10} pypy3 )
 PYTHON_REQ_USE="threads(+)"
@@ -17,7 +17,7 @@ S=${WORKDIR}/${PN}-${P}
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~m68k ppc ~ppc64 ~riscv ~s390 sparc x86"
 IUSE="conch crypt http2 serial test"
 RESTRICT="!test? ( test )"
 
@@ -48,16 +48,6 @@ RDEPEND="
 		>=dev-python/priority-1.1.0[${PYTHON_USEDEP}]
 		<dev-python/priority-2.0[${PYTHON_USEDEP}]
 	)
-	!dev-python/twisted-core
-	!dev-python/twisted-conch
-	!dev-python/twisted-lore
-	!dev-python/twisted-mail
-	!dev-python/twisted-names
-	!dev-python/twisted-news
-	!dev-python/twisted-pair
-	!dev-python/twisted-runner
-	!dev-python/twisted-words
-	!dev-python/twisted-web
 "
 BDEPEND="
 	>=dev-python/incremental-21.3.0[${PYTHON_USEDEP}]
@@ -65,15 +55,19 @@ BDEPEND="
 		>=dev-python/appdirs-1.4.0[${PYTHON_USEDEP}]
 		dev-python/bcrypt[${PYTHON_USEDEP}]
 		>=dev-python/constantly-15.1.0[${PYTHON_USEDEP}]
-		>=dev-python/cryptography-0.9.1[${PYTHON_USEDEP}]
 		dev-python/cython-test-exception-raiser[${PYTHON_USEDEP}]
-		dev-python/gmpy[${PYTHON_USEDEP}]
 		dev-python/idna[${PYTHON_USEDEP}]
 		dev-python/pyasn1[${PYTHON_USEDEP}]
-		>=dev-python/pyopenssl-0.13[${PYTHON_USEDEP}]
 		dev-python/pyserial[${PYTHON_USEDEP}]
-		dev-python/service_identity[${PYTHON_USEDEP}]
 		net-misc/openssh
+		$(python_gen_cond_dep '
+			dev-python/gmpy[${PYTHON_USEDEP}]
+		' 'python*')
+		!alpha? ( !hppa? ( !ia64? (
+			>=dev-python/cryptography-0.9.1[${PYTHON_USEDEP}]
+			>=dev-python/pyopenssl-0.13[${PYTHON_USEDEP}]
+			dev-python/service_identity[${PYTHON_USEDEP}]
+		) ) )
 	)
 "
 
@@ -99,11 +93,6 @@ python_prepare_all() {
 		-e 's:test_multicast:_&:' \
 		-i src/twisted/test/test_udp.py || die
 
-	# accesses /dev/net/tun
-	sed -e '/class RealDeviceTestsMixin/a\
-    skip = "Requires extra permissions"' \
-		-i src/twisted/pair/test/test_tuntap.py || die
-
 	# These tests rely on warnings which seems work unreliably between python versions
 	sed -e 's:test_currentEUID:_&:' \
 		-e 's:test_currentUID:_&:' -i src/twisted/python/test/test_util.py || die
@@ -112,6 +101,9 @@ python_prepare_all() {
 }
 
 src_test() {
+	# the test suite handles missing file & failing ioctl()s gracefully
+	# but not permission errors from sandbox
+	addwrite /dev/net/tun
 	virtx distutils-r1_src_test
 }
 
@@ -126,10 +118,8 @@ python_test() {
 python_install() {
 	distutils-r1_python_install
 
-	cd "${D}$(python_get_sitedir)" || die
-
 	# own the dropin.cache so we don't leave orphans
-	touch twisted/plugins/dropin.cache || die
+	> "${D}$(python_get_sitedir)"/twisted/plugins/dropin.cache || die
 
 	python_doscript "${WORKDIR}"/twisted-regen-cache
 }
