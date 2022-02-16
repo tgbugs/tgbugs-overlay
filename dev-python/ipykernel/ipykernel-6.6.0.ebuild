@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -13,15 +13,17 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ppc ppc64 ~riscv sparc x86"
+KEYWORDS="amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
-	dev-python/ipython_genutils[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
+		<dev-python/importlib_metadata-5.0.0[${PYTHON_USEDEP}]
+		>=dev-python/argcomplete-1.12.3[${PYTHON_USEDEP}]
+	' python3_8 pypy3)
 	>=dev-python/debugpy-1.0.0[${PYTHON_USEDEP}]
 	<dev-python/debugpy-2.0[${PYTHON_USEDEP}]
 	>=dev-python/ipython-7.23.1[${PYTHON_USEDEP}]
-	<dev-python/ipython-8.0[${PYTHON_USEDEP}]
-	>=dev-python/traitlets-4.1.0[${PYTHON_USEDEP}]
+	>=dev-python/traitlets-5.1.0[${PYTHON_USEDEP}]
 	<dev-python/traitlets-6.0[${PYTHON_USEDEP}]
 	<dev-python/jupyter_client-8.0[${PYTHON_USEDEP}]
 	>=www-servers/tornado-4.2[${PYTHON_USEDEP}]
@@ -39,6 +41,10 @@ BDEPEND="
 		dev-python/nose_warnings_filters[${PYTHON_USEDEP}]
 		dev-python/ipyparallel[${PYTHON_USEDEP}]
 	)"
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-6.5.0-drop-pytest-cov.patch
+)
 
 distutils_enable_tests pytest
 
