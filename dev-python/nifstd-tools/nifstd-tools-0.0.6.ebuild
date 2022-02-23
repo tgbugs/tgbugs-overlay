@@ -20,7 +20,7 @@ HOMEPAGE="https://github.com/tgbugs/pyontutils/tree/master/nifstd"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev doc spell test"
+IUSE="dev doc server spell test"
 RESTRICT="!test? ( test )"
 
 IDEPEND="
