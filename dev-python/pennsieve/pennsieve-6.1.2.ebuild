@@ -3,6 +3,7 @@
 
 EAPI=8
 
+DISTUTILS_USER_PEP517=setuptools
 PYTHON_COMPAT=( pypy3 python3_{8..10} )
 inherit distutils-r1
 
@@ -49,6 +50,7 @@ RDEPEND="${DEPEND}"
 RESTRICT="!test? ( test )"
 
 PATCHES=(
+	"${FILESDIR}"/setup-no-cython.patch
 	"${FILESDIR}"/setup-notest.patch
 	"${FILESDIR}"/manifest-notest.patch
 )

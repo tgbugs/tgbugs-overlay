@@ -1,0 +1,12 @@
+diff --git a/setup.py b/setup.py
+index 0d14268..92cafa8 100644
+--- a/setup.py
++++ b/setup.py
+@@ -32,7 +32,6 @@ setup(
+     long_description=long_description,
+     packages=find_packages(),
+     package_dir={"pennsieve": "pennsieve"},
+-    setup_requires=["cython"],
+     install_requires=reqs,
+     extras_require={
+         "data": ["numpy>=1.13", "pandas>=0.20"],
