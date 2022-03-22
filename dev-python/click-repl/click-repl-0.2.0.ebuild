@@ -14,7 +14,9 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
-RDEPEND="dev-python/click[${PYTHON_USEDEP}]"
+RDEPEND="
+	dev-python/click[${PYTHON_USEDEP}]
+	dev-python/prompt_toolkit[${PYTHON_USEDEP}]"
 
 distutils_enable_tests pytest
 
