@@ -53,7 +53,7 @@ PATCHES=(
 	"${FILESDIR}"/setup-no-cython.patch
 	"${FILESDIR}"/setup-notest.patch
 	"${FILESDIR}"/manifest-notest.patch
-	"${FILESDIR}"/no-futures.patch
+	"${FILESDIR}"/no-futures-jose.patch
 )
 
 distutils_enable_tests pytest
