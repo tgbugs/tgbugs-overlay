@@ -26,7 +26,7 @@ RESTRICT="!test? ( test )"
 
 DEPEND="
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
-	>=dev-python/rdflib-5.0.0[${PYTHON_USEDEP}]
+	>=dev-python/rdflib-5.0.0_pre0[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
