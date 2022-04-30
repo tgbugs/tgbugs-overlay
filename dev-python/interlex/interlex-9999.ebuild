@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{7..10} )
+PYTHON_COMPAT=( python3_{8..10} pypy3 )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -39,7 +39,7 @@ RDEPEND="
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{8..10})
 	$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' pypy3)
-	>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.28[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-6.0.2[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	alt? (
