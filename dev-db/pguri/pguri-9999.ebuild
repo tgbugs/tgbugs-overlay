@@ -6,7 +6,7 @@ EAPI=5
 
 inherit git-r3
 
-EGIT_REPO_URI="git://github.com/petere/pguri.git"
+EGIT_REPO_URI="https://github.com/petere/pguri.git"
 
 DESCRIPTION="uri datatype for PostgreSQL"
 HOMEPAGE="https://github.com/petere/pguri"
