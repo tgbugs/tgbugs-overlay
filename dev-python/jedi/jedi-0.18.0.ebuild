@@ -1,7 +1,7 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=8
+EAPI=7
 
 PYTHON_COMPAT=( python3_{8..10} pypy3 )
 
@@ -23,11 +23,13 @@ SRC_URI="
 LICENSE="MIT
 	test? ( Apache-2.0 )"
 SLOT="0"
-KEYWORDS="amd64 ~arm arm64 ~ppc ppc64 x86"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="=dev-python/parso-0.8*[${PYTHON_USEDEP}]"
 
+# RDEPEND needed because of an import jedi inside conf.py
 distutils_enable_sphinx docs \
+	dev-python/parso \
 	dev-python/sphinx_rtd_theme
 distutils_enable_tests pytest
 
@@ -46,25 +48,34 @@ python_prepare_all() {
 	# test_complete_expanduser relies on $HOME not being empty
 	> "${HOME}"/somefile || die
 
-	# TODO: investigate
-	sed -e 's:test_local_import:_&:' \
-		-i test/test_utils.py || die
-	sed -e '/with sqlite3\.connect/,+2d' \
-		-i test/completion/stdlib.py || die
-	rm test/completion/django.py || die
-
-	# these tests fail with various pytest<->python version combinations
-	rm test/completion/pytest.py || die
-
-	# tests relying on pristine virtualenv
-	# this relies on test* not matching anything else
-	sed -e "/#\? \['test'\]/,+1d" \
-		-i test/completion/on_import.py || die
-	# this one's broken by 'path' module (dev-python/path-py)
-	sed -e 's:test_os_issues:_&:' \
-		-i test/test_inference/test_imports.py || die
-	sed -e 's:test_venv_and_pths:_&:' \
-		-i test/test_inference/test_sys_path.py || die
-
 	distutils-r1_python_prepare_all
+}
+
+python_test() {
+	local EPYTEST_DESELECT=(
+		# TODO
+		'test/test_integration.py::test_completion[stdlib:155]'
+		'test/test_integration.py::test_completion[on_import:29]'
+		# pytest?
+		'test/test_integration.py::test_completion[conftest:27]'
+		# assume pristine virtualenv
+		test/test_utils.py::TestSetupReadline::test_local_import
+		test/test_inference/test_imports.py::test_os_issues
+		# fragile
+		test/test_speed.py
+	)
+	[[ ${EPYTHON} != python3.8 ]] && EPYTEST_DESELECT+=(
+		# TODO
+		'test/test_integration.py::test_completion[lambdas:112]'
+	)
+	[[ ${EPYTHON} == python3.10 ]] && EPYTEST_DESELECT+=(
+		# new features increased the match count again
+		test/test_utils.py::TestSetupReadline::test_import
+
+	)
+
+	# some plugin breaks case-insensitivity on completions
+	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+	# django and pytest tests are very version dependent
+	epytest -k "not django and not pytest"
 }
