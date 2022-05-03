@@ -36,7 +36,7 @@ DEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 	sxpr? (
-		>=dev-python/sxpr-0.0.2[${PYTHON_USEDEP}]
+		>=dev-python/sxpyr-0.0.2[${PYTHON_USEDEP}]
 	)
 	yaml? (
 		dev-python/pyyaml[${PYTHON_USEDEP}]
