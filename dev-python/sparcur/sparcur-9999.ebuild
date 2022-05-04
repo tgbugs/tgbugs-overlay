@@ -1,4 +1,4 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -22,7 +22,7 @@ HOMEPAGE="https://github.com/SciCrunch/sparc-curation"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev filetypes server test"
+IUSE="cron dev filetypes server test"
 RESTRICT="!test? ( test )"
 
 DEPEND=""
@@ -35,18 +35,22 @@ BDEPEND="app-editors/emacs"
 
 RDEPEND="${DEPEND}
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
-	>=dev-python/augpathlib-0.0.21[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.23[${PYTHON_USEDEP}]
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/pennsieve[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]
 	dev-python/openpyxl[${PYTHON_USEDEP}]
-	>=dev-python/protcur-0.0.7[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.25[${PYTHON_USEDEP}]
-	>=dev-python/pysercomb-0.0.7[${PYTHON_USEDEP}]
+	>=dev-python/protcur-0.0.8[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.28[${PYTHON_USEDEP}]
+	>=dev-python/pysercomb-0.0.8[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
+	cron? (
+		dev-python/celery[${PYTHON_USEDEP}]
+		dev-python/redis-py[${PYTHON_USEDEP}]
+	)
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
