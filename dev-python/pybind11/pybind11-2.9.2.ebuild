@@ -12,10 +12,16 @@ SRC_URI="https://github.com/pybind/pybind11/archive/v${PV}.tar.gz -> ${P}.tar.gz
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ppc ppc64 ~riscv ~s390 ~sparc x86 ~amd64-linux ~x86-linux ~ppc-macos"
+KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~riscv ~s390 ~sparc x86"
 
 RDEPEND="
 	dev-cpp/eigen:3
+"
+BDEPEND="
+	test? (
+		>=dev-cpp/catch-2.13.5
+		>=dev-libs/boost-1.56
+	)
 "
 
 distutils_enable_tests pytest
@@ -23,11 +29,6 @@ distutils_enable_tests pytest
 python_prepare_all() {
 	export PYBIND11_USE_CMAKE=1
 	cmake_src_prepare
-
-	local PATCHES=(
-		# https://github.com/pybind/pybind11/pull/3682
-		"${FILESDIR}"/${P}-numpy-1.22.patch
-	)
 	distutils-r1_python_prepare_all
 }
 
