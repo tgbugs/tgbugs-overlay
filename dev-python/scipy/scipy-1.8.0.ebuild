@@ -39,7 +39,7 @@ BDEPEND="
 	virtual/pkgconfig
 	doc? ( app-arch/unzip )
 	pythran? (
-		$(python_gen_cond_dep dev-python/pythran[${PYTHON_USEDEP}] python3_{8..10} )
+		$(python_gen_cond_dep dev-python/pythran python3_{8..10} )
 	)
 	test? (
 		dev-python/nose[${PYTHON_USEDEP}]
