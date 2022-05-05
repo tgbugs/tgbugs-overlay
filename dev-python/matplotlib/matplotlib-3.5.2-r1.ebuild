@@ -1,20 +1,28 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{8..10} pypy3 )
 PYTHON_REQ_USE='tk?,threads(+)'
 
-inherit distutils-r1 flag-o-matic virtualx toolchain-funcs prefix
+inherit distutils-r1 flag-o-matic multiprocessing prefix toolchain-funcs \
+	virtualx
 
 FT_PV=2.6.1
 DESCRIPTION="Pure python plotting library with matlab like syntax"
-HOMEPAGE="https://matplotlib.org/"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
+HOMEPAGE="
+	https://matplotlib.org/
+	https://github.com/matplotlib/matplotlib/
+	https://pypi.org/project/matplotlib/
+"
+SRC_URI="
+	mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
 	test? (
 		https://downloads.sourceforge.net/project/freetype/freetype2/${FT_PV}/freetype-${FT_PV}.tar.gz
-	)"
+	)
+"
 
 # Main license: matplotlib
 # Some modules: BSD
@@ -22,7 +30,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
 # Fonts: BitstreamVera, OFL-1.1
 LICENSE="BitstreamVera BSD matplotlib MIT OFL-1.1"
 SLOT="0"
-KEYWORDS="~amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc ~x86"
+KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
 IUSE="cairo doc excel examples gtk3 latex qt5 tk webagg wxwidgets"
 
 # internal copy of pycxx highly patched
@@ -73,9 +81,7 @@ RDEPEND="
 		>=www-servers/tornado-6.0.4[${PYTHON_USEDEP}]
 	)
 	wxwidgets? (
-		$(python_gen_cond_dep '
-			dev-python/wxpython:*[${PYTHON_USEDEP}]
-		' python3_{8,9})
+		dev-python/wxpython:*[${PYTHON_USEDEP}]
 	)
 "
 
@@ -102,37 +108,20 @@ BDEPEND="
 		>=media-gfx/graphviz-2.42.3[cairo]
 	)
 	test? (
-		dev-python/flaky[${PYTHON_USEDEP}]
 		dev-python/mock[${PYTHON_USEDEP}]
+		dev-python/psutil[${PYTHON_USEDEP}]
+		dev-python/pytest-xdist[${PYTHON_USEDEP}]
 		>=dev-python/pygobject-3.40.1-r1:3[cairo?,${PYTHON_USEDEP}]
 		>=www-servers/tornado-6.0.4[${PYTHON_USEDEP}]
 		x11-libs/gtk+:3[introspection]
 	)
 "
 
-# A few C++ source files are written to srcdir.
-# Other than that, the ebuild shall be fit for out-of-source build.
-DISTUTILS_IN_SOURCE_BUILD=1
-
 distutils_enable_tests pytest
-
-pkg_setup() {
-	unset DISPLAY # bug #278524
-}
-
-use_supported() {
-	case ${1} in
-		wxwidgets)
-			[[ ${EPYTHON} == python3.[678] ]]
-			;;
-	esac
-
-	return 0
-}
 
 use_setup() {
 	local uword="${2:-${1}}"
-	if use_supported "${1}" && use "${1}"; then
+	if use "${1}"; then
 		echo "${uword} = True"
 		echo "${uword}agg = True"
 	else
@@ -157,27 +146,17 @@ python_prepare_all() {
 
 	local PATCHES=(
 		"${FILESDIR}"/matplotlib-3.3.3-disable-lto.patch
-		"${FILESDIR}"/matplotlib-3.5.0-test.patch
+		"${FILESDIR}"/matplotlib-3.5.2-test.patch
 	)
-
-	# requires jupyter-nbconvert
-	rm lib/matplotlib/tests/test_backend_nbagg.py || die
 
 	sed \
 		-e 's/matplotlib.pyparsing_py[23]/pyparsing/g' \
 		-i lib/matplotlib/{mathtext,fontconfig_pattern}.py \
 		|| die "sed pyparsing failed"
 
-	sed -e 's:\(@pytest.mark.flaky\)(reruns=3):\1:' \
-		-i lib/matplotlib/tests/test_*.py || die
-
 	hprefixify setupext.py
 
 	rm -rf libqhull || die
-
-	export XDG_RUNTIME_DIR="${T}/runtime-dir"
-	mkdir "${XDG_RUNTIME_DIR}" || die
-	chmod 0700 "${XDG_RUNTIME_DIR}" || die
 
 	distutils-r1_python_prepare_all
 }
@@ -186,6 +165,11 @@ python_configure_all() {
 	append-flags -fno-strict-aliasing
 	append-cppflags -DNDEBUG  # or get old trying to do triangulation
 	tc-export PKG_CONFIG
+
+	unset DISPLAY # bug #278524
+	export XDG_RUNTIME_DIR="${T}/runtime-dir"
+	mkdir "${XDG_RUNTIME_DIR}" || die
+	chmod 0700 "${XDG_RUNTIME_DIR}" || die
 }
 
 python_configure() {
@@ -204,7 +188,7 @@ python_configure() {
 		system_freetype = True
 		system_qhull = True
 		[packages]
-		tests = $(usex test True False)
+		tests = True
 		[gui_support]
 		agg = True
 		gtk = False
@@ -235,15 +219,13 @@ wrap_setup() {
 }
 
 python_compile() {
-	wrap_setup distutils-r1_python_compile --build-lib="${BUILD_DIR}"/lib
+	wrap_setup distutils-r1_python_compile
+	find "${BUILD_DIR}" -name '*.pth' -delete || die
 }
 
 python_compile_all() {
 	if use doc; then
 		cd doc || die
-
-		# necessary for in-source build
-		local -x PYTHONPATH="${BUILD_DIR}"/build/lib:${PYTHONPATH}
 
 		VARTEXFONTS="${T}"/fonts \
 		emake SPHINXOPTS= O=-Dplot_formats=png:100 html
@@ -251,28 +233,32 @@ python_compile_all() {
 }
 
 src_test() {
+	mkdir build || die
+	ln -s "${WORKDIR}/freetype-${FT_PV}" build/ || die
 	virtx distutils-r1_src_test
 }
 
 python_test() {
+	local EPYTEST_DESELECT=(
+		# broken by -Wdefault
+		"tests/test_rcparams.py::test_validator_invalid[validate_strlist-arg6-MatplotlibDeprecationWarning]"
+		"tests/test_rcparams.py::test_validator_invalid[validate_strlist-arg7-MatplotlibDeprecationWarning]"
+		tests/test_testing.py::test_warn_to_fail
+	)
+
 	# we need to rebuild mpl against bundled freetype, otherwise
 	# over 1000 tests will fail because of mismatched font rendering
 	grep -v system_freetype "${BUILD_DIR}"/setup.cfg \
 		> "${BUILD_DIR}"/test-setup.cfg || die
 	local -x MPLSETUPCFG="${BUILD_DIR}"/test-setup.cfg
-	ln -s "${WORKDIR}/freetype-${FT_PV}" "${BUILD_DIR}" || die
-	distutils-r1_python_compile -j1 --build-lib="${BUILD_DIR}"/test-lib
+
+	esetup.py build -j1 --build-lib="${BUILD_DIR}"/test-lib
 	local -x PYTHONPATH=${BUILD_DIR}/test-lib:${PYTHONPATH}
 
-	"${EPYTHON}" -c "import sys, matplotlib as m; sys.exit(m.test(argv=['-m', 'not network'], verbosity=2))" || die
-}
-
-python_install() {
-	wrap_setup distutils-r1_python_install
-
-	# mpl_toolkits namespace
-	python_moduleinto mpl_toolkits
-	python_domodule lib/mpl_toolkits/__init__.py
+	# speed tests up
+	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+	nonfatal epytest --pyargs matplotlib -m "not network" \
+		-p xdist.plugin -n "$(makeopts_jobs)" || die
 }
 
 python_install_all() {
@@ -284,6 +270,4 @@ python_install_all() {
 		dodoc -r examples
 		docompress -x /usr/share/doc/${PF}/examples
 	fi
-
-	find "${D}" -name '*.pth' -delete || die
 }
