@@ -96,6 +96,10 @@ src_install() {
 	fowners ${USERGROUP}:${USERGROUP} "/var/log/${PN}"
 	newinitd "resources/interlex.rc" interlex
 	newconfd "resources/interlex.confd" interlex
+	if use alt; then
+		newinitd "alt/resources/filesystem/etc/init.d/ilxalt" ilxalt
+		newconfd "alt/resources/filesystem/etc/conf.d/ilxalt" ilxalt
+	fi
 	chmod 0600 "${D}"/etc/conf.d/*
 	distutils-r1_src_install
 }
