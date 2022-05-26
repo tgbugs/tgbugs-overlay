@@ -14,7 +14,7 @@ SLOT="9999"
 KEYWORDS=""
 
 DEPEND="
-	net-libs/nodejs"
+	<=net-libs/nodejs-15"
 
 src_unpack() {
 	# NOTE for this to work you must have run the command npm with no arguments
