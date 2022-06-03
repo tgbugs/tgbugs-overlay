@@ -22,6 +22,10 @@ RDEPEND="${DEPEND}"
 
 RESTRICT="!test? ( test )"
 
+PATCHES=(
+	"${FILESDIR}"/no-setup-requires.patch
+)
+
 distutils_enable_tests pytest
 
 python_test() {

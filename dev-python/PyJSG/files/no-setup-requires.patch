@@ -1,0 +1,11 @@
+--- a/setup.py
++++ b/setup.py
+@@ -6,7 +6,4 @@
+ if sys.version_info < (3, 7, 6):
+     warn(f"Behavior is uncertain prior to Python 3.7.6.  Current version: {sys.version_info}")
+ 
+-setup(
+-    setup_requires=['pbr'],
+-    pbr=True,
+-)
++setup()
