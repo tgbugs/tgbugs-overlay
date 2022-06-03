@@ -10,4 +10,4 @@ index 2fad128..d3c2c73 100644
 -    setup_requires=['pbr'],
 -    pbr=True,
 -)
-+setup(packages=['funowl', 'funowl.base', 'funowl.converters', 'funowl.terminals', 'funowl.terminals'])
++setup(packages=['funowl', 'funowl.base', 'funowl.converters', 'funowl.terminals', 'funowl.writers'])
