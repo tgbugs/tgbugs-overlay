@@ -27,6 +27,7 @@ RESTRICT="!test? ( test )"
 
 PATCHES=(
 	"${FILESDIR}"/no-shim.patch
+	"${FILESDIR}"/no-setup-requires.patch
 )
 
 distutils_enable_tests pytest
