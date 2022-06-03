@@ -8,4 +8,4 @@
 -    setup_requires=['pbr'],
 -    pbr=True,
 -)
-+setup()
++setup(packages=['pyjsg', 'pyjsg.jsglib', 'pyjsg.parser', 'pyjsg.parser_impl'])
