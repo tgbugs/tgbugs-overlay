@@ -17,7 +17,7 @@ IUSE=""
 
 DEPEND="
 	dev-python/bcp47
-	>=dev-python/pyjsg-0.11.6
+	>=dev-python/PyJSG-0.11.6
 	>=dev-python/rdflib-5.0.0
 	dev-python/rfc3987
 "
