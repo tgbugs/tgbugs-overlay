@@ -36,7 +36,6 @@ DEPEND="
 	dev-python/google-auth-oauthlib[${PYTHON_USEDEP}]
 	dev-python/htmlfn[${PYTHON_USEDEP}]
 	>=dev-python/idlib-0.0.1_pre11[${PYTHON_USEDEP}]
-	$(python_gen_cond_dep 'dev-python/ipython[${PYTHON_USEDEP}]' pypy3 python3_6)
 	>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/nest_asyncio[${PYTHON_USEDEP}]
