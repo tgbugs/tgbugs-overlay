@@ -1,0 +1,26 @@
+diff --git a/funowl/__init__.py b/funowl/__init__.py
+index 51fd6af..865911d 100644
+--- a/funowl/__init__.py
++++ b/funowl/__init__.py
+@@ -36,9 +36,6 @@ from . axioms import Axiom
+ if sys.version_info < (3, 8, 0):
+     warn(f"FunOwl needs python 3.8 or later.  Current version: {sys.version_info}")
+ 
+-# Use the rdflib shim
+-from rdflib_shim import RDFLIB_SHIM
+-x = RDFLIB_SHIM                 # Force import to stay put
+ # from rdflib.plugins.serializers.turtle import RecursiveSerializer
+ # RecursiveSerializer.roundtrip_prefixes = True
+ 
+diff --git a/requirements.txt b/requirements.txt
+index 224130e..4f2434c 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -12,6 +12,5 @@
+ 
+ bcp47
+ pyjsg>=0.11.6
+-rdflib-shim
+-rdflib>=5.0.0, !=6.1.*
++rdflib>=5.0.0
+ rfc3987
