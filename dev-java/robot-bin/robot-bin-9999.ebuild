@@ -1,4 +1,4 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -21,12 +21,12 @@ IUSE=""
 
 COMMON_DEP=""
 
-RDEPEND=">=virtual/jre-1.8"
+RDEPEND=">=virtual/jre-17"
 
 IDEPEND=""
 
 BDEPEND="
-	>=virtual/jdk-1.8
+	>=virtual/jdk-17
 	>=dev-java/maven-bin-3.3"
 
 PACKAGE="${PN}-${SLOT}"
@@ -36,6 +36,7 @@ PACKAGE_FOLDER="/usr/share/${MY_PN}"
 EXECUTABLE="/usr/bin/${MY_PN}"
 
 src_unpack() {
+	export JAVA_HOME="$(ls -d "${EPREFIX}"/usr/lib/jvm/* | grep 17 | head -n 1)"
 	git-r3_src_unpack
 	ewarn "This install compiles during unpack because still no maven support."
 	pushd ${S}
@@ -56,6 +57,7 @@ src_install() {
 	java-pkg_regjar "${ED}${PACKAGE_SHARE}/${MY_P}.jar" || die
 
 	echo '#!/usr/bin/env sh' > "${ED}${EXECUTABLE}"
+	echo 'JAVA_HOME=${JAVA_HOME:-'"${JAVA_HOME}"'}' >> "${ED}${EXECUTABLE}"
 	echo "exec java "'$ROBOT_JAVA_ARGS'" -jar \"${PACKAGE_FOLDER}/${MY_PN}.jar\""' "$@"' >> "${ED}${EXECUTABLE}"
 	chmod 0755 "${ED}${EXECUTABLE}"
 
