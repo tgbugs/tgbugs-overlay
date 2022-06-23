@@ -32,7 +32,6 @@ DEPEND="
 RDEPEND="${DEPEND}
 	$(python_gen_cond_dep '
 		dev-python/py[${PYTHON_USEDEP}]
-		dev-python/cffi:=[${PYTHON_USEDEP}]
 	' pypy3)
 "
 BDEPEND="
