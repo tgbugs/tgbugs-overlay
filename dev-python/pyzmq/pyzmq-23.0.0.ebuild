@@ -1,9 +1,12 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
+# TODO: Find out exactly where this error comes from
+# error: '<' not supported between instances of 'str' and 'int'
+#DISTUTILS_USE_PEP517=setuptools
 PYTHON_REQ_USE="threads(+)"
 
 inherit flag-o-matic distutils-r1 toolchain-funcs
@@ -19,7 +22,7 @@ SRC_URI="
 
 LICENSE="LGPL-3"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 ~arm arm64 ~hppa ~ia64 ~m68k ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux"
 IUSE="+draft"
 
 DEPEND="
@@ -29,6 +32,7 @@ DEPEND="
 RDEPEND="${DEPEND}
 	$(python_gen_cond_dep '
 		dev-python/py[${PYTHON_USEDEP}]
+		dev-python/cffi:=[${PYTHON_USEDEP}]
 	' pypy3)
 "
 BDEPEND="
@@ -52,11 +56,11 @@ python_configure_all() {
 
 python_compile() {
 	esetup.py cython --force
-	distutils-r1_python_compile
+	ZMQ_PREFIX="${EPREFIX}/usr" distutils-r1_python_compile
 }
 
 python_test() {
-	local deselect=(
+	EPYTEST_DESELECT=(
 		# TODO
 		zmq/tests/test_constants.py::TestConstants::test_draft
 		zmq/tests/test_cython.py::test_cython
@@ -64,9 +68,10 @@ python_test() {
 		# hangs often
 		zmq/tests/test_log.py::TestPubLog::test_blank_root_topic
 	)
+	EPYTEST_IGNORE=(
+		zmq/tests/test_mypy.py
+	)
 
-	cd "${BUILD_DIR}"/lib || die
-	epytest -p no:flaky ${deselect[@]/#/--deselect } \
-		--ignore zmq/tests/test_mypy.py
-	rm -rf .hypothesis .pytest_cache || die
+	cd "${BUILD_DIR}/lib" || die
+	epytest
 }
