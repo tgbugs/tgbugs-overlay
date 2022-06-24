@@ -36,7 +36,7 @@ PACKAGE_FOLDER="/usr/share/${MY_PN}"
 EXECUTABLE="/usr/bin/${MY_PN}"
 
 src_unpack() {
-	export JAVA_HOME="$(ls -d "${EPREFIX}"/usr/lib/jvm/* | grep 17 | head -n 1)"
+	export GENTOO_VM="$(basename $(ls -d "${EPREFIX}"/usr/lib/jvm/* | grep 17 | head -n 1))"
 	git-r3_src_unpack
 	ewarn "This install compiles during unpack because still no maven support."
 	pushd ${S}
@@ -57,7 +57,7 @@ src_install() {
 	java-pkg_regjar "${ED}${PACKAGE_SHARE}/${MY_P}.jar" || die
 
 	echo '#!/usr/bin/env sh' > "${ED}${EXECUTABLE}"
-	echo 'JAVA_HOME=${JAVA_HOME:-'"${JAVA_HOME}"'}' >> "${ED}${EXECUTABLE}"
+	echo 'export GENTOO_VM=${GENTOO_VM:-'"${GENTOO_VM}"'}' >> "${ED}${EXECUTABLE}"
 	echo "exec java "'$ROBOT_JAVA_ARGS'" -jar \"${PACKAGE_FOLDER}/${MY_PN}.jar\""' "$@"' >> "${ED}${EXECUTABLE}"
 	chmod 0755 "${ED}${EXECUTABLE}"
 
