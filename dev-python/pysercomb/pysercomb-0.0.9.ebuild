@@ -1,13 +1,13 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 2019-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..10} )
+PYTHON_COMPAT=( pypy3 python3_{8..11} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
-	EGIT_REPO_URI="https://github.com/tgbugs/${PN}.git"
+	EGIT_REPO_URI="https://github.com/tgbugs/parsercomb.git"
 	inherit git-r3
 	KEYWORDS=""
 else
@@ -15,19 +15,19 @@ else
 	KEYWORDS="~amd64 ~x86"
 fi
 
-DESCRIPTION="python orthogonal authentication"
-HOMEPAGE="https://github.com/tgbugs/orthauth"
+DESCRIPTION="parser combinator library and assorted parsers"
+HOMEPAGE="https://github.com/tgbugs/parsercomb"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev test yaml"
-REQUIRE_USE="
-	test? ( yaml )
-"
+IUSE="dev test +rdf +units"
 RESTRICT="!test? ( test )"
 
 DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
+	dev-python/setuptools
+	rdf? (
+		>=dev-python/pyontutils-0.1.28[${PYTHON_USEDEP}]
+	)
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
@@ -35,11 +35,13 @@ DEPEND="
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
-	yaml? (
-		dev-python/pyyaml[${PYTHON_USEDEP}]
+"
+RDEPEND="${DEPEND}
+	units? (
+		dev-python/protcur[${PYTHON_USEDEP}]
+		>=dev-python/pint-0.16.1[babel,uncertainties,${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
@@ -55,9 +57,4 @@ python_test() {
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
 	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
-}
-
-python_install_all() {
-	local DOCS=( README* docs/* )
-	distutils-r1_python_install_all
 }

@@ -1,47 +1,50 @@
-# Copyright 2019-2020 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..10} )
+PYTHON_COMPAT=( pypy3 python3_{8..11} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
-	EGIT_REPO_URI="https://github.com/tgbugs/parsercomb.git"
+	EGIT_REPO_URI="https://github.com/tgbugs/${PN}.git"
 	inherit git-r3
 	KEYWORDS=""
 else
-	SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
+	MY_P=${PN}-${PV/_pre/.dev}  # 1.1.1_pre0 -> 1.1.1.dev0
+	S=${WORKDIR}/${MY_P}
+	SRC_URI="mirror://pypi/${P:0:1}/${PN}/${MY_P}.tar.gz -> ${P}.tar.gz"
 	KEYWORDS="~amd64 ~x86"
 fi
 
-DESCRIPTION="parser combinator library and assorted parsers"
-HOMEPAGE="https://github.com/tgbugs/parsercomb"
+DESCRIPTION="A library for working with identifiers of all kinds."
+HOMEPAGE="https://github.com/tgbugs/idlib"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev test +rdf +units"
+IUSE="dev rdf oauth test"
 RESTRICT="!test? ( test )"
 
 DEPEND="
-	dev-python/setuptools
-	rdf? (
-		>=dev-python/pyontutils-0.1.25[${PYTHON_USEDEP}]
-	)
+	>=dev-python/orthauth-0.0.13[yaml,${PYTHON_USEDEP}]
+	dev-python/requests[${PYTHON_USEDEP}]
+	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
 	)
+	oauth? (
+		dev-python/google-auth-oauthlib[${PYTHON_USEDEP}]
+	)
+	rdf? (
+		>=dev-python/pyontutils-0.1.28[${PYTHON_USEDEP}]
+	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
+		>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}
-	units? (
-		dev-python/protcur[${PYTHON_USEDEP}]
-		>=dev-python/pint-0.16.1[babel,uncertainties,${PYTHON_USEDEP}]
-	)
-"
+RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
@@ -57,4 +60,9 @@ python_test() {
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
 	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
+}
+
+python_install_all() {
+	local DOCS=( README* )
+	distutils-r1_python_install_all
 }
