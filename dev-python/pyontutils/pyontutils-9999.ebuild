@@ -3,13 +3,14 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..10} )
+PYTHON_COMPAT=( pypy3 python3_{8..11} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/tgbugs/${PN}.git"
 	inherit git-r3
 	KEYWORDS=""
+	BDEPEND="app-editors/emacs"
 else
 	SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 	KEYWORDS="~amd64 ~x86"
@@ -39,7 +40,7 @@ DEPEND="
 	>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/nest_asyncio[${PYTHON_USEDEP}]
-	>=dev-python/orthauth-0.0.15[${PYTHON_USEDEP}]
+	>=dev-python/orthauth-0.0.16[${PYTHON_USEDEP}]
 	dev-python/pyld[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
@@ -66,6 +67,8 @@ RDEPEND="${DEPEND}
 "
 
 if [[ ${PV} == "9999" ]]; then
+	src_configure () { DISTUTILS_ARGS=( --release ); }
+
 	src_prepare () {
 		sed -i '1 i\import fastentrypoints' setup.py
 		# replace package version to keep python quiet

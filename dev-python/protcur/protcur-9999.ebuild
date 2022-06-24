@@ -1,10 +1,10 @@
 # Copyright 2019-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..10} )
-inherit distutils-r1 user
+PYTHON_COMPAT=( pypy3 python3_{8..11} )
+inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/tgbugs/protc.git"
@@ -23,13 +23,18 @@ SLOT="0"
 IUSE="dev test"
 RESTRICT="!test? ( test )"
 
+IDEPEND="
+	acct-user/protcur
+	acct-group/protcur
+"
+
 DEPEND="
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/htmlfn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.8[${PYTHON_USEDEP}]
 	dev-python/markdown[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.25[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
@@ -40,21 +45,12 @@ DEPEND="
 	)
 "
 RDEPEND="${DEPEND}
-	>=dev-python/pysercomb-0.0.7[${PYTHON_USEDEP}]
+	>=dev-python/pysercomb-0.0.8[${PYTHON_USEDEP}]
 "
-
-pkg_setup() {
-	ebegin "Creating protcur user and group"
-	enewgroup ${PN}
-	enewuser ${PN} -1 -1 "/var/lib/${PN}" ${PN}
-	eend $?
-}
 
 if [[ ${PV} == "9999" ]]; then
 	S="${S}/${PN}"
-	python_configure_all () {
-		mydistutilsargs=( --release )
-	}
+	src_configure () { DISTUTILS_ARGS=( --release ); }
 
 	src_prepare () {
 		sed -i '1 i\import fastentrypoints' setup.py

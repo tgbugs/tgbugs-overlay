@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..10} )
+PYTHON_COMPAT=( pypy3 python3_{8..11} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -37,11 +37,11 @@ DEPEND="
 		dev-python/google-auth-oauthlib[${PYTHON_USEDEP}]
 	)
 	rdf? (
-		>=dev-python/pyontutils-0.1.23[${PYTHON_USEDEP}]
+		>=dev-python/pyontutils-0.1.28[${PYTHON_USEDEP}]
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
-		>=dev-python/joblib-0.14.1[${PYTHON_USEDEP}]
+		>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
 	)
 "
 RDEPEND="${DEPEND}"

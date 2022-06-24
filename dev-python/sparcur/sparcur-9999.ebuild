@@ -3,13 +3,14 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..10} )
+PYTHON_COMPAT=( pypy3 python3_{8..11} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/SciCrunch/sparc-curation.git"
 	inherit git-r3
 	KEYWORDS=""
+	BDEPEND="app-editors/emacs"
 else
 	MY_P=${PN}-${PV/_pre/.dev}  # 1.1.1_pre0 -> 1.1.1.dev0
 	S=${WORKDIR}/${MY_P}
@@ -31,11 +32,9 @@ IDEPEND="
 	acct-group/sparc
 	acct-user/sparc"
 
-BDEPEND="app-editors/emacs"
-
 RDEPEND="${DEPEND}
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
-	>=dev-python/augpathlib-0.0.23[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.24[${PYTHON_USEDEP}]
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/pennsieve[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
@@ -43,7 +42,7 @@ RDEPEND="${DEPEND}
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]
 	dev-python/openpyxl[${PYTHON_USEDEP}]
 	>=dev-python/protcur-0.0.8[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.28[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.29[${PYTHON_USEDEP}]
 	>=dev-python/pysercomb-0.0.8[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
@@ -62,7 +61,7 @@ RDEPEND="${DEPEND}
 	)
 	server? (
 		dev-python/flask[${PYTHON_USEDEP}]
-		$(python_gen_cond_dep dev-python/gevent[${PYTHON_USEDEP}] 'python3*')
+		dev-python/gevent[${PYTHON_USEDEP}]
 		www-servers/gunicorn[${PYTHON_USEDEP}]
 	)
 	test? (
@@ -73,6 +72,8 @@ RDEPEND="${DEPEND}
 USERGROUP=sparc
 
 if [[ ${PV} == "9999" ]]; then
+	src_configure () { DISTUTILS_ARGS=( --release ); }
+
 	src_prepare () {
 		sed -i '1 i\import fastentrypoints' setup.py
 		# replace package version to keep python quiet
