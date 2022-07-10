@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit autotools elisp-common flag-o-matic readme.gentoo-r1 toolchain-funcs
+inherit autotools elisp-common readme.gentoo-r1 toolchain-funcs
 
 if [[ ${PV##*.} = 9999 ]]; then
 	inherit git-r3
@@ -40,7 +40,7 @@ DESCRIPTION="The extensible, customizable, self-documenting real-time display ed
 HOMEPAGE="https://www.gnu.org/software/emacs/"
 
 LICENSE="GPL-3+ FDL-1.3+ BSD HPND MIT W3C unicode PSF-2"
-IUSE="acl alsa aqua athena cairo dbus dynamic-loading games gconf gfile gif +gmp gpm gsettings gtk gui gzip-el harfbuzz imagemagick +inotify jit jpeg json kerberos lcms libxml2 livecd m17n-lib mailutils png selinux sound source sqlite ssl svg systemd +threads tiff toolkit-scroll-bars wide-int Xaw3d xft +xpm xwidgets zlib"
+IUSE="acl alsa aqua athena cairo dbus dynamic-loading games gfile gif +gmp gpm gsettings gtk gui gzip-el harfbuzz imagemagick +inotify jit jpeg json kerberos lcms libxml2 livecd m17n-lib mailutils png selinux sound source sqlite ssl svg systemd +threads tiff toolkit-scroll-bars wide-int Xaw3d xft +xpm xwidgets zlib"
 RESTRICT="test"
 
 RDEPEND="app-emacs/emacs-common[games?,gui(-)?]
@@ -74,10 +74,9 @@ RDEPEND="app-emacs/emacs-common[games?,gui(-)?]
 		x11-libs/libXrandr
 		x11-libs/libxcb
 		x11-misc/xbitmaps
-		gconf? ( >=gnome-base/gconf-2.26.2 )
 		gsettings? ( >=dev-libs/glib-2.28.6 )
 		gif? ( media-libs/giflib:0= )
-		jpeg? ( virtual/jpeg:0= )
+		jpeg? ( media-libs/libjpeg-turbo:0= )
 		png? ( >=media-libs/libpng-1.4:0= )
 		svg? ( >=gnome-base/librsvg-2.0 )
 		tiff? ( media-libs/tiff:0 )
@@ -132,7 +131,7 @@ SITEFILE="20${EMACS_SUFFIX}-gentoo.el"
 
 src_prepare() {
 	if [[ ${PV##*.} = 9999 ]]; then
-		FULL_VERSION=$(sed -n 's/^AC_INIT([^,]*,[ \t]*\([^ \t,)]*\).*/\1/p' \
+		FULL_VERSION=$(sed -n 's/^AC_INIT([^,]*,[^0-9.]*\([0-9.]*\).*/\1/p' \
 			configure.ac)
 		[[ ${FULL_VERSION} ]] || die "Cannot determine current Emacs version"
 		einfo "Emacs branch: ${EGIT_BRANCH}"
@@ -147,9 +146,9 @@ src_prepare() {
 		# for live ebuilds FULL_VERSION doesn't exist in global scope
 		QA_FLAGS_IGNORED="usr/$(get_libdir)/emacs/${FULL_VERSION}/native-lisp/.*"
 
-		# gccjit doesn't play well with ccache #801580
+		# gccjit doesn't play well with ccache or distcc #801580
 		# For now, work around the problem with an explicit LIBRARY_PATH
-		has ccache ${FEATURES} && tc-is-gcc \
+		has ccache ${FEATURES} || has distcc ${FEATURES} && tc-is-gcc \
 			&& export LIBRARY_PATH=$("$(tc-getCC)" -print-search-dirs \
 				| sed -n '/^libraries:/{s:^[^/]*::;p}')
 	fi
@@ -163,15 +162,6 @@ src_prepare() {
 }
 
 src_configure() {
-	strip-flags
-	filter-flags -pie					#526948
-
-	if use ia64; then
-		replace-flags "-O[2-9]" -O1		#325373
-	else
-		replace-flags "-O[3-9]" -O2
-	fi
-
 	local myconf
 
 	if use alsa; then
@@ -191,7 +181,7 @@ src_configure() {
 		myconf+=" --without-x"
 	else
 		myconf+=" --with-x --without-ns"
-		myconf+=" $(use_with gconf)"
+		myconf+=" --without-gconf"
 		myconf+=" $(use_with gsettings)"
 		myconf+=" $(use_with toolkit-scroll-bars)"
 		myconf+=" $(use_with gif)"
