@@ -4,12 +4,15 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 
 inherit distutils-r1 multiprocessing
 
 DESCRIPTION="Low-level, data-driven core of boto 3"
-HOMEPAGE="https://github.com/boto/botocore"
+HOMEPAGE="
+	https://github.com/boto/botocore/
+	https://pypi.org/project/botocore/
+"
 LICENSE="Apache-2.0"
 SLOT="0"
 
@@ -33,10 +36,6 @@ BDEPEND="
 		dev-python/pytest-xdist[${PYTHON_USEDEP}]
 	)
 "
-
-PATCHES=(
-	"${FILESDIR}/1.8.6-tests-pass-all-env-vars-to-cmd-runner.patch"
-)
 
 distutils_enable_sphinx docs/source \
 	'dev-python/guzzle_sphinx_theme'
@@ -63,6 +62,5 @@ python_test() {
 		tests/functional/test_six_threading.py::test_six_thread_safety
 	)
 
-	epytest tests/{functional,unit} \
-		-n "$(makeopts_jobs "${MAKEOPTS}" "$(get_nproc)")"
+	epytest tests/{functional,unit} -n "$(makeopts_jobs)"
 }
