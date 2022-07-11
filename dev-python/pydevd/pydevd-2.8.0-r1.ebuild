@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 inherit distutils-r1 toolchain-funcs
 
 MY_P="pydev_debugger_${PV//./_}"
@@ -77,7 +77,8 @@ src_compile() {
 		${LDFLAGS} -nostartfiles attach.cpp -ldl || die
 	mv "attach_linux_${ARCH}.so" ../ || die
 	popd || die
-	python_foreach_impl distutils-r1_python_compile
+
+	distutils-r1_src_compile
 }
 
 python_install_all() {
