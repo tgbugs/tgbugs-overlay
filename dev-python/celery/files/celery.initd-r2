@@ -5,7 +5,6 @@
 extra_started_commands="reload"
 
 depend() {
-	need net
 	use rabbitmq redis logger dns
 }
 
