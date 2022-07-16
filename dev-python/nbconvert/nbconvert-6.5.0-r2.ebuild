@@ -20,7 +20,7 @@ SRC_URI="
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="~amd64 ~arm ~arm64 ~riscv ~s390 ~x86"
 
 RDEPEND="
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
@@ -36,6 +36,7 @@ RDEPEND="
 	dev-python/nbformat[${PYTHON_USEDEP}]
 	>=dev-python/pandocfilters-1.4.1[${PYTHON_USEDEP}]
 	dev-python/pygments[${PYTHON_USEDEP}]
+	dev-python/tinycss2[${PYTHON_USEDEP}]
 	>=dev-python/traitlets-5.1.1[${PYTHON_USEDEP}]
 	dev-python/testpath[${PYTHON_USEDEP}]
 	www-servers/tornado[${PYTHON_USEDEP}]
