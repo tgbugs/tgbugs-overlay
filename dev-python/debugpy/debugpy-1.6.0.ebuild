@@ -1,9 +1,10 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
+DISTUTILS_USE_PEP517=setuptools
 inherit distutils-r1
 
 DESCRIPTION="An implementation of the Debug Adapter Protocol for Python"
@@ -15,16 +16,16 @@ SRC_URI="
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~m68k ppc ppc64 ~riscv ~s390 sparc x86"
 
-# There is not enough time in the universe for this test suite
+# This is completely broken
 RESTRICT="test"
 
 RDEPEND="dev-python/pydevd[${PYTHON_USEDEP}]"
 BDEPEND="test? ( dev-python/pytest-timeout[${PYTHON_USEDEP}] )"
 
 PATCHES=(
-	"${FILESDIR}/${PN}-1.4.2-unbundle-pydevd.patch"
+	"${FILESDIR}/${PN}-1.6.0-unbundle-pydevd.patch"
 )
 
 distutils_enable_tests pytest
