@@ -22,7 +22,7 @@ SRC_URI="
 
 LICENSE="LGPL-3"
 SLOT="0"
-KEYWORDS="amd64 ~arm arm64 ~hppa ~ia64 ~m68k ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 arm arm64 hppa ~ia64 ~m68k ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux"
 IUSE="+draft"
 
 DEPEND="
@@ -59,7 +59,7 @@ python_compile() {
 }
 
 python_test() {
-	EPYTEST_DESELECT=(
+	local EPYTEST_DESELECT=(
 		# TODO
 		zmq/tests/test_constants.py::TestConstants::test_draft
 		zmq/tests/test_cython.py::test_cython
@@ -67,10 +67,10 @@ python_test() {
 		# hangs often
 		zmq/tests/test_log.py::TestPubLog::test_blank_root_topic
 	)
-	EPYTEST_IGNORE=(
+	local EPYTEST_IGNORE=(
 		zmq/tests/test_mypy.py
 	)
 
 	cd "${BUILD_DIR}/lib" || die
-	epytest
+	epytest -p no:flaky
 }
