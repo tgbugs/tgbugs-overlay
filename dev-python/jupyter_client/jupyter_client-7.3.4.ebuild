@@ -3,14 +3,18 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=setuptools
+DISTUTILS_USE_PEP517=hatchling
 PYTHON_COMPAT=( python3_{8..10} pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
 inherit distutils-r1
 
 DESCRIPTION="Jupyter protocol implementation and client libraries"
-HOMEPAGE="https://jupyter.org"
+HOMEPAGE="
+	https://jupyter.org/
+	https://github.com/jupyter/jupyter_client/
+	https://pypi.org/project/jupyter-client/
+"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
@@ -22,7 +26,7 @@ RDEPEND="
 	>=dev-python/jupyter_core-4.9.2[${PYTHON_USEDEP}]
 	>=dev-python/nest_asyncio-1.5.4[${PYTHON_USEDEP}]
 	>=dev-python/python-dateutil-2.8.2[${PYTHON_USEDEP}]
-	dev-python/pyzmq[${PYTHON_USEDEP}]
+	>=dev-python/pyzmq-23.0[${PYTHON_USEDEP}]
 	>=www-servers/tornado-6.0[${PYTHON_USEDEP}]
 	dev-python/traitlets[${PYTHON_USEDEP}]
 "
@@ -40,9 +44,3 @@ PATCHES=(
 )
 
 distutils_enable_tests pytest
-
-src_prepare() {
-	# relax pyzmq dep
-	sed -i -e '/pyzmq/s:>=.*::' requirements.txt || die
-	distutils-r1_src_prepare
-}
