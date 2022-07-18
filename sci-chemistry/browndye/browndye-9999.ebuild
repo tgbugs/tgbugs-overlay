@@ -2,9 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=5
-
-inherit eutils
+EAPI=8
 
 DESCRIPTION="Brownian Dynamics of Biological Molecules"
 HOMEPAGE="http://browndye.ucsd.edu/"
@@ -20,10 +18,10 @@ RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${PN}"
 
-src_prepare() {
-	epatch "${FILESDIR}"/${P}-parallel_build-2.patch \
-		"${FILESDIR}"/${P}-install.patch
-}
+PATCHES=(
+	#"${FILESDIR}"/${P}-parallel_build-2.patch
+	#"${FILESDIR}"/${P}-install.patch
+	)
 
 src_compile() {
 	emake all  # fails when run with -j > 1 due to missing ordering rules
