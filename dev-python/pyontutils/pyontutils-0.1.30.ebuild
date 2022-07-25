@@ -1,4 +1,4 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -12,7 +12,8 @@ if [[ ${PV} == "9999" ]]; then
 	KEYWORDS=""
 	BDEPEND="app-editors/emacs"
 else
-	SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
+	#SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
+	SRC_URI="https://github.com/tgbugs/${PN}/releases/download/${PV}/${P}.tar.gz"
 	KEYWORDS="~amd64 ~x86"
 fi
 
