@@ -8,8 +8,11 @@ PYTHON_COMPAT=( python3_{8..10} pypy3 )
 
 inherit distutils-r1
 
-DESCRIPTION="python classes generated from the common protos in the googleapis repository"
-HOMEPAGE="https://pypi.org/project/googleapis-common-protos/"
+DESCRIPTION="Python classes generated from the common protos in the googleapis repository"
+HOMEPAGE="
+	https://github.com/googleapis/python-api-common-protos/
+	https://pypi.org/project/googleapis-common-protos/
+"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
@@ -17,7 +20,8 @@ SLOT="0"
 KEYWORDS="amd64 ~arm ~arm64 x86"
 
 RDEPEND="
-	>=dev-python/protobuf-python-3.12.0[${PYTHON_USEDEP}]
+	<dev-python/protobuf-python-4[${PYTHON_USEDEP}]
+	>=dev-python/protobuf-python-3.15.0[${PYTHON_USEDEP}]
 	!dev-python/namespace-google
 "
 

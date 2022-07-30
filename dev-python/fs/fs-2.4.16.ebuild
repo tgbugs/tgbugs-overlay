@@ -4,27 +4,20 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
-
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 inherit distutils-r1 optfeature
 
-MY_P=pyfilesystem2-${PV}
 DESCRIPTION="Filesystem abstraction layer"
 HOMEPAGE="
 	https://pypi.org/project/fs/
 	https://docs.pyfilesystem.org
 	https://www.willmcgugan.com/tag/fs/
 "
-# Tests from the PyPI tarball are broken
-# https://github.com/PyFilesystem/pyfilesystem2/issues/364
-SRC_URI="
-	https://github.com/PyFilesystem/pyfilesystem2/archive/v${PV}.tar.gz
-		-> ${MY_P}.tar.gz"
-S="${WORKDIR}/${MY_P}"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~m68k ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux"
 
 RDEPEND="
 	>=dev-python/appdirs-1.4.3[${PYTHON_USEDEP}]
@@ -40,7 +33,7 @@ BDEPEND="
 	)
 "
 
-distutils_enable_sphinx docs/source dev-python/sphinx_rtd_theme
+distutils_enable_sphinx docs/source dev-python/sphinx_rtd_theme dev-python/recommonmark
 distutils_enable_tests pytest
 
 python_test() {

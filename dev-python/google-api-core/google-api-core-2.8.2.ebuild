@@ -8,26 +8,31 @@ PYTHON_COMPAT=( python3_{8..10} pypy3 )
 
 inherit distutils-r1
 
+MY_P=python-api-core-${PV}
 DESCRIPTION="Core Library for Google Client Libraries"
-HOMEPAGE="https://github.com/googleapis/python-api-core/
-	https://googleapis.dev/python/google-api-core/latest/index.html"
-SRC_URI="https://github.com/googleapis/${PN//google/python}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
-S="${WORKDIR}/${P//google/python}"
+HOMEPAGE="
+	https://github.com/googleapis/python-api-core/
+	https://pypi.org/project/google-api-core/
+	https://googleapis.dev/python/google-api-core/latest/index.html
+"
+SRC_URI="
+	https://github.com/googleapis/python-api-core/archive/v${PV}.tar.gz
+		-> ${MY_P}.gh.tar.gz
+"
+S=${WORKDIR}/${MY_P}
 
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="amd64 ~arm ~arm64 x86"
 
 RDEPEND="
-	dev-python/protobuf-python[${PYTHON_USEDEP}]
-	dev-python/googleapis-common-protos[${PYTHON_USEDEP}]
+	>=dev-python/googleapis-common-protos-1.56.2[${PYTHON_USEDEP}]
 	>=dev-python/google-auth-1.25.0[${PYTHON_USEDEP}]
+	>=dev-python/protobuf-python-3.15.0[${PYTHON_USEDEP}]
 	>=dev-python/requests-2.18.0[${PYTHON_USEDEP}]
 	<dev-python/requests-3[${PYTHON_USEDEP}]
 	!dev-python/namespace-google
 "
-# grpcio support is broken if grpcio-status is not installed,
-# and we do not package the latter
 BDEPEND="
 	test? (
 		dev-python/mock[${PYTHON_USEDEP}]
@@ -47,12 +52,9 @@ EPYTEST_DESELECT=(
 	tests/asyncio/test_grpc_helpers_async.py::test_wrap_stream_errors_aiter
 	tests/asyncio/test_grpc_helpers_async.py::test_wrap_stream_errors_write
 	tests/unit/test_grpc_helpers.py::test_wrap_unary_errors
-	tests/unit/test_grpc_helpers.py::Test_StreamingResponseIterator::test___next___w_rpc_error
 	tests/unit/test_grpc_helpers.py::test_wrap_stream_errors_invocation
 	tests/unit/test_grpc_helpers.py::test_wrap_stream_errors_iterator_initialization
 	tests/unit/test_grpc_helpers.py::test_wrap_stream_errors_during_iteration
-	# TODO
-	tests/unit/test_operation.py::test_exception_with_error_code
 )
 
 python_compile() {

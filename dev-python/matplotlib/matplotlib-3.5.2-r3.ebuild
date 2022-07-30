@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 PYTHON_REQ_USE='tk?,threads(+)'
 
 inherit distutils-r1 flag-o-matic multiprocessing prefix toolchain-funcs \
@@ -30,7 +30,7 @@ SRC_URI="
 # Fonts: BitstreamVera, OFL-1.1
 LICENSE="BitstreamVera BSD matplotlib MIT OFL-1.1"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~riscv ~s390 ~sparc x86"
+KEYWORDS="amd64 arm ~arm64 hppa ~ia64 ppc ~ppc64 ~riscv ~s390 sparc x86"
 IUSE="cairo doc excel examples gtk3 latex qt5 tk webagg wxwidgets"
 
 # internal copy of pycxx highly patched
@@ -80,7 +80,9 @@ RDEPEND="
 		>=www-servers/tornado-6.0.4[${PYTHON_USEDEP}]
 	)
 	wxwidgets? (
-		dev-python/wxpython:*[${PYTHON_USEDEP}]
+		$(python_gen_cond_dep '
+			dev-python/wxpython:*[${PYTHON_USEDEP}]
+		' pypy3 python3_{8..10})
 	)
 "
 
@@ -142,6 +144,9 @@ python_prepare_all() {
 #	from __future__ import absolute_import
 #	from six import *
 #	EOF
+
+	# Affects installed _version.py, bug #854600
+	export SETUPTOOLS_SCM_PRETEND_VERSION=${PV}
 
 	local PATCHES=(
 		"${FILESDIR}"/matplotlib-3.3.3-disable-lto.patch
@@ -243,6 +248,11 @@ python_test() {
 		"tests/test_rcparams.py::test_validator_invalid[validate_strlist-arg6-MatplotlibDeprecationWarning]"
 		"tests/test_rcparams.py::test_validator_invalid[validate_strlist-arg7-MatplotlibDeprecationWarning]"
 		tests/test_testing.py::test_warn_to_fail
+	)
+	[[ ${EPYTHON} == python3.11 ]] && EPYTEST_DESELECT+=(
+		# https://github.com/matplotlib/matplotlib/issues/23384
+		"tests/test_backends_interactive.py::test_figure_leak_20490[time_mem1-{'MPLBACKEND': 'qtagg', 'QT_API': 'PyQt5'}]"
+		"tests/test_backends_interactive.py::test_figure_leak_20490[time_mem1-{'MPLBACKEND': 'qtcairo', 'QT_API': 'PyQt5'}]"
 	)
 
 	# we need to rebuild mpl against bundled freetype, otherwise

@@ -3,12 +3,21 @@
 
 EAPI=8
 
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{8..10} pypy3 )
+
 inherit cmake distutils-r1
 
 DESCRIPTION="AST-based Python refactoring library"
-HOMEPAGE="https://pybind11.readthedocs.io/en/stable/"
-SRC_URI="https://github.com/pybind/pybind11/archive/v${PV}.tar.gz -> ${P}.tar.gz"
+HOMEPAGE="
+	https://pybind11.readthedocs.io/en/stable/
+	https://github.com/pybind/pybind11/
+	https://pypi.org/project/pybind11/
+"
+SRC_URI="
+	https://github.com/pybind/pybind11/archive/v${PV}.tar.gz
+		-> ${P}.tar.gz
+"
 
 LICENSE="BSD"
 SLOT="0"

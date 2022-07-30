@@ -14,12 +14,13 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="amd64 arm arm64 ~hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
 	dev-python/asttokens[${PYTHON_USEDEP}]
 	dev-python/executing[${PYTHON_USEDEP}]
-	dev-python/pure_eval[${PYTHON_USEDEP}]"
+	dev-python/pure_eval[${PYTHON_USEDEP}]
+"
 BDEPEND="
 	test? (
 		dev-python/cython[${PYTHON_USEDEP}]

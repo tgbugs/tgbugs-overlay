@@ -22,7 +22,7 @@ SRC_URI="
 
 LICENSE="LGPL-3"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ~m68k ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux"
 IUSE="+draft"
 
 DEPEND="
@@ -43,6 +43,10 @@ BDEPEND="
 		>=www-servers/tornado-5.0.2[${PYTHON_USEDEP}]
 	)
 "
+
+PATCHES=(
+	"${FILESDIR}"/${PN}-23.2.0-libdir.patch
+)
 
 distutils_enable_tests pytest
 distutils_enable_sphinx docs \

@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
 FORTRAN_NEEDED=lapack
@@ -12,19 +12,24 @@ inherit distutils-r1 flag-o-matic fortran-2 toolchain-funcs
 
 DOC_PV=${PV}
 # For when docs aren't ready yet, set to last version
-#DOC_PV=1.22.0
+#DOC_PV=1.23.0
 DESCRIPTION="Fast array and numerical python library"
-HOMEPAGE="https://numpy.org/"
+HOMEPAGE="
+	https://numpy.org/
+	https://github.com/numpy/numpy/
+	https://pypi.org/project/numpy/
+"
 SRC_URI="
-	mirror://pypi/${PN:0:1}/${PN}/${P}.zip
+	mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
 	doc? (
 		https://numpy.org/doc/$(ver_cut 1-2 ${DOC_PV})/numpy-html.zip -> numpy-html-${DOC_PV}.zip
 		https://numpy.org/doc/$(ver_cut 1-2 ${DOC_PV})/numpy-ref.pdf -> numpy-ref-${DOC_PV}.pdf
 		https://numpy.org/doc/$(ver_cut 1-2 ${DOC_PV})/numpy-user.pdf -> numpy-user-${DOC_PV}.pdf
-	)"
+	)
+"
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm arm64 hppa ~ia64 ~m68k ~mips ppc ppc64 ~riscv ~s390 ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 ~sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
 IUSE="doc lapack"
 
 RDEPEND="
@@ -35,9 +40,13 @@ RDEPEND="
 "
 BDEPEND="
 	${RDEPEND}
-	app-arch/unzip
-	>=dev-python/cython-0.29.24[${PYTHON_USEDEP}]
-	lapack? ( virtual/pkgconfig )
+	>=dev-python/cython-0.29.30[${PYTHON_USEDEP}]
+	lapack? (
+		virtual/pkgconfig
+	)
+	doc? (
+		app-arch/unzip
+	)
 	test? (
 		>=dev-python/hypothesis-5.8.0[${PYTHON_USEDEP}]
 		>=dev-python/pytz-2019.3[${PYTHON_USEDEP}]
@@ -46,7 +55,7 @@ BDEPEND="
 "
 
 PATCHES=(
-	"${FILESDIR}"/${PN}-1.22.0-no-hardcode-blasv2.patch
+	"${FILESDIR}"/numpy-1.22.0-no-hardcode-blasv2.patch
 )
 
 distutils_enable_tests pytest
@@ -141,8 +150,21 @@ python_test() {
 			numpy/core/tests/test_umath.py::TestRemainder::test_float_remainder_overflow
 			# https://github.com/numpy/numpy/issues/18387
 			numpy/random/tests/test_generator_mt19937.py::TestRandomDist::test_pareto
+			# more precision problems
+			numpy/core/tests/test_einsum.py::TestEinsum::test_einsum_sums_int16
 		)
 	fi
+	if use arm || use x86 ; then
+		EPYTEST_DESELECT+=(
+			# too large for 32-bit platforms
+			numpy/core/tests/test_ufunc.py::TestUfunc::test_identityless_reduction_huge_array
+		)
+	fi
+
+	[[ ${EPYTHON} == python3.11 ]] && EPYTEST_DESELECT+=(
+		# known problem
+		'numpy/typing/tests/test_generic_alias.py::TestGenericAlias::test_pass[__dir__-<lambda>]'
+	)
 
 	distutils_install_for_testing --single-version-externally-managed \
 		--record "${TMPDIR}/record.txt" ${NUMPY_FCONFIG}
