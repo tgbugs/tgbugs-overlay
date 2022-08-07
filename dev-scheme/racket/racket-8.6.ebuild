@@ -35,6 +35,8 @@ DEPEND="${RDEPEND}"
 
 S="${WORKDIR}/racket-${PV}/src"
 
+PATCHES=( "${FILESDIR}"/8.6-mzdyn-build.patch )
+
 src_prepare() {
 	rm -r bc/foreign/libffi || die 'failed to remove bundled libffi'
 	default
