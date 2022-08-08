@@ -9,10 +9,13 @@ PYTHON_COMPAT=( python3_{8..10} pypy3 )
 inherit distutils-r1
 
 DESCRIPTION="Google API Client for Python"
-HOMEPAGE="https://github.com/googleapis/google-api-python-client"
+HOMEPAGE="
+	https://github.com/googleapis/google-api-python-client/
+	https://pypi.org/project/google-api-python-client/
+"
 SRC_URI="
 	https://github.com/googleapis/google-api-python-client/archive/v${PV}.tar.gz
-		-> ${P}.tar.gz
+		-> ${P}.gh.tar.gz
 "
 
 LICENSE="Apache-2.0"
