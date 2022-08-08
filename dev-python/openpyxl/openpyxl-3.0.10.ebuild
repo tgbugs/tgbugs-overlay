@@ -4,13 +4,18 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 
 inherit distutils-r1
 
 DESCRIPTION="Pure python reader and writer of Excel OpenXML files"
-HOMEPAGE="https://openpyxl.readthedocs.io/en/stable/"
-SRC_URI="https://foss.heptapod.net/openpyxl/openpyxl/-/archive/${PV}/${P}.tar.bz2"
+HOMEPAGE="
+	https://openpyxl.readthedocs.io/en/stable/
+	https://foss.heptapod.net/openpyxl/openpyxl/
+"
+SRC_URI="
+	https://foss.heptapod.net/openpyxl/openpyxl/-/archive/${PV}/${P}.tar.bz2
+"
 
 LICENSE="MIT"
 SLOT="0"
