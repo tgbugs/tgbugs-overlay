@@ -1,12 +1,12 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=7
+EAPI=8
 
-inherit git-r3 cmake-utils eutils
+inherit git-r3 cmake
 
-EGIT_REPO_URI="git://github.com/mcellteam/mcell.git"
+EGIT_REPO_URI="https://github.com/mcellteam/mcell.git"
 
 DESCRIPTION="MCell: Monte Carlo Simulator of Cellular Microphysiology"
 HOMEPAGE="http://mcell.org"
@@ -24,7 +24,7 @@ BUILD_DIR="${S}/build"
 
 
 src_prepare() {
-	epatch "${FILESDIR}"/${P}-destdir.patch
+	eapply "${FILESDIR}"/${P}-destdir.patch
 }
 src_configure() {
 	cmake-utils_src_configure
