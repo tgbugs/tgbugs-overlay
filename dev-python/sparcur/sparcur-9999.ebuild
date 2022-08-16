@@ -101,12 +101,21 @@ python_install_all() {
 }
 
 src_install() {
+	local pyver
+	pyver=$(python -c 'import sys;print(f"python{sys.version_info.major}{sys.version_info.minor}")')
+	echo "UWSGI_PYTHON_MODULE=${pyver}" >> "${S}/resources/filesystem/etc/conf.d/sparcron-server"
+
+	doinitd "${S}/resources/filesystem/etc/init.d/sparcron-server"
+	doconfd "${S}/resources/filesystem/etc/conf.d/sparcron-server"
+
 	doinitd "${S}/resources/filesystem/etc/init.d/sparcur-dashboard"
 	doconfd "${S}/resources/filesystem/etc/conf.d/sparcur-dashboard"
+
 	keepdir "/var/log/${PN}"
 	keepdir "/var/log/${PN}/dashboard"
 	fowners ${USERGROUP}:${USERGROUP} "/var/log/${PN}"
 	fowners ${USERGROUP}:${USERGROUP} "/var/log/${PN}/dashboard"
+
 	distutils-r1_src_install
 }
 
