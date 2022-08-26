@@ -11,7 +11,7 @@ inherit distutils-r1 virtualx
 
 DESCRIPTION="Library for manipulating TrueType, OpenType, AFM and Type1 fonts"
 HOMEPAGE="https://github.com/fonttools/fonttools/"
-SRC_URI="https://github.com/fonttools/fonttools/archive/${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/fonttools/fonttools/archive/${PV}.tar.gz -> ${P}.gh.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -27,10 +27,6 @@ BDEPEND="${RDEPEND}
 "
 
 distutils_enable_tests pytest
-
-PATCHES=(
-	"${FILESDIR}"/${P}-py3.11-tests.patch
-)
 
 python_prepare_all() {
 	# When dev-python/pytest-shutil is installed, we get weird import errors.
