@@ -29,9 +29,9 @@ src_unpack() {
 	git-r3_src_unpack
 	ewarn "Running npm install in src_unpack. This violates various security assumptions. You have been warned."
 	pushd ${S}
-	npm install || die
+	npm install --legacy-peer-deps || die
 	pushd wrapper
-	npm install || die
+	npm install --legacy-peer-deps || die
 	popd
 	popd
 }
