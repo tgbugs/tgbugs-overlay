@@ -10,7 +10,10 @@ inherit distutils-r1
 
 MY_P=kiwi-${PV}
 DESCRIPTION="An efficient C++ implementation of the Cassowary constraint solving algorithm"
-HOMEPAGE="https://github.com/nucleic/kiwi/"
+HOMEPAGE="
+	https://github.com/nucleic/kiwi/
+	https://pypi.org/project/kiwisolver/
+"
 SRC_URI="
 	https://github.com/nucleic/kiwi/archive/${PV}.tar.gz -> ${MY_P}.gh.tar.gz
 "

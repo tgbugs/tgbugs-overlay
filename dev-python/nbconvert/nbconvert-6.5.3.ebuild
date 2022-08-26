@@ -20,7 +20,7 @@ SRC_URI="
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~riscv ~s390 ~x86"
+KEYWORDS="~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
 
 RDEPEND="
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
@@ -30,6 +30,7 @@ RDEPEND="
 	dev-python/jinja[${PYTHON_USEDEP}]
 	dev-python/jupyter_core[${PYTHON_USEDEP}]
 	dev-python/jupyterlab_pygments[${PYTHON_USEDEP}]
+	dev-python/lxml[${PYTHON_USEDEP}]
 	>=dev-python/markupsafe-2.0[${PYTHON_USEDEP}]
 	>=dev-python/mistune-2.0.2[${PYTHON_USEDEP}]
 	dev-python/nbclient[${PYTHON_USEDEP}]
@@ -53,7 +54,7 @@ BDEPEND="
 distutils_enable_tests pytest
 
 PATCHES=(
-	"${FILESDIR}"/${P}-mistune-2.patch
+	"${FILESDIR}"/nbconvert-6.5.0-mistune-2.patch
 )
 
 src_test() {

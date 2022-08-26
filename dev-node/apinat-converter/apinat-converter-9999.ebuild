@@ -13,8 +13,11 @@ LICENSE="Apache-2.0"
 SLOT="9999"
 KEYWORDS=""
 
-DEPEND="
-	<=net-libs/nodejs-15"
+BDEPEND="
+	net-libs/nodejs:0/18"
+
+RDEPEND="
+	net-libs/nodejs"
 
 src_unpack() {
 	# NOTE for this to work you must have run the command npm with no arguments
