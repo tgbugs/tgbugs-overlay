@@ -31,15 +31,18 @@ DEPEND="
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
 	)
-	cli? (
-		>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
-	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
 		>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
+IDEPEND="
+	cli? (
+		>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
+	)
+"
+RDEPEND="${DEPEND}
+${IDEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
