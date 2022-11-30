@@ -23,7 +23,7 @@ RESTRICT="!test? ( test )"
 DEPEND="
 	>=dev-python/python-dateutil-2.4[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
-	=dev-python/text-unidecode-1.3[${PYTHON_USEDEP}]
+	>=dev-python/text-unidecode-1.3[${PYTHON_USEDEP}]
 	test? (
 		>=dev-python/ukpostcodeparser-1.1.1[${PYTHON_USEDEP}]
 		>=dev-python/validators-0.13.0[${PYTHON_USEDEP}]
