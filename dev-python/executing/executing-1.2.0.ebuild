@@ -4,9 +4,9 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 
-inherit distutils-r1
+inherit distutils-r1 optfeature
 
 DESCRIPTION="Get information about what a Python frame is currently doing"
 HOMEPAGE="
@@ -20,14 +20,14 @@ SRC_URI="
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="amd64 arm ~arm64 ~hppa ~ia64 ~ppc ppc64 ~riscv ~s390 ~sparc x86"
 
-# asttokens is optional runtime dep
 BDEPEND="
 	dev-python/setuptools_scm[${PYTHON_USEDEP}]
 	test? (
 		dev-python/asttokens[${PYTHON_USEDEP}]
 		dev-python/littleutils[${PYTHON_USEDEP}]
+		dev-python/rich[${PYTHON_USEDEP}]
 	)
 "
 
@@ -39,4 +39,8 @@ python_test() {
 	# this test explodes when collected by pytest
 	"${EPYTHON}" tests/test_main.py || die "Tests failed with ${EPYTHON}"
 	epytest tests/test_pytest.py
+}
+
+pkg_postinst() {
+	optfeature "getting node's source code" dev-python/asttokens
 }

@@ -10,15 +10,23 @@ PYTHON_REQ_USE="xml(+)"
 inherit distutils-r1 virtualx
 
 DESCRIPTION="Library for manipulating TrueType, OpenType, AFM and Type1 fonts"
-HOMEPAGE="https://github.com/fonttools/fonttools/"
-SRC_URI="https://github.com/fonttools/fonttools/archive/${PV}.tar.gz -> ${P}.gh.tar.gz"
+HOMEPAGE="
+	https://github.com/fonttools/fonttools/
+	https://pypi.org/project/fonttools/
+"
+SRC_URI="
+	https://github.com/fonttools/fonttools/archive/${PV}.tar.gz
+		-> ${P}.gh.tar.gz
+"
 
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ppc ppc64 ~riscv ~s390 sparc x86 ~x64-macos"
 
-RDEPEND=">=dev-python/fs-2.4.9[${PYTHON_USEDEP}]"
-BDEPEND="${RDEPEND}
+RDEPEND="
+	>=dev-python/fs-2.4.9[${PYTHON_USEDEP}]
+"
+BDEPEND="
 	dev-python/cython[${PYTHON_USEDEP}]
 	test? (
 		app-arch/brotli[python,${PYTHON_USEDEP}]

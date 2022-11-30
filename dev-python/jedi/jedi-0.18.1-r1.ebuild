@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 
 inherit distutils-r1
 
@@ -18,7 +18,7 @@ HOMEPAGE="
 "
 SRC_URI="
 	https://github.com/davidhalter/${PN}/archive/v${PV}.tar.gz
-		-> ${P}.tar.gz
+		-> ${P}.gh.tar.gz
 	https://github.com/davidhalter/typeshed/archive/${TYPESHED_P#typeshed-}.tar.gz
 		-> ${TYPESHED_P}.tar.gz
 	https://github.com/davidhalter/django-stubs/archive/${DJANGO_STUBS_P#django-stubs-}.tar.gz
@@ -35,6 +35,11 @@ KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
 RDEPEND="
 	=dev-python/parso-0.8*[${PYTHON_USEDEP}]
 "
+
+PATCHES=(
+	# https://github.com/davidhalter/jedi/pull/1889
+	"${FILESDIR}/${P}-python3.11.patch"
+)
 
 # RDEPEND needed because of an import jedi inside conf.py
 distutils_enable_sphinx docs \
