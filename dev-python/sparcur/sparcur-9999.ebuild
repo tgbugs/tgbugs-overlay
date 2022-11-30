@@ -61,7 +61,7 @@ RDEPEND="${DEPEND}
 	)
 	server? (
 		dev-python/flask[${PYTHON_USEDEP}]
-		dev-python/gevent[${PYTHON_USEDEP}]
+		dev-python/tornado[${PYTHON_USEDEP}]
 		www-servers/gunicorn[${PYTHON_USEDEP}]
 	)
 	test? (
