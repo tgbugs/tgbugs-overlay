@@ -4,24 +4,29 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 
 inherit check-reqs distutils-r1
 
 MY_P=mongo-python-driver-${PV}
 DESCRIPTION="Python driver for MongoDB"
-HOMEPAGE="https://github.com/mongodb/mongo-python-driver https://pypi.org/project/pymongo/"
+HOMEPAGE="
+	https://github.com/mongodb/mongo-python-driver/
+	https://pypi.org/project/pymongo/
+"
 SRC_URI="
 	https://github.com/mongodb/mongo-python-driver/archive/${PV}.tar.gz
-		-> ${MY_P}.tar.gz"
+		-> ${MY_P}.gh.tar.gz
+"
 S=${WORKDIR}/${MY_P}
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="amd64 ~arm64 ~hppa ~riscv x86"
+KEYWORDS="amd64 ~arm64 ~hppa ~riscv ~x86"
 IUSE="doc kerberos"
 
 RDEPEND="
+	<dev-python/dnspython-3.0.0[${PYTHON_USEDEP}]
 	kerberos? ( dev-python/pykerberos[${PYTHON_USEDEP}] )
 "
 BDEPEND="
@@ -59,6 +64,9 @@ src_prepare() {
 		-i test/test_client.py || die
 	sed -e '/SRV_SCHEME/s:_HAVE_DNSPYTHON:False:' \
 		-i test/test_uri_spec.py || die
+	# changes in new mypy version
+	sed -e 's:test_mypy_failures:_&:' \
+		-i test/test_mypy.py || die
 	distutils-r1_src_prepare
 }
 

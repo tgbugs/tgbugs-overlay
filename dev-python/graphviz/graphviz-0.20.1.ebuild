@@ -9,8 +9,15 @@ PYTHON_COMPAT=( python3_{8..11} pypy3 )
 inherit distutils-r1
 
 DESCRIPTION="Simple Python interface for Graphviz"
-HOMEPAGE="https://graphviz.readthedocs.io/"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
+HOMEPAGE="
+	https://graphviz.readthedocs.io/
+	https://github.com/xflr6/graphviz/
+	https://pypi.org/project/graphviz/
+"
+SRC_URI="
+	https://github.com/xflr6/graphviz/archive/${PV}.tar.gz
+		-> ${P}.gh.tar.gz
+"
 
 LICENSE="MIT"
 KEYWORDS="amd64 ~riscv x86 ~amd64-linux ~x86-linux"
@@ -20,7 +27,6 @@ RDEPEND="
 	media-gfx/graphviz
 "
 BDEPEND="
-	app-arch/unzip
 	test? (
 		>=dev-python/mock-2.0.0[${PYTHON_USEDEP}]
 		>=dev-python/pytest-mock-1.8[${PYTHON_USEDEP}]
