@@ -4,18 +4,21 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=hatchling
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
 inherit distutils-r1
 
 DESCRIPTION="IPython Kernel for Jupyter"
-HOMEPAGE="https://github.com/ipython/ipykernel"
+HOMEPAGE="
+	https://github.com/ipython/ipykernel/
+	https://pypi.org/project/ipykernel/
+"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
 	>=dev-python/debugpy-1.0[${PYTHON_USEDEP}]
@@ -26,8 +29,8 @@ RDEPEND="
 	dev-python/packaging[${PYTHON_USEDEP}]
 	dev-python/psutil[${PYTHON_USEDEP}]
 	>=dev-python/pyzmq-17[${PYTHON_USEDEP}]
-	>=dev-python/traitlets-5.1.0[${PYTHON_USEDEP}]
 	>=dev-python/tornado-6.1[${PYTHON_USEDEP}]
+	>=dev-python/traitlets-5.1.0[${PYTHON_USEDEP}]
 "
 # RDEPEND seems specifically needed in BDEPEND, at least jupyter
 # bug #816486
