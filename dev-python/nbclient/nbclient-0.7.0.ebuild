@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 
 inherit distutils-r1
 
@@ -34,6 +34,7 @@ BDEPEND="
 		dev-python/ipython[${PYTHON_USEDEP}]
 		dev-python/ipykernel[${PYTHON_USEDEP}]
 		dev-python/ipywidgets[${PYTHON_USEDEP}]
+		dev-python/nbconvert[${PYTHON_USEDEP}]
 		dev-python/testpath[${PYTHON_USEDEP}]
 		dev-python/xmltodict[${PYTHON_USEDEP}]
 	)
@@ -42,5 +43,13 @@ BDEPEND="
 distutils_enable_tests pytest
 
 EPYTEST_DESELECT=(
+	nbclient/tests/test_client.py::test_many_parallel_notebooks
 	'nbclient/tests/test_client.py::test_run_all_notebooks[Interrupt.ipynb-opts6]'
 )
+
+python_test() {
+	# The tests run the pydevd debugger, the debugger prints a warning
+	# in python3.11 when frozen modules are being used.
+	# This warning makes the tests fail, silence it.
+	PYDEVD_DISABLE_FILE_VALIDATION=1 epytest
+}
