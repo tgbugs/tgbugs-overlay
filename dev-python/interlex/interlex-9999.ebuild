@@ -35,7 +35,7 @@ RDEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/flask-restx[${PYTHON_USEDEP}]
 	dev-python/flask-sqlalchemy[${PYTHON_USEDEP}]
-	$(python_gen_cond_dep 'dev-python/gevent[${PYTHON_USEDEP}]' python3_{8..10})
+	dev-python/tornado[${PYTHON_USEDEP}]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
 	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{8..10})
 	$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' pypy3)
