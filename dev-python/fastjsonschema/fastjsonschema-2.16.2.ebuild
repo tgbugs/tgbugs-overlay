@@ -10,16 +10,19 @@ inherit distutils-r1
 
 MY_P=python-${P}
 DESCRIPTION="Fast JSON schema validator for Python"
-HOMEPAGE="https://github.com/horejsek/python-fastjsonschema/"
+HOMEPAGE="
+	https://github.com/horejsek/python-fastjsonschema/
+	https://pypi.org/project/fastjsonschema/
+"
 SRC_URI="
 	https://github.com/horejsek/python-fastjsonschema/archive/v${PV}.tar.gz
-		-> ${MY_P}.tar.gz
+		-> ${MY_P}.gh.tar.gz
 "
 S=${WORKDIR}/${MY_P}
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~m68k ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86"
 
 distutils_enable_tests pytest
 
