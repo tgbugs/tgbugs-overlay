@@ -1,13 +1,13 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 2019-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 PYTHON_COMPAT=( pypy3 python3_{8..11} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
-	EGIT_REPO_URI="https://github.com/tgbugs/${PN}.git"
+	EGIT_REPO_URI="https://github.com/tgbugs/parsercomb.git"
 	inherit git-r3
 	KEYWORDS=""
 else
@@ -15,22 +15,19 @@ else
 	KEYWORDS="~amd64 ~x86"
 fi
 
-DESCRIPTION="Augmented pathlib."
-HOMEPAGE="https://github.com/tgbugs/augpathlib"
+DESCRIPTION="parser combinator library and assorted parsers"
+HOMEPAGE="https://github.com/tgbugs/parsercomb"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev test"
+IUSE="dev test +rdf +units"
 RESTRICT="!test? ( test )"
 
 DEPEND="
-	dev-python/git-python[${PYTHON_USEDEP}]
-	>=dev-python/pexpect-4.7.0[${PYTHON_USEDEP}]
-	dev-python/python-dateutil[${PYTHON_USEDEP}]
-	dev-python/pyxattr[${PYTHON_USEDEP}]
-	dev-python/setuptools[${PYTHON_USEDEP}]
-	dev-python/terminaltables[${PYTHON_USEDEP}]
-	|| ( sys-apps/file[python,${PYTHON_USEDEP}] dev-python/python-magic[${PYTHON_USEDEP}] )
+	dev-python/setuptools
+	rdf? (
+		>=dev-python/pyontutils-0.1.28[${PYTHON_USEDEP}]
+	)
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
@@ -39,7 +36,12 @@ DEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
+RDEPEND="${DEPEND}
+	units? (
+		dev-python/protcur[${PYTHON_USEDEP}]
+		>=dev-python/pint-0.16.1[babel,uncertainties,${PYTHON_USEDEP}]
+	)
+"
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
@@ -50,8 +52,6 @@ if [[ ${PV} == "9999" ]]; then
 fi
 
 python_test() {
-	git config --global user.email "${USER}@ebuild-testing.${HOSTNAME}"
-	git config --global user.name "Portage Testing"
 	distutils_install_for_testing
 	cd "${TEST_DIR}" || die
 	cp -r "${S}/test" . || die

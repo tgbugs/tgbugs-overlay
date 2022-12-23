@@ -1,9 +1,9 @@
 # Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..11} )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -15,28 +15,31 @@ else
 	KEYWORDS="~amd64 ~x86"
 fi
 
-DESCRIPTION="Augmented pathlib."
-HOMEPAGE="https://github.com/tgbugs/augpathlib"
+DESCRIPTION="python orthogonal authentication"
+HOMEPAGE="https://github.com/tgbugs/orthauth"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev test"
+IUSE="dev test +sxpr yaml"
+REQUIRE_USE="
+	test? ( yaml sxpr )
+"
 RESTRICT="!test? ( test )"
 
 DEPEND="
-	dev-python/git-python[${PYTHON_USEDEP}]
-	>=dev-python/pexpect-4.7.0[${PYTHON_USEDEP}]
-	dev-python/python-dateutil[${PYTHON_USEDEP}]
-	dev-python/pyxattr[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
-	dev-python/terminaltables[${PYTHON_USEDEP}]
-	|| ( sys-apps/file[python,${PYTHON_USEDEP}] dev-python/python-magic[${PYTHON_USEDEP}] )
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
+	)
+	sxpr? (
+		>=dev-python/sxpyr-0.0.2[${PYTHON_USEDEP}]
+	)
+	yaml? (
+		dev-python/pyyaml[${PYTHON_USEDEP}]
 	)
 "
 RDEPEND="${DEPEND}"
@@ -50,11 +53,14 @@ if [[ ${PV} == "9999" ]]; then
 fi
 
 python_test() {
-	git config --global user.email "${USER}@ebuild-testing.${HOSTNAME}"
-	git config --global user.name "Portage Testing"
 	distutils_install_for_testing
 	cd "${TEST_DIR}" || die
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
 	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
+}
+
+python_install_all() {
+	local DOCS=( README* docs/* )
+	distutils-r1_python_install_all
 }

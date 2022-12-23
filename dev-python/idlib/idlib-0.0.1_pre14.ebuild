@@ -1,9 +1,9 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..11} )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -11,32 +11,37 @@ if [[ ${PV} == "9999" ]]; then
 	inherit git-r3
 	KEYWORDS=""
 else
-	SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
+	MY_P=${PN}-${PV/_pre/.dev}  # 1.1.1_pre0 -> 1.1.1.dev0
+	S=${WORKDIR}/${MY_P}
+	SRC_URI="mirror://pypi/${P:0:1}/${PN}/${MY_P}.tar.gz -> ${P}.tar.gz"
 	KEYWORDS="~amd64 ~x86"
 fi
 
-DESCRIPTION="Augmented pathlib."
-HOMEPAGE="https://github.com/tgbugs/augpathlib"
+DESCRIPTION="A library for working with identifiers of all kinds."
+HOMEPAGE="https://github.com/tgbugs/idlib"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev test"
+IUSE="dev rdf oauth test"
 RESTRICT="!test? ( test )"
 
 DEPEND="
-	dev-python/git-python[${PYTHON_USEDEP}]
-	>=dev-python/pexpect-4.7.0[${PYTHON_USEDEP}]
-	dev-python/python-dateutil[${PYTHON_USEDEP}]
-	dev-python/pyxattr[${PYTHON_USEDEP}]
+	>=dev-python/orthauth-0.0.13[yaml,${PYTHON_USEDEP}]
+	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
-	dev-python/terminaltables[${PYTHON_USEDEP}]
-	|| ( sys-apps/file[python,${PYTHON_USEDEP}] dev-python/python-magic[${PYTHON_USEDEP}] )
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
 	)
+	oauth? (
+		dev-python/google-auth-oauthlib[${PYTHON_USEDEP}]
+	)
+	rdf? (
+		>=dev-python/pyontutils-0.1.28[${PYTHON_USEDEP}]
+	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
+		>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
 	)
 "
 RDEPEND="${DEPEND}"
@@ -50,11 +55,14 @@ if [[ ${PV} == "9999" ]]; then
 fi
 
 python_test() {
-	git config --global user.email "${USER}@ebuild-testing.${HOSTNAME}"
-	git config --global user.name "Portage Testing"
 	distutils_install_for_testing
 	cd "${TEST_DIR}" || die
 	cp -r "${S}/test" . || die
 	cp "${S}/setup.cfg" . || die
 	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
+}
+
+python_install_all() {
+	local DOCS=( README* )
+	distutils-r1_python_install_all
 }
