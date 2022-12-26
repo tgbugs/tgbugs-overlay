@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USER_PEP517=setuptools
-PYTHON_COMPAT=( pypy3 python3_{8..10} )
+PYTHON_COMPAT=( pypy3 python3_{8..11} )
 inherit distutils-r1
 
 DESCRIPTION="Python client and command line tool for Pennsieve"
@@ -21,6 +21,7 @@ DEPEND="
 	>=dev-python/deprecated-1.2.0[${PYTHON_USEDEP}]
 	>=dev-python/future-0.15.0[${PYTHON_USEDEP}]
 	>=dev-python/protobuf-python-3.2.0[${PYTHON_USEDEP}]
+	<dev-python/protobuf-python-3.20.2[${PYTHON_USEDEP}]
 	>=dev-python/python-jose-3.2.0[${PYTHON_USEDEP}]
 	>=dev-python/pytz-2016[${PYTHON_USEDEP}]
 	>=dev-python/requests-2.18[${PYTHON_USEDEP}]
