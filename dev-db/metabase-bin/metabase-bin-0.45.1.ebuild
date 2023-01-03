@@ -1,11 +1,11 @@
 # Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=8
 
 JAVA_PKG_IUSE=""
 
-inherit java-pkg-2 user
+inherit java-pkg-2
 
 MY_PN="${PN%%-bin}"
 MY_P="${MY_PN}-${PV}"
@@ -20,6 +20,10 @@ KEYWORDS="~amd64 ~x86"
 IUSE="-postgres -mysql"
 
 COMMON_DEP=""
+
+IDEPEND="
+	acct-group/metabase
+	acct-user/metabase"
 
 RDEPEND=">=virtual/jre-1.8
 		mysql? ( virtual/mysql )
@@ -37,10 +41,6 @@ pkg_setup() {
 		ewarn "metabase can only use a single backend at a time"
 		die "mysql and postgres use flags are mutually exclusive"
 	fi
-	ebegin "Creating ${MY_PN} user and group"
-	enewgroup ${MY_PN}
-	enewuser ${MY_PN} -1 -1 "/var/lib/${MY_PN}" ${MY_PN}
-	eend $? || die
 }
 
 src_unpack() {
