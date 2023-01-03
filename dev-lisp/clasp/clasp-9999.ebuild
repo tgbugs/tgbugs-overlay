@@ -1,7 +1,7 @@
 # Copyright 2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=8
 
 PYTHON_COMPAT=( pypy{3,} python{2_7,3_{4,5,6,7}} )
 PYTHON_REQ_USE="threads"
