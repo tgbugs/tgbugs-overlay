@@ -17,7 +17,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
 	>=dev-python/smmap-3.0.1[${PYTHON_USEDEP}]
@@ -27,10 +27,6 @@ BDEPEND="
 		dev-vcs/git
 	)
 "
-
-PATCHES=(
-	"${FILESDIR}/${P}-nose-to-pytest.patch"
-)
 
 distutils_enable_tests pytest
 
@@ -56,8 +52,9 @@ src_test() {
 }
 
 python_test() {
-	#TRAVIS=1 disables performance tests which rely on the gitdb repo
-	local -x TRAVIS=1
+	local EPYTEST_IGNORE=(
+		gitdb/test/performance
+	)
 	local -x GITDB_TEST_GIT_REPO_BASE="${T}"/repo.git
 	epytest
 }
