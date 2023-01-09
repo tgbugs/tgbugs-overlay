@@ -24,7 +24,7 @@ IUSE="dev test"
 RESTRICT="!test? ( test )"
 
 DEPEND="
-	dev-python/git-python[${PYTHON_USEDEP}]
+	dev-python/GitPython[${PYTHON_USEDEP}]
 	>=dev-python/pexpect-4.7.0[${PYTHON_USEDEP}]
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
 	dev-python/pyxattr[${PYTHON_USEDEP}]
