@@ -26,7 +26,7 @@ SLOT="0"
 IUSE="cron dev filetypes server test"
 RESTRICT="!test? ( test )"
 
-BDEPEND="
+BDEPEND="${BDEPEND}
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
 
 IDEPEND="
