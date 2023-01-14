@@ -23,7 +23,7 @@ SLOT="0"
 IUSE="dev test"
 RESTRICT="!test? ( test )"
 
-DEPEND="
+RDEPEND="
 	dev-python/GitPython[${PYTHON_USEDEP}]
 	>=dev-python/pexpect-4.7.0[${PYTHON_USEDEP}]
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
@@ -39,7 +39,6 @@ DEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {

@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..10} )
+PYTHON_COMPAT=( pypy3 python3_{8..11} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -24,8 +24,10 @@ IUSE="dev test +ttlfmt"
 REQUIRE_USE="test? ( ttlfmt )"
 RESTRICT="!test? ( test )"
 
-DEPEND="
-	dev-python/fastentrypoints[${PYTHON_USEDEP}]
+BDEPEND="
+	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
+
+RDEPEND="
 	>=dev-python/rdflib-5.0.0_pre0[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
@@ -40,7 +42,6 @@ DEPEND="
 		>=dev-python/joblib-0.14.0[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	S="${S}/${PN}"

@@ -26,8 +26,7 @@ REQUIRE_USE="
 "
 RESTRICT="!test? ( test )"
 
-DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
+RDEPEND="
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
@@ -42,7 +41,6 @@ DEPEND="
 		dev-python/pyyaml[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {

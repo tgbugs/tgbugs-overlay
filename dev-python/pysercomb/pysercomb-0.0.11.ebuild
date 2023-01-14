@@ -23,8 +23,7 @@ SLOT="0"
 IUSE="dev test +rdf +units"
 RESTRICT="!test? ( test )"
 
-DEPEND="
-	dev-python/setuptools
+RDEPEND="
 	rdf? (
 		>=dev-python/pyontutils-0.1.32[${PYTHON_USEDEP}]
 	)
@@ -35,8 +34,6 @@ DEPEND="
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
-"
-RDEPEND="${DEPEND}
 	units? (
 		dev-python/protcur[${PYTHON_USEDEP}]
 		>=dev-python/pint-0.16.1[babel,uncertainties,${PYTHON_USEDEP}]

@@ -26,19 +26,19 @@ SLOT="0"
 IUSE="cron dev filetypes server test"
 RESTRICT="!test? ( test )"
 
-DEPEND=""
+BDEPEND="
+	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
 
 IDEPEND="
 	acct-group/sparc
 	acct-user/sparc"
 
-RDEPEND="${DEPEND}
+RDEPEND="
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
 	>=dev-python/augpathlib-0.0.25[${PYTHON_USEDEP}]
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/pennsieve[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
-	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]
 	dev-python/openpyxl[${PYTHON_USEDEP}]
 	>=dev-python/protcur-0.0.11[${PYTHON_USEDEP}]

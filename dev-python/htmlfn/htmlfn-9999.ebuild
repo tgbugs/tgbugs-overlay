@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..10} )
+PYTHON_COMPAT=( pypy3 python3_{8..11} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -23,8 +23,7 @@ SLOT="0"
 IUSE="dev test"
 RESTRICT="!test? ( test )"
 
-DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
+RDEPEND="
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
@@ -33,7 +32,6 @@ DEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	S="${S}/${PN}"

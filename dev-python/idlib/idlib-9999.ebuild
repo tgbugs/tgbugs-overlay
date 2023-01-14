@@ -25,7 +25,7 @@ SLOT="0"
 IUSE="dev rdf oauth test"
 RESTRICT="!test? ( test )"
 
-DEPEND="
+RDEPEND="
 	>=dev-python/orthauth-0.0.17[yaml,${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
@@ -44,7 +44,6 @@ DEPEND="
 		>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {

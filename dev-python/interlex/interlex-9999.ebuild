@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{8..11} pypy3 )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -23,6 +23,9 @@ SLOT="0"
 IUSE="alt dev +rabbitmq database elasticsearch test"
 RESTRICT="!test? ( test )"
 
+BDEPEND="
+	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
+
 IDEPEND="
 	acct-group/interlex
 	acct-user/interlex"
@@ -31,15 +34,14 @@ RDEPEND="
 	>=dev-python/celery-5.0.5[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/elasticsearch-py[${PYTHON_USEDEP}]
-	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/flask-restx[${PYTHON_USEDEP}]
 	dev-python/flask-sqlalchemy[${PYTHON_USEDEP}]
 	dev-python/tornado[${PYTHON_USEDEP}]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
-	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{8..10})
+	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{8..11})
 	$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' pypy3)
-	>=dev-python/pyontutils-0.1.28[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.32[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-6.0.2[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	alt? (
@@ -60,7 +62,6 @@ RDEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 "
-DEPEND="${RDEPEND}"
 
 USERGROUP=interlex
 

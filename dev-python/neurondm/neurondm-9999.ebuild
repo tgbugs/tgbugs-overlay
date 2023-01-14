@@ -29,9 +29,9 @@ SLOT="0"
 IUSE="dev models notebook test"
 RESTRICT="!test? ( test )"
 
-DEPEND="
-	>=dev-python/hyputils-0.0.8[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.31[${PYTHON_USEDEP}]
+RDEPEND="
+	>=dev-python/hyputils-0.0.9[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.32[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
@@ -47,7 +47,6 @@ DEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	S="${S}/${PN}"

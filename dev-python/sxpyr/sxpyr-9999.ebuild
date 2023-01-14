@@ -25,8 +25,13 @@ SLOT="0"
 IUSE="dev cli test"
 RESTRICT="!test? ( test )"
 
-DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
+IDEPEND="
+	cli? (
+		>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
+	)
+"
+
+RDEPEND="${IDEPEND}
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
@@ -36,13 +41,6 @@ DEPEND="
 		>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
 	)
 "
-IDEPEND="
-	cli? (
-		>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
-	)
-"
-RDEPEND="${DEPEND}
-${IDEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {

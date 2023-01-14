@@ -29,12 +29,14 @@ SVCDEPEND="
 	>=dev-python/rdflib-6.0.0[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 "
-DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
+RDEPEND="
 	dev? (
 		>=dev-python/pyontutils-0.1.5[${PYTHON_USEDEP}]
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
+	)
+	services? (
+		${SVCDEPEND}
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
@@ -43,21 +45,14 @@ DEPEND="
 "
 
 if [[ ${PV} == "9999" ]]; then
-	DEPEND="${DEPEND}
-		dev-python/pyontutils[${PYTHON_USEDEP}]
-	"
+	BDEPEND="
+		dev-python/pyontutils[${PYTHON_USEDEP}]"
 	src_prepare () {
 		# replace package version to keep python quiet
 		sed -i "s/__version__.\+$/__version__ = '9999.0.0+$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
 		default
 	}
 fi
-
-RDEPEND="${DEPEND}
-	services? (
-		${SVCDEPEND}
-	)
-"
 
 python_test() {
 	distutils_install_for_testing

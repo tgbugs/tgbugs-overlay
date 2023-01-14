@@ -24,7 +24,7 @@ IUSE="dev memex test zendesk"
 REQUIRE_USE="test? ( memex )"
 RESTRICT="!test? ( test )"
 
-DEPEND="
+RDEPEND="
 	dev-python/certifi[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
@@ -54,7 +54,6 @@ DEPEND="
 		dev-python/zdesk[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {

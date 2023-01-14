@@ -26,11 +26,13 @@ RESTRICT="
 	!test? ( test )
 "
 
-DEPEND="
+BDEPEND="${BDEPEND}
+	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
+
+RDEPEND="
 	>=dev-python/augpathlib-0.0.23[${PYTHON_USEDEP}]
 	dev-python/colorlog[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
-	dev-python/fastentrypoints[${PYTHON_USEDEP}]
 	dev-python/funowl[${PYTHON_USEDEP}]
 	dev-python/GitPython[${PYTHON_USEDEP}]
 	dev-python/google-api-python-client[${PYTHON_USEDEP}]
@@ -40,6 +42,7 @@ DEPEND="
 	>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/nest_asyncio[${PYTHON_USEDEP}]
+	>=dev-python/ontquery-0.2.11[${PYTHON_USEDEP}]
 	>=dev-python/orthauth-0.0.16[${PYTHON_USEDEP}]
 	dev-python/pyld[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
@@ -61,9 +64,6 @@ DEPEND="
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
-"
-RDEPEND="${DEPEND}
-	( >=dev-python/ontquery-0.2.11[${PYTHON_USEDEP}] )
 "
 
 if [[ ${PV} == "9999" ]]; then

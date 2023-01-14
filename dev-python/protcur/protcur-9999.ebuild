@@ -23,19 +23,21 @@ SLOT="0"
 IUSE="dev test"
 RESTRICT="!test? ( test )"
 
+BDEPEND="
+	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
+
 IDEPEND="
 	acct-user/protcur
 	acct-group/protcur
 "
 
-DEPEND="
-	dev-python/fastentrypoints[${PYTHON_USEDEP}]
+RDEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/htmlfn[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.9[${PYTHON_USEDEP}]
 	dev-python/markdown[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.32[${PYTHON_USEDEP}]
-	dev-python/setuptools[${PYTHON_USEDEP}]
+	>=dev-python/pysercomb-0.0.9[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
@@ -43,9 +45,6 @@ DEPEND="
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
-"
-RDEPEND="${DEPEND}
-	>=dev-python/pysercomb-0.0.9[${PYTHON_USEDEP}]
 "
 
 if [[ ${PV} == "9999" ]]; then

@@ -23,19 +23,21 @@ SLOT="0"
 IUSE="dev doc server spell test"
 RESTRICT="!test? ( test )"
 
+BDEPEND="
+	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
+
 IDEPEND="
 	acct-user/nifstd-tools
 	acct-group/nifstd-tools
 "
 
-DEPEND="
-	dev-python/fastentrypoints[${PYTHON_USEDEP}]
+RDEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/nbconvert[${PYTHON_USEDEP}]
 	dev-python/nbformat[${PYTHON_USEDEP}]
 	dev-python/psutil[${PYTHON_USEDEP}]
 	dev-python/pymysql[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.26[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.32[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/sqlalchemy[${PYTHON_USEDEP}]
 	dev? (
@@ -58,7 +60,6 @@ DEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	S="${S}/${PN%%-*}"
