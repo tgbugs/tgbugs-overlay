@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{9..10} pypy3 )
 PYTHON_REQ_USE="sqlite?,threads(+)"
 DISTUTILS_USE_SETUPTOOLS=rdepend
 inherit distutils-r1 optfeature

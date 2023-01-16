@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{8..10} )
+PYTHON_COMPAT=( pypy3 python3_{9..10} )
 inherit distutils-r1
 
 DESCRIPTION="A test fixtures replacement based on thoughtbot's factory_bot for Ruby."

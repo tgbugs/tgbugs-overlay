@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{8..11} pypy3 )
+PYTHON_COMPAT=( python3_{9..11} pypy3 )
 PYTHON_REQ_USE='tk?,threads(+)'
 
 inherit distutils-r1 flag-o-matic multiprocessing prefix toolchain-funcs \
@@ -82,7 +82,7 @@ RDEPEND="
 	wxwidgets? (
 		$(python_gen_cond_dep '
 			dev-python/wxpython:*[${PYTHON_USEDEP}]
-		' pypy3 python3_{8..10})
+		' pypy3 python3_{9..10})
 	)
 "
 

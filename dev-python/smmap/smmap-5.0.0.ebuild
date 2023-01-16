@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{9..10} pypy3 )
 inherit distutils-r1
 
 DESCRIPTION="A pure Python implementation of a sliding window memory map manager"

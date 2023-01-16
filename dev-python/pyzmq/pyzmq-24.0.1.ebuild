@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} pypy3 )
+PYTHON_COMPAT=( python3_{9..11} pypy3 )
 # TODO: Find out exactly where this error comes from
 # error: '<' not supported between instances of 'str' and 'int'
 #DISTUTILS_USE_PEP517=setuptools

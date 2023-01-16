@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_SETUPTOOLS=no
-PYTHON_COMPAT=( python3_{8..10} pypy3 )
+PYTHON_COMPAT=( python3_{9..10} pypy3 )
 PYTHON_REQ_USE='readline(+),sqlite,threads(+)'
 
 inherit distutils-r1 optfeature virtualx
