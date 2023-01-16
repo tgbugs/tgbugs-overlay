@@ -20,8 +20,6 @@ DEPEND="
 	>=dev-python/boto3-1.4[${PYTHON_USEDEP}]
 	>=dev-python/deprecated-1.2.0[${PYTHON_USEDEP}]
 	>=dev-python/future-0.15.0[${PYTHON_USEDEP}]
-	>=dev-python/protobuf-python-3.2.0[${PYTHON_USEDEP}]
-	<dev-python/protobuf-python-3.20.2[${PYTHON_USEDEP}]
 	>=dev-python/python-jose-3.2.0[${PYTHON_USEDEP}]
 	>=dev-python/pytz-2016[${PYTHON_USEDEP}]
 	>=dev-python/requests-2.18[${PYTHON_USEDEP}]
@@ -55,6 +53,7 @@ PATCHES=(
 	"${FILESDIR}"/setup-notest.patch
 	"${FILESDIR}"/manifest-notest.patch
 	"${FILESDIR}"/no-futures-jose.patch
+	"${FILESDIR}"/no-protobuf.patch
 )
 
 distutils_enable_tests pytest
