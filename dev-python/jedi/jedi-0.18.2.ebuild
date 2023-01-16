@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -30,16 +30,11 @@ LICENSE="
 	test? ( Apache-2.0 )
 "
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
 	=dev-python/parso-0.8*[${PYTHON_USEDEP}]
 "
-
-PATCHES=(
-	# https://github.com/davidhalter/jedi/pull/1889
-	"${FILESDIR}/${P}-python3.11.patch"
-)
 
 # RDEPEND needed because of an import jedi inside conf.py
 distutils_enable_sphinx docs \
