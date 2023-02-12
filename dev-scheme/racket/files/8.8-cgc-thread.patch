@@ -1,97 +1,5 @@
-From 1a8ec20b875bfab1cbe274f327bbcdc40da6b691 Mon Sep 17 00:00:00 2001
-From: Matthew Flatt <mflatt@racket-lang.org>
-Date: Fri, 10 Feb 2023 10:22:56 +0800
-Subject: [PATCH] CGC: repairs `thread-dead-evt`
-
-Commit 0b437b2069 did not correctly handle the CGC difference from 3m
-for weak references. This commit repairs the problem mostly by using
-the more generic path from 3m in CGC. (The old code was trying to be
-more streamlined for CGC's memory manager, but it's a tiny
-difference.)
-
-The commit also adjusts the Reference to not evaluate an example that
-can't run on CGC.
-
-Closes #4575
----
- .../scribblings/reference/custodians.scrbl    | 52 +++++++------
- racket/src/bc/src/schpriv.h                   |  6 +-
- racket/src/bc/src/stypes.h                    | 78 +++++++++----------
- racket/src/bc/src/thread.c                    | 35 +++------
- 4 files changed, 80 insertions(+), 91 deletions(-)
-
-diff --git a/pkgs/racket-doc/scribblings/reference/custodians.scrbl b/pkgs/racket-doc/scribblings/reference/custodians.scrbl
-index abc1fb1f47..c3ea2b3614 100644
---- a/pkgs/racket-doc/scribblings/reference/custodians.scrbl
-+++ b/pkgs/racket-doc/scribblings/reference/custodians.scrbl
-@@ -144,33 +144,41 @@ immediate allocations can be rejected with an
- @examples[
-  (require racket/async-channel)
-  (define ch (make-async-channel))
-- (parameterize ([current-custodian (make-custodian)])
--   (thread-wait
--    (thread
--     (λ ()
--       (with-handlers ([exn:fail:out-of-memory? (λ (e) (async-channel-put ch e))])
--         (custodian-limit-memory (current-custodian) (* 1024 1024))
--         (make-bytes (* 4 1024 1024))
--         (async-channel-put ch "Not OK")))))
--   (async-channel-get ch))
-+ (eval:alts
-+  (parameterize ([current-custodian (make-custodian)])
-+    (thread-wait
-+     (thread
-+      (λ ()
-+        (with-handlers ([exn:fail:out-of-memory?
-+                         (λ (e) (async-channel-put ch e))])
-+          (custodian-limit-memory (current-custodian) (* 1024 1024))
-+          (make-bytes (* 4 1024 1024))
-+          (async-channel-put ch "Not OK")))))
-+    (async-channel-get ch))
-+   (exn:fail:out-of-memory "out of memory" (current-continuation-marks)))
-  (define cust (make-custodian))
-- (eval:error
--  (with-handlers ([exn:fail:out-of-memory? (λ (e) (error "Caught OOM exn"))])
--    (call-in-nested-thread
--     (λ ()
--       (custodian-limit-memory cust (* 1024 1024))
--       (make-bytes (* 4 1024 1024))
--       "Not OK")
--     cust)))
-+ (eval:alts
-+   (with-handlers ([exn:fail:out-of-memory?
-+                    (λ (e) (error "Caught OOM exn"))])
-+     (call-in-nested-thread
-+      (λ ()
-+        (custodian-limit-memory cust (* 1024 1024))
-+        (make-bytes (* 4 1024 1024))
-+        "Not OK")
-+      cust))
-+   (eval:error
-+    (error "Caught OOM exn")))
-  ]
- 
- @examples[
-  #:label "Non-examples:"
-- (parameterize ([current-custodian (make-custodian)])
--   (custodian-limit-memory (current-custodian) (* 1024 1024))
--   (code:comment @#,elem{Allocation of @racket[make-bytes] is charged to the current thread's})
--   (code:comment @#,elem{managing custodian, not the new custodian.})
--   (make-bytes (* 4 1024 1024))
-+ (eval:alts
-+  (parameterize ([current-custodian (make-custodian)])
-+    (custodian-limit-memory (current-custodian) (* 1024 1024))
-+    (code:comment @#,elem{Allocation of @racket[make-bytes] is charged to the current thread's})
-+    (code:comment @#,elem{managing custodian, not the new custodian.})
-+    (make-bytes (* 4 1024 1024))
-+    "Not OK")
-    "Not OK")
-  ]
- }
-diff --git a/racket/src/bc/src/schpriv.h b/racket/src/bc/src/schpriv.h
-index aa04697113..3d14f30291 100644
---- a/racket/src/bc/src/schpriv.h
-+++ b/racket/src/bc/src/schpriv.h
+--- src/bc/src/schpriv.h
++++ src/bc/src/schpriv.h
 @@ -172,12 +172,8 @@ XFORM_NONGCING int scheme_intern_prim_opt_flags(int);
  #define MALLOC_N_STUBBORN(x, n) _MALLOC_N(x, n, scheme_malloc_stubborn)
  
@@ -114,10 +22,8 @@ index aa04697113..3d14f30291 100644
    Scheme_Custodian_Reference *mref;
    Scheme_Object *extra_mrefs; /* More owning custodians */
    Scheme_Object *dead_box;
-diff --git a/racket/src/bc/src/stypes.h b/racket/src/bc/src/stypes.h
-index d8867b15e7..875d09c4c7 100644
---- a/racket/src/bc/src/stypes.h
-+++ b/racket/src/bc/src/stypes.h
+--- src/bc/src/stypes.h
++++ src/bc/src/stypes.h
 @@ -224,52 +224,52 @@ enum {
    scheme_will_be_lambda_type,           /* 187 */
    scheme_thunk_for_continue_type,       /* 188 */
@@ -210,10 +116,8 @@ index d8867b15e7..875d09c4c7 100644
    scheme_rt_srcloc,                     /* 229 */
    scheme_rt_evt,                        /* 230 */
    scheme_rt_syncing,                    /* 231 */
-diff --git a/racket/src/bc/src/thread.c b/racket/src/bc/src/thread.c
-index 9df8d7e136..2dd091095e 100644
---- a/racket/src/bc/src/thread.c
-+++ b/racket/src/bc/src/thread.c
+--- src/bc/src/thread.c
++++ src/bc/src/thread.c
 @@ -468,10 +468,6 @@ SHARED_OK static Scheme_Custodian_Extractor *extractors;
  #define LONGJMP(p) scheme_longjmpup(&p->jmpup_buf)
  #define RESETJMP(p) scheme_reset_jmpup_buf(&p->jmpup_buf)
@@ -317,6 +221,3 @@ index 9df8d7e136..2dd091095e 100644
    scheme_remove_all_finalization(np->mr_hop);
  
    if (np->prev)
--- 
-2.39.1
-
