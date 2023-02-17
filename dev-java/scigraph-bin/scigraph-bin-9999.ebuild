@@ -91,7 +91,11 @@ src_install() {
 		dosym "${CORE_SHARE}/${CORE_P}.jar" "${CORE_FOLDER}/${CORE_PN}.jar"
 
 		echo '#!/usr/bin/env sh' > "${ED}${GRAPHLOAD_EXECUTABLE}"
+		echo 'if [ "$(/usr/bin/java -version 2>&1 | head -n1 | cut -d\" -f2 | cut -d. -f1)" -gt "1" ]; then' >> "${ED}${GRAPHLOAD_EXECUTABLE}"
+		echo "/usr/bin/java --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED -cp \"${CORE_FOLDER}/${CORE_PN}.jar\" io.scigraph.owlapi.loader.BatchOwlLoader"' $@' >> "${ED}${GRAPHLOAD_EXECUTABLE}"
+		echo 'else' >> "${ED}${GRAPHLOAD_EXECUTABLE}"
 		echo "/usr/bin/java -cp \"${CORE_FOLDER}/${CORE_PN}.jar\" io.scigraph.owlapi.loader.BatchOwlLoader"' $@' >> "${ED}${GRAPHLOAD_EXECUTABLE}"
+		echo 'fi' >> "${ED}${GRAPHLOAD_EXECUTABLE}"
 		chmod 0755 "${ED}${GRAPHLOAD_EXECUTABLE}"
 	fi
 
