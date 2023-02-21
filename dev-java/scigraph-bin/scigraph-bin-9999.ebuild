@@ -26,11 +26,11 @@ IDEPEND="
 	acct-user/scigraph"
 
 RDEPEND="
-	virtual/jre:1.8
+	>=virtual/jre-1.8
 	x11-misc/xvfb-run"
 
 BDEPEND="
-	virtual/jdk:1.8
+	>=virtual/jdk-1.8
 	>=dev-java/maven-bin-3.3"
 
 SERVICES_PN="${MY_PN}-services"
