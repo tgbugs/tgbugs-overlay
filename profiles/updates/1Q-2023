@@ -1,1 +1,2 @@
 move dev-python/git-python dev-python/GitPython
+move dev-python/slugify dev-python/python-slugify

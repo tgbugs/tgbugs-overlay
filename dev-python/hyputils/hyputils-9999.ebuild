@@ -40,7 +40,7 @@ RDEPEND="
 		dev-python/mistune[${PYTHON_USEDEP}]
 		$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' 'python3*')
 		$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' 'pypy3')
-		dev-python/slugify[${PYTHON_USEDEP}]
+		dev-python/python-slugify[${PYTHON_USEDEP}]
 		dev-python/sqlalchemy[${PYTHON_USEDEP}]
 		dev-python/webob[${PYTHON_USEDEP}]
 	)
