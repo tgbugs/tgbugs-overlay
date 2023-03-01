@@ -23,7 +23,7 @@ RDEPEND="
 	app-eselect/eselect-racket
 	dev-db/sqlite:3
 	media-libs/libpng:0
-	x11-libs/cairo[svg,X?]
+	x11-libs/cairo[svg(+),X?]
 	x11-libs/pango[X?]
 	dev-libs/libffi
 	virtual/jpeg:0
