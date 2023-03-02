@@ -9,7 +9,7 @@ MY_PN="emacs-zmq"
 
 inherit autotools elisp
 
-DESCRIPTION="Fully-featured terminal emulator based on libvterm"
+DESCRIPTION="Emacs bindings for zeromq."
 HOMEPAGE="https://github.com/nnicandro/emacs-zmq/"
 SRC_URI="https://github.com/nnicandro/${MY_PN}/archive/${COMMIT}.tar.gz
 	-> ${P}.tar.gz"
@@ -36,7 +36,6 @@ SITEFILE="50${PN}-gentoo.el"
 src_configure() {
 	pushd src || die
 	eautoreconf
-	#autoreconf -i || die
 	./configure \
 		--prefix=${S} \
 		--enable-shared=emacs-zmq \
@@ -52,8 +51,6 @@ src_configure() {
 src_compile() {
 	ZMQ_LIBS=/usr/lib64/libzmq.so
 	emake ${S}/emacs-zmq.so || die  # FIXME match makefile extension ?
-	#emake -C src || die
-	#cp src/.libs/emacs-zmq.so || die  # FIXME portable extension
 	mv emacs-zmq.so zmq-core.so
 	elisp_src_compile
 }
