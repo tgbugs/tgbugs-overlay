@@ -1,0 +1,40 @@
+diff --git a/zmq.el b/zmq.el
+index d67da22..9b537a8 100644
+--- a/zmq.el
++++ b/zmq.el
+@@ -625,32 +625,9 @@ Emacs process."
+   ;; Assume the module is already loaded when one of its functions is defined.
+   (unless (functionp #'zmq--cleanup-globrefs)
+     (if module-file-suffix
+-        (let ((default-directory (file-name-directory (locate-library "zmq.el"))))
+-          (if (load (expand-file-name "emacs-zmq") t)
+-              (add-hook 'post-gc-hook #'zmq--cleanup-globrefs)
+-            ;; Can also be "latest"
+-            (if (zmq--download-module (concat "tags/" zmq-emacs-version))
+-                (zmq-load)
+-              (let ((msg "ZMQ module not found. Build%s it%s"))
+-                (when (or noninteractive (y-or-n-p (format msg "" "? ")))
+-                  (when noninteractive
+-                    (message msg "ing" ""))
+-                  (let ((emacs
+-                         (when (and invocation-directory invocation-name)
+-                           (file-truename
+-                            (expand-file-name invocation-name
+-                                              invocation-directory)))))
+-                    (cl-labels
+-                        ((load-zmq
+-                          (_buf status)
+-                          (if (string= status "finished\n")
+-                              (zmq-load)
+-                            (warn "Something went wrong when compiling the ZMQ module!"))
+-                          (remove-hook 'compilation-finish-functions #'load-zmq)
+-                          (exit-recursive-edit)))
+-                      (add-hook 'compilation-finish-functions #'load-zmq)
+-                      (compile (concat "make" (when emacs (concat " EMACS=" emacs))))
+-                      (recursive-edit))))))))
++        (if (require 'zmq-core)
++            (add-hook 'post-gc-hook #'zmq--cleanup-globrefs)
++          (error "failed to load zmq-core"))
+       (user-error "Modules are not supported"))))
+ 
+ (zmq-load)
