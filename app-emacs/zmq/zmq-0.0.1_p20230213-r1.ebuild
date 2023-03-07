@@ -28,6 +28,7 @@ RDEPEND="
 PATCHES=(
 	"${FILESDIR}"/${PN}-no-compile-no-download.patch
 	"${FILESDIR}"/${PN}-tests-no-download.patch
+	"${FILESDIR}"/${PN}-subprocess-module-path.patch
 )
 
 DOCS=( README.org )

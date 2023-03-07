@@ -1,0 +1,20 @@
+diff --git a/zmq.el b/zmq.el
+index d67da22..74b1120 100644
+--- a/zmq.el
++++ b/zmq.el
+@@ -462,6 +462,7 @@ Emacs process."
+     (unless (and (<= min 1) (or (not (numberp max)) (<= max 1)))
+       (error "Invalid function to send to process, can only have 0 or 1 arguments")))
+   (let* ((zmq-path (locate-library "zmq.el"))
++         (zmq-core-path (locate-library "zmq-core"))
+          (cmd (format "(zmq--init-subprocess %s)" (when debug t)))
+          ;; stderr is split from stdout since the former is used by
+          ;; Emacs to print messages that we don't want intermixed
+@@ -485,6 +486,7 @@ Emacs process."
+                               (expand-file-name invocation-name
+                                                 invocation-directory))
+                              "-Q" "-batch"
++                             "-L" (file-name-directory zmq-core-path)
+                              "-L" (file-name-directory zmq-path)
+                              "-l" zmq-path "--eval" cmd))))
+     (process-put process :debug debug)
