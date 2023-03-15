@@ -25,6 +25,7 @@ REQUIRE_USE="test? ( memex )"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
+	dev-python/appdirs[${PYTHON_USEDEP}]
 	dev-python/certifi[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
