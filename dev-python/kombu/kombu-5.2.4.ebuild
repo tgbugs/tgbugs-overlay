@@ -3,12 +3,11 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{9..10} pypy3 )
-inherit distutils-r1 optfeature
+PYTHON_COMPAT=( python3_{9..11} pypy3 )
+inherit distutils-r1 optfeature pypi
 
 DESCRIPTION="AMQP Messaging Framework for Python"
 HOMEPAGE="https://pypi.org/project/kombu/ https://github.com/celery/kombu"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -38,6 +37,7 @@ BDEPEND="
 	)
 "
 
+PATCHES=( "${FILESDIR}/fix-bad-tests-require.patch" )
 distutils_enable_tests pytest
 distutils_enable_sphinx docs \
 	dev-python/sphinx_celery

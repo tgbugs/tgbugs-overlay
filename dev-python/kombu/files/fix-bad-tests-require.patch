@@ -1,0 +1,9 @@
+--- extra/requirements/test.txt	2022-03-05 20:55:41.000000000 -0800
++++ extra/requirements/test.txt.new	2023-03-16 22:49:34.318452437 -0700
+@@ -1,4 +1,4 @@
+-pytz>dev
++pytz
+ pytest~=7.0.1
+ pytest-sugar
+ Pyro4
+
