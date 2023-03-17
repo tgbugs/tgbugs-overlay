@@ -50,7 +50,7 @@ DEPEND="
 		>=dev-python/pytest-timeout-1.4.2[${PYTHON_USEDEP}]
 		>=dev-python/python-dateutil-2.1[${PYTHON_USEDEP}]
 		dev-python/sqlalchemy[${PYTHON_USEDEP}]
-		>=dev-python/redis-py-3.2.0[${PYTHON_USEDEP}]
+		>=dev-python/redis-3.2.0[${PYTHON_USEDEP}]
 		>=dev-db/redis-2.8.0
 		>=dev-python/boto3-1.9.178[${PYTHON_USEDEP}]
 		>=dev-python/moto-2.2.6[${PYTHON_USEDEP}]

@@ -32,7 +32,7 @@ BDEPEND="
 		dev-python/Pyro4[${PYTHON_USEDEP}]
 		dev-python/pytz[${PYTHON_USEDEP}]
 		>=dev-python/pyyaml-3.10[${PYTHON_USEDEP}]
-		>=dev-python/redis-py-3.3.11[${PYTHON_USEDEP}]
+		>=dev-python/redis-3.3.11[${PYTHON_USEDEP}]
 		dev-python/sqlalchemy[${PYTHON_USEDEP}]
 		dev-python/zstandard[${PYTHON_USEDEP}]
 	)

@@ -48,7 +48,7 @@ RDEPEND="
 	dev-python/terminaltables[${PYTHON_USEDEP}]
 	cron? (
 		dev-python/celery[${PYTHON_USEDEP}]
-		dev-python/redis-py[${PYTHON_USEDEP}]
+		dev-python/redis[${PYTHON_USEDEP}]
 	)
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
