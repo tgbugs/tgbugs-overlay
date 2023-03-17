@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -11,8 +11,6 @@ FORTRAN_NEEDED=lapack
 inherit distutils-r1 flag-o-matic fortran-2 toolchain-funcs
 
 DOC_PV=${PV}
-# For when docs aren't ready yet, set to last version
-#DOC_PV=1.23.0
 DESCRIPTION="Fast array and numerical python library"
 HOMEPAGE="
 	https://numpy.org/
@@ -21,16 +19,11 @@ HOMEPAGE="
 "
 SRC_URI="
 	mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
-	doc? (
-		https://numpy.org/doc/$(ver_cut 1-2 ${DOC_PV})/numpy-html.zip -> numpy-html-${DOC_PV}.zip
-		https://numpy.org/doc/$(ver_cut 1-2 ${DOC_PV})/numpy-ref.pdf -> numpy-ref-${DOC_PV}.pdf
-		https://numpy.org/doc/$(ver_cut 1-2 ${DOC_PV})/numpy-user.pdf -> numpy-user-${DOC_PV}.pdf
-	)
 "
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
-IUSE="doc lapack"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
+IUSE="lapack"
 
 RDEPEND="
 	lapack? (
@@ -44,9 +37,6 @@ BDEPEND="
 	lapack? (
 		virtual/pkgconfig
 	)
-	doc? (
-		app-arch/unzip
-	)
 	test? (
 		>=dev-python/hypothesis-5.8.0[${PYTHON_USEDEP}]
 		>=dev-python/pytz-2019.3[${PYTHON_USEDEP}]
@@ -59,13 +49,6 @@ PATCHES=(
 )
 
 distutils_enable_tests pytest
-
-src_unpack() {
-	default
-	if use doc; then
-		unzip -qo "${DISTDIR}"/numpy-html-${DOC_PV}.zip -d html || die
-	fi
-}
 
 python_prepare_all() {
 	# Allow use with setuptools 60.x
@@ -177,11 +160,5 @@ python_install() {
 
 python_install_all() {
 	local DOCS=( LICENSE.txt README.md THANKS.txt )
-
-	if use doc; then
-		local HTML_DOCS=( "${WORKDIR}"/html/. )
-		DOCS+=( "${DISTDIR}"/${PN}-{user,ref}-${DOC_PV}.pdf )
-	fi
-
 	distutils-r1_python_install_all
 }

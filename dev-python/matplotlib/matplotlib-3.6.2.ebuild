@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -30,23 +30,23 @@ SRC_URI="
 # Fonts: BitstreamVera, OFL-1.1
 LICENSE="BitstreamVera BSD matplotlib MIT OFL-1.1"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
 IUSE="cairo doc excel examples gtk3 latex qt5 tk webagg wxwidgets"
 
 # internal copy of pycxx highly patched
 #	dev-python/pycxx
 RDEPEND="
 	dev-python/certifi[${PYTHON_USEDEP}]
+	>=dev-python/contourpy-1.0.1[${PYTHON_USEDEP}]
 	>=dev-python/cycler-0.10.0-r1[${PYTHON_USEDEP}]
 	>=dev-python/fonttools-4.22.0[${PYTHON_USEDEP}]
 	>=dev-python/kiwisolver-1.2.0[${PYTHON_USEDEP}]
-	>=dev-python/numpy-1.18.2[${PYTHON_USEDEP}]
+	>=dev-python/numpy-1.19[${PYTHON_USEDEP}]
 	>=dev-python/packaging-20.0[${PYTHON_USEDEP}]
-	>=dev-python/pillow-7.1.1[jpeg,${PYTHON_USEDEP}]
+	>=dev-python/pillow-7.1.1[jpeg,webp,${PYTHON_USEDEP}]
 	>=dev-python/pyparsing-2.2.1[${PYTHON_USEDEP}]
 	>=dev-python/python-dateutil-2.7[${PYTHON_USEDEP}]
 	>=dev-python/pytz-2019.3[${PYTHON_USEDEP}]
-	>=dev-python/six-1.14.0[${PYTHON_USEDEP}]
 	media-fonts/dejavu
 	media-fonts/stix-fonts
 	media-libs/freetype:2
@@ -82,14 +82,13 @@ RDEPEND="
 	wxwidgets? (
 		$(python_gen_cond_dep '
 			dev-python/wxpython:*[${PYTHON_USEDEP}]
-		' pypy3 python3_{9..10})
+		' python3_{9..10})
 	)
 "
 
 BDEPEND="
 	${RDEPEND}
-	dev-python/setuptools-scm[${PYTHON_USEDEP}]
-	dev-python/setuptools_scm_git_archive[${PYTHON_USEDEP}]
+	>=dev-python/setuptools-scm-7[${PYTHON_USEDEP}]
 	virtual/pkgconfig
 	doc? (
 		>=app-text/dvipng-1.15-r1
@@ -140,17 +139,12 @@ python_prepare_all() {
 #	rm -r agg24 CXX || die
 #	rm -r agg24 || die
 
-#	cat > lib/${PN}/externals/six.py <<-EOF
-#	from __future__ import absolute_import
-#	from six import *
-#	EOF
-
 	# Affects installed _version.py, bug #854600
 	export SETUPTOOLS_SCM_PRETEND_VERSION=${PV}
 
 	local PATCHES=(
 		"${FILESDIR}"/matplotlib-3.3.3-disable-lto.patch
-		"${FILESDIR}"/matplotlib-3.5.2-test.patch
+		"${FILESDIR}"/matplotlib-3.6.2-test.patch
 	)
 
 	sed \
@@ -249,6 +243,8 @@ python_test() {
 		"tests/test_rcparams.py::test_validator_invalid[validate_strlist-arg6-MatplotlibDeprecationWarning]"
 		"tests/test_rcparams.py::test_validator_invalid[validate_strlist-arg7-MatplotlibDeprecationWarning]"
 		tests/test_testing.py::test_warn_to_fail
+		# TODO?
+		tests/test_backend_qt.py::test_fig_sigint_override
 	)
 	[[ ${EPYTHON} == python3.11 ]] && EPYTEST_DESELECT+=(
 		# https://github.com/matplotlib/matplotlib/issues/23384
