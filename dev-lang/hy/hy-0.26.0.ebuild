@@ -3,7 +3,7 @@
 
 EAPI=8
 
-#DISTUTILS_USE_PEP517=setuptools
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{9..11} pypy3 )
 
 inherit distutils-r1
@@ -29,6 +29,8 @@ PATCHES=(
 )
 
 src_prepare() {
+	sed -i "s/from get_version import __version__/__version__ = \"${PV}\"/" setup.py
+	sed -i "s/__version__ = \"unknown\"/__version__ = \"${PV}\"/" hy/__init__.py
 	default
 	use doc && HTML_DOCS=( docs/_build/html/. )
 }
