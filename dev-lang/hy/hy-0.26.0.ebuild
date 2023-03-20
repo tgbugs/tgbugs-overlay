@@ -18,7 +18,6 @@ KEYWORDS="~amd64 ~x86"
 IUSE="test doc"
 
 RDEPEND=">=dev-python/astor-0.7.1[${PYTHON_USEDEP}]
-	>=dev-python/colorama-0.4.3[${PYTHON_USEDEP}]
 	>=dev-python/funcparserlib-0.3.6[${PYTHON_USEDEP}]
 	>=dev-python/rply-0.7.6[${PYTHON_USEDEP}]"
 BDEPEND="${RDEPEND}
