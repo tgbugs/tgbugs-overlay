@@ -25,20 +25,18 @@ if [[ ${PV} == *9999* ]] ; then
 	EGIT_BRANCH="maintenance/$(ver_cut 1-2).x"
 	EGIT_SUBMODULES=( '*' )
 else
-	# Upstream is often behind with doc updates
-	DOC_PV=1.10.0
-	MY_PV=${PV/_rc/rc}
-	MY_P=${PN}-${MY_PV}
+	inherit pypi
 
-	SRC_URI="
-		mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz
+	# Upstream is often behind with doc updates
+	DOC_PV=${PV}
+
+	SRC_URI+="
 		doc? (
 			https://docs.scipy.org/doc/${PN}-${DOC_PV}/${PN}-html-${DOC_PV}.zip
 		)"
-	S="${WORKDIR}"/${MY_P}
 
 	if [[ ${PV} != *rc* ]] ; then
-		KEYWORDS="amd64 arm arm64 -hppa ~ppc ppc64 ~riscv ~sparc x86"
+		KEYWORDS="amd64 arm ~arm64 -hppa ppc ppc64 ~riscv ~sparc ~x86"
 	fi
 fi
 
