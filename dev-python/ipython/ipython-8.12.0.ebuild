@@ -7,7 +7,7 @@ DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{9..11} pypy3 )
 PYTHON_REQ_USE='readline(+),sqlite,threads(+)'
 
-inherit distutils-r1 optfeature virtualx
+inherit distutils-r1 optfeature pypi virtualx
 
 DESCRIPTION="Advanced interactive shell for Python"
 HOMEPAGE="
@@ -15,7 +15,6 @@ HOMEPAGE="
 	https://github.com/ipython/ipython/
 	https://pypi.org/project/ipython/
 "
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -30,12 +29,15 @@ RDEPEND="
 	dev-python/matplotlib-inline[${PYTHON_USEDEP}]
 	>=dev-python/pexpect-4.3[${PYTHON_USEDEP}]
 	dev-python/pickleshare[${PYTHON_USEDEP}]
-	>=dev-python/prompt-toolkit-3.0.30[${PYTHON_USEDEP}]
+	>=dev-python/prompt-toolkit-3.0.38[${PYTHON_USEDEP}]
 	<dev-python/prompt-toolkit-3.1[${PYTHON_USEDEP}]
 	>=dev-python/pygments-2.4.0[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/stack_data[${PYTHON_USEDEP}]
 	>=dev-python/traitlets-5.0[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
+		dev-python/typing-extensions[${PYTHON_USEDEP}]
+	' 3.9)
 	matplotlib? (
 		dev-python/matplotlib[${PYTHON_USEDEP}]
 	)
@@ -115,6 +117,7 @@ python_test() {
 		# TODO: looks to be a regression due to a newer dep
 		IPython/core/tests/test_oinspect.py::test_class_signature
 		IPython/core/tests/test_oinspect.py::test_render_signature_long
+		IPython/terminal/tests/test_shortcuts.py::test_modify_shortcut_with_filters
 	)
 	# nonfatal implied by virtx
 	nonfatal epytest || die "Tests failed with ${EPYTHON}"

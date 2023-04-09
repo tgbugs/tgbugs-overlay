@@ -1,25 +1,25 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
+PYPI_NO_NORMALIZE=1
 PYTHON_COMPAT=( python3_{9..11} pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
-inherit distutils-r1
+inherit distutils-r1 pypi
 
 TEST_P=GitPython-${PV}
 GITDB_P=gitdb-4.0.10
-SMMAP_P=smmap-5.0.0
+SMMAP_P=smmap-5.0.0_p1
 
 DESCRIPTION="Library used to interact with Git repositories"
 HOMEPAGE="
 	https://github.com/gitpython-developers/GitPython/
 	https://pypi.org/project/GitPython/
 "
-SRC_URI="
-	mirror://pypi/${PN::1}/${PN}/${P}.tar.gz
+SRC_URI+="
 	test? (
 		https://dev.gentoo.org/~mgorny/dist/${TEST_P}.gitbundle
 		https://dev.gentoo.org/~mgorny/dist/${GITDB_P}.gitbundle
@@ -79,5 +79,5 @@ python_test() {
 		test/test_submodule.py::TestSubmodule::test_root_module
 	)
 
-	epytest test
+	epytest -o addopts= test
 }
