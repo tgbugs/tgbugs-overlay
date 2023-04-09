@@ -1,13 +1,13 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{9..10} pypy3 )
+PYTHON_COMPAT=( python3_{9..11} pypy3 )
 PYTHON_REQ_USE="sqlite?,threads(+)"
 
-inherit distutils-r1 optfeature
+inherit distutils-r1
 
 DESCRIPTION="RDF library containing a triple store and parser/serializer"
 HOMEPAGE="
@@ -21,7 +21,7 @@ SRC_URI="
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~loong ~mips ppc ppc64 ~riscv sparc x86"
 IUSE="examples sqlite"
 
 RDEPEND="
@@ -31,7 +31,6 @@ RDEPEND="
 "
 BDEPEND="
 	test? (
-		dev-python/berkeleydb[${PYTHON_USEDEP}]
 		dev-python/requests[${PYTHON_USEDEP}]
 	)
 "
@@ -88,8 +87,4 @@ python_install_all() {
 		dodoc -r examples
 		docompress -x /usr/share/doc/${PF}/examples
 	fi
-}
-
-pkg_postinst() {
-	optfeature "support for sys-libs/db (Berkeley DB for MySQL)" dev-python/berkeleydb
 }

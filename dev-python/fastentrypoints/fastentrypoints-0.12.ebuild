@@ -3,12 +3,11 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{9..10} )
-inherit distutils-r1
+PYTHON_COMPAT=( pypy3 python3_{9..11} )
+inherit distutils-r1 pypi
 
 DESCRIPTION="Makes entry_points specified in setup.py load more quickly"
 HOMEPAGE="https://github.com/ninjaaron/fast-entry_points"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD-2"
 SLOT="0"

@@ -3,12 +3,11 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{9..10} pypy3 )
-inherit distutils-r1
+PYTHON_COMPAT=( python3_{9..11} pypy3 )
+inherit distutils-r1 pypi
 
 DESCRIPTION="Pythonic representation of OWL through the OWL functional syntax"
-HOMEPAGE="https://github.com/hsolbrib/funowl"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
+HOMEPAGE="https://github.com/Harold-Solbrig/funowl"
 
 LICENSE="CC0-1.0"
 SLOT="0"
@@ -18,7 +17,7 @@ IUSE=""
 DEPEND="
 	dev-python/bcp47
 	>=dev-python/PyJSG-0.11.6
-	>=dev-python/rdflib-5.0.0
+	>=dev-python/rdflib-6.2.0
 	dev-python/rfc3987
 "
 RDEPEND="${DEPEND}"

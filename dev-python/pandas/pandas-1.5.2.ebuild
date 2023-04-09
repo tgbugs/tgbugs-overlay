@@ -57,7 +57,7 @@ OPTIONAL_DEPEND="
 	!hppa? (
 		$(python_gen_cond_dep '
 			dev-python/statsmodels[${PYTHON_USEDEP}]
-		' python3_{9..10} )
+		' python3_{9..11} )
 		>=dev-python/scipy-1.1[${PYTHON_USEDEP}]
 	)
 	X? (
