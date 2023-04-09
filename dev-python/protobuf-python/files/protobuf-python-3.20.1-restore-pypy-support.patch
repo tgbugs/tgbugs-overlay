@@ -1,0 +1,21 @@
+missing #ifndef PYPY_VERSION around exit
+--- a/google/protobuf/pyext/descriptor.cc
++++ b/google/protobuf/pyext/descriptor.cc
+@@ -179,7 +179,6 @@ bool _CalledFromGeneratedFile(int stacklevel) {
+     // Not at global module scope
+     goto exit;
+   }
+-#endif
+   result = true;
+ exit:
+   Py_XDECREF(frame_globals);
+@@ -187,6 +186,9 @@ exit:
+   Py_XDECREF(frame_code);
+   Py_XDECREF(frame);
+   return result;
++#else
++  return true;
++#endif
+ }
+ 
+ // If the calling code is not a _pb2.py file, raise AttributeError.
