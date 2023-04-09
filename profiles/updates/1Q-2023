@@ -1,3 +1,4 @@
 move dev-python/git-python dev-python/GitPython
 move dev-python/slugify dev-python/python-slugify
 move dev-python/prompt_toolkit dev-python/prompt-toolkit
+move dev-python/jupyter_server dev-python/jupyter-server
