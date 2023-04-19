@@ -43,7 +43,7 @@ BDEPEND="
 
 distutils_enable_sphinx docs \
 	'dev-python/ipykernel' \
-	'dev-python/jupyter_client' \
+	'dev-python/jupyter-client' \
 	'dev-python/matplotlib' \
 	'dev-python/nbconvert' \
 	'dev-python/numpydoc'
