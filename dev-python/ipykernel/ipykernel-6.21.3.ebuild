@@ -7,29 +7,29 @@ DISTUTILS_USE_PEP517=hatchling
 PYTHON_COMPAT=( python3_{9..11} pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
-inherit distutils-r1 virtualx
+inherit distutils-r1 pypi virtualx
 
 DESCRIPTION="IPython Kernel for Jupyter"
 HOMEPAGE="
 	https://github.com/ipython/ipykernel/
 	https://pypi.org/project/ipykernel/
 "
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ppc ppc64 ~riscv sparc x86"
 
 RDEPEND="
 	>=dev-python/comm-0.1.1[${PYTHON_USEDEP}]
-	>=dev-python/debugpy-1.0[${PYTHON_USEDEP}]
+	>=dev-python/debugpy-1.6.5[${PYTHON_USEDEP}]
 	>=dev-python/ipython-7.23.1[${PYTHON_USEDEP}]
-	>=dev-python/jupyter_client-6.1.12[${PYTHON_USEDEP}]
+	>=dev-python/jupyter-client-8[${PYTHON_USEDEP}]
+	>=dev-python/jupyter-core-4.12[${PYTHON_USEDEP}]
 	>=dev-python/matplotlib-inline-0.1[${PYTHON_USEDEP}]
 	dev-python/nest_asyncio[${PYTHON_USEDEP}]
 	dev-python/packaging[${PYTHON_USEDEP}]
 	dev-python/psutil[${PYTHON_USEDEP}]
-	>=dev-python/pyzmq-17[${PYTHON_USEDEP}]
+	>=dev-python/pyzmq-20[${PYTHON_USEDEP}]
 	>=dev-python/tornado-6.1[${PYTHON_USEDEP}]
 	>=dev-python/traitlets-5.4.0[${PYTHON_USEDEP}]
 "
@@ -39,6 +39,7 @@ BDEPEND="
 	${RDEPEND}
 	test? (
 		dev-python/flaky[${PYTHON_USEDEP}]
+		dev-python/pytest-asyncio[${PYTHON_USEDEP}]
 		dev-python/pytest-timeout[${PYTHON_USEDEP}]
 		dev-python/ipyparallel[${PYTHON_USEDEP}]
 	)
@@ -67,6 +68,7 @@ src_test() {
 		ipykernel/tests/test_debugger.py::test_rich_inspect_not_at_breakpoint
 		ipykernel/tests/test_debugger.py::test_set_breakpoints
 		ipykernel/tests/test_debugger.py::test_stop_on_breakpoint
+		ipykernel/tests/test_debugger.py::test_copy_to_globals
 		# hangs?
 		ipykernel/tests/test_eventloop.py::test_tk_loop
 	)
