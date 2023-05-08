@@ -3,12 +3,13 @@
 
 EAPI=8
 
+DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{9..11} pypy3 )
 PYTHON_REQ_USE='tk?,threads(+)'
 
-inherit distutils-r1 flag-o-matic multiprocessing prefix toolchain-funcs \
-	virtualx
+inherit distutils-r1 flag-o-matic multiprocessing prefix pypi
+inherit toolchain-funcs virtualx
 
 FT_PV=2.6.1
 DESCRIPTION="Pure python plotting library with matlab like syntax"
@@ -17,8 +18,7 @@ HOMEPAGE="
 	https://github.com/matplotlib/matplotlib/
 	https://pypi.org/project/matplotlib/
 "
-SRC_URI="
-	mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
+SRC_URI+="
 	test? (
 		https://downloads.sourceforge.net/project/freetype/freetype2/${FT_PV}/freetype-${FT_PV}.tar.gz
 	)
@@ -30,7 +30,7 @@ SRC_URI="
 # Fonts: BitstreamVera, OFL-1.1
 LICENSE="BitstreamVera BSD matplotlib MIT OFL-1.1"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~ia64 ~loong ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ppc ppc64 ~riscv ~s390 sparc x86"
 IUSE="cairo doc excel examples gtk3 latex qt5 tk webagg wxwidgets"
 
 # internal copy of pycxx highly patched
@@ -41,10 +41,10 @@ RDEPEND="
 	>=dev-python/cycler-0.10.0-r1[${PYTHON_USEDEP}]
 	>=dev-python/fonttools-4.22.0[${PYTHON_USEDEP}]
 	>=dev-python/kiwisolver-1.2.0[${PYTHON_USEDEP}]
-	>=dev-python/numpy-1.19[${PYTHON_USEDEP}]
+	>=dev-python/numpy-1.20[${PYTHON_USEDEP}]
 	>=dev-python/packaging-20.0[${PYTHON_USEDEP}]
 	>=dev-python/pillow-7.1.1[jpeg,webp,${PYTHON_USEDEP}]
-	>=dev-python/pyparsing-2.2.1[${PYTHON_USEDEP}]
+	>=dev-python/pyparsing-2.3.1[${PYTHON_USEDEP}]
 	>=dev-python/python-dateutil-2.7[${PYTHON_USEDEP}]
 	>=dev-python/pytz-2019.3[${PYTHON_USEDEP}]
 	media-fonts/dejavu
@@ -53,6 +53,9 @@ RDEPEND="
 	media-libs/libpng:0
 	>=media-libs/qhull-2013:=
 	virtual/imagemagick-tools[jpeg,tiff]
+	$(python_gen_cond_dep '
+		dev-python/importlib-resources[${PYTHON_USEDEP}]
+	' 3.9)
 	cairo? (
 		dev-python/cairocffi[${PYTHON_USEDEP}]
 	)
@@ -82,7 +85,7 @@ RDEPEND="
 	wxwidgets? (
 		$(python_gen_cond_dep '
 			dev-python/wxpython:*[${PYTHON_USEDEP}]
-		' python3_{9..10})
+		' python3_{8..10})
 	)
 "
 
@@ -144,7 +147,7 @@ python_prepare_all() {
 
 	local PATCHES=(
 		"${FILESDIR}"/matplotlib-3.3.3-disable-lto.patch
-		"${FILESDIR}"/matplotlib-3.6.2-test.patch
+		"${FILESDIR}"/matplotlib-3.7.1-test.patch
 	)
 
 	sed \
@@ -245,6 +248,8 @@ python_test() {
 		tests/test_testing.py::test_warn_to_fail
 		# TODO?
 		tests/test_backend_qt.py::test_fig_sigint_override
+		# unhappy about xdist
+		tests/test_widgets.py::test_span_selector_animated_artists_callback
 	)
 	[[ ${EPYTHON} == python3.11 ]] && EPYTEST_DESELECT+=(
 		# https://github.com/matplotlib/matplotlib/issues/23384
