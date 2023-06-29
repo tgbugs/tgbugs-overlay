@@ -3,10 +3,11 @@
 
 EAPI=8
 
+DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{9..11} pypy3 )
 
-inherit distutils-r1 multiprocessing optfeature
+inherit distutils-r1 multiprocessing optfeature pypi
 
 DESCRIPTION="Statistical computations and models for use with SciPy"
 HOMEPAGE="
@@ -14,7 +15,6 @@ HOMEPAGE="
 	https://github.com/statsmodels/statsmodels/
 	https://pypi.org/project/statsmodels/
 "
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -35,7 +35,7 @@ RDEPEND="
 "
 BDEPEND="
 	${DEPEND}
-	dev-python/cython[${PYTHON_USEDEP}]
+	<dev-python/cython-3[${PYTHON_USEDEP}]
 	test? (
 		dev-python/pytest-xdist[${PYTHON_USEDEP}]
 	)
@@ -51,6 +51,10 @@ distutils_enable_sphinx docs \
 distutils_enable_tests pytest
 
 python_prepare_all() {
+	local PATCHES=(
+		"${FILESDIR}/${P}-test.patch"
+	)
+
 	# Prevent un-needed d'loading
 	export VARTEXFONTS="${T}"/fonts
 	export MPLCONFIGDIR="${T}"
@@ -68,10 +72,10 @@ python_test() {
 		stats/tests/test_mediation.py::test_mixedlm
 		"stats/tests/test_corrpsd.py::test_corrpsd_threshold[0]"
 	)
+	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 
 	cd "${BUILD_DIR}/install$(python_get_sitedir)" || die
-	epytest ${PN} -n "$(makeopts_jobs)"
-	rm -r ${PN}/.pytest_cache || die
+	epytest statsmodels -p xdist -n "$(makeopts_jobs)"
 }
 
 python_install_all() {

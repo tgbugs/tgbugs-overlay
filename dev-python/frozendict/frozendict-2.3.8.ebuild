@@ -3,9 +3,9 @@
 
 EAPI=8
 
+DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
-C_EXT_COMPAT=( python3.{9..10} )
+PYTHON_COMPAT=( python3_{10..12} pypy3 )
 
 inherit distutils-r1
 
@@ -27,23 +27,13 @@ KEYWORDS="amd64 ~ppc64"
 distutils_enable_tests pytest
 
 python_compile() {
-	local -x CIBUILDWHEEL=0
 	# This prevents the build system from ignoring build failures, sigh.
-	has "${EPYTHON}" "${C_EXT_COMPAT[@]}" && CIBUILDWHEEL=1
+	local -x CIBUILDWHEEL=1
 
 	distutils-r1_python_compile
 }
 
 python_test() {
-	local EPYTEST_IGNORE=()
-	# skip tests of native extension for python versions where it is not available
-	if ! has "${EPYTHON}" "${C_EXT_COMPAT[@]}"; then
-		EPYTEST_IGNORE+=(
-			test/test_frozendict_c.py
-			test/test_frozendict_c_subclass.py
-		)
-	fi
-
 	rm -rf frozendict || die
 	epytest
 }

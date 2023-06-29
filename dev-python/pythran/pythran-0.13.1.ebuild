@@ -23,7 +23,7 @@ S=${WORKDIR}/${MY_P}
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 ~ia64 ~loong ppc ppc64 ~riscv ~s390 ~sparc x86"
+KEYWORDS="amd64 arm arm64 ~ia64 ~loong ~ppc ppc64 ~riscv ~s390 ~sparc x86"
 
 RDEPEND="
 	dev-libs/boost
@@ -60,6 +60,9 @@ python_test() {
 		# TODO
 		pythran/tests/test_xdoc.py::TestDoctest::test_cli
 		pythran/tests/test_xdoc.py::TestDoctest::test_toolchain
+		# Tries to invoke pip
+		pythran/tests/test_distutils.py::TestDistutils::test_setup_build
+		pythran/tests/test_distutils.py::TestDistutils::test_setup_build2
 	)
 
 	local -x COLUMNS=80

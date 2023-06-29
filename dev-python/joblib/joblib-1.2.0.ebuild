@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -10,7 +10,7 @@ inherit distutils-r1
 DESCRIPTION="Tools to provide lightweight pipelining in Python"
 HOMEPAGE="https://joblib.readthedocs.io/en/latest/
 	https://github.com/joblib/joblib"
-SRC_URI="https://github.com/${PN}/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/${PN}/${PN}/archive/${PV}.tar.gz -> ${P}.gh.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -39,7 +39,6 @@ python_prepare_all() {
 			-e 's:from \.externals ::' \
 			-i {} + || die
 
-	# https://github.com/joblib/joblib/issues/1115
 	sed -e 's:test_parallel_call_cached_function_defined_in_jupyter:_&:' \
 		-i joblib/test/test_memory.py || die
 

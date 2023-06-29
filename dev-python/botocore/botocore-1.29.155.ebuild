@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+PYTHON_COMPAT=( python3_{10..11} pypy3 )
 
 inherit distutils-r1 multiprocessing
 
@@ -40,8 +40,6 @@ BDEPEND="
 	)
 "
 
-distutils_enable_sphinx docs/source \
-	'dev-python/guzzle_sphinx_theme'
 distutils_enable_tests pytest
 
 src_prepare() {
@@ -54,8 +52,6 @@ src_prepare() {
 		-e 's:from botocore[.]vendored import:import:' \
 		-e 's:from botocore[.]vendored[.]:from :' \
 		{} + || die
-
-	find botocore/data -name '*.json' -exec gzip {} \; || die
 
 	distutils-r1_src_prepare
 }
@@ -70,6 +66,13 @@ python_test() {
 		tests/unit/test_client.py::TestClientErrors::test_BOTO_DISABLE_COMMONNAME
 		# TODO
 		tests/functional/test_credentials.py::SSOSessionTest::test_token_chosen_from_provider
+		# urllib3-2 compatibility, mock relies on implementation details
+		tests/unit/test_awsrequest.py::TestAWSHTTPConnection::test_expect_100_continue_no_response_from_server
+		tests/unit/test_awsrequest.py::TestAWSHTTPConnection::test_expect_100_continue_returned
+		tests/unit/test_awsrequest.py::TestAWSHTTPConnection::test_expect_100_continue_sends_307
+		tests/unit/test_awsrequest.py::TestAWSHTTPConnection::test_expect_100_sends_connection_header
+		tests/unit/test_awsrequest.py::TestAWSHTTPConnection::test_handles_expect_100_with_different_reason_phrase
+		tests/unit/test_awsrequest.py::TestAWSHTTPConnection::test_state_reset_on_connection_close
 	)
 
 	epytest tests/{functional,unit} -n "$(makeopts_jobs)"

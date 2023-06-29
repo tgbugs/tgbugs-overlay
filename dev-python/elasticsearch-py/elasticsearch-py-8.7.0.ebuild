@@ -17,16 +17,21 @@ HOMEPAGE="
 SRC_URI="
 	https://github.com/elastic/elasticsearch-py/archive/refs/tags/v${PV}.tar.gz -> ${P}.gh.tar.gz
 	test? (
-		  amd64? ( https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${PV}-linux-x86_64.tar.gz )
+		amd64? (
+			elibc_glibc? (
+				https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${PV}-linux-x86_64.tar.gz
+			)
+		)
 	)
 "
 
 LICENSE="Apache-2.0"
 SLOT="0/$(ver_cut 1)"
-KEYWORDS="amd64 x86"
+KEYWORDS="amd64 ~x86"
 
 RESTRICT="
 	!amd64? ( test )
+	!elibc_glibc? ( test )
 	!test? ( test )
 "
 
@@ -81,8 +86,6 @@ src_test() {
 	# So lets add a reasonable limit
 	export ES_JAVA_OPTS="-Xmx4g"
 
-	cp -r "${S}/.ci/certs" "${ES_DIR}/config" || die
-
 	cat > "${ES_DIR}/config/elasticsearch.yml" <<-EOF || die
 		# Run elasticsearch on custom port
 		http.port: ${es_port}
@@ -95,16 +98,7 @@ src_test() {
 
 		xpack.license.self_generated.type: basic
 		xpack.security.enabled: true
-		xpack.security.http.ssl.enabled: true
-		xpack.security.http.ssl.verification_mode: certificate
-		xpack.security.http.ssl.key: certs/testnode.key
-		xpack.security.http.ssl.certificate: certs/testnode.crt
-		xpack.security.http.ssl.certificate_authorities: certs/ca.crt
-		xpack.security.transport.ssl.enabled: true
-		xpack.security.transport.ssl.verification_mode: certificate
-		xpack.security.transport.ssl.key: certs/testnode.key
-		xpack.security.transport.ssl.certificate: certs/testnode.crt
-		xpack.security.transport.ssl.certificate_authorities: certs/ca.crt
+		xpack.security.http.ssl.enabled: false
 	EOF
 
 	# Set password in keystore

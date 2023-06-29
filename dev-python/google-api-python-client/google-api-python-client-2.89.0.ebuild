@@ -4,18 +4,15 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+PYPI_NO_NORMALIZE=1
+PYTHON_COMPAT=( python3_{10..11} pypy3 )
 
-inherit distutils-r1
+inherit distutils-r1 pypi
 
 DESCRIPTION="Google API Client for Python"
 HOMEPAGE="
 	https://github.com/googleapis/google-api-python-client/
 	https://pypi.org/project/google-api-python-client/
-"
-SRC_URI="
-	https://github.com/googleapis/google-api-python-client/archive/v${PV}.tar.gz
-		-> ${P}.gh.tar.gz
 "
 
 LICENSE="Apache-2.0"

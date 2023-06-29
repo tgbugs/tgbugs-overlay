@@ -3,10 +3,11 @@
 
 EAPI=8
 
+DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{9..11} pypy3 )
 
-inherit distutils-r1
+inherit distutils-r1 pypi
 
 DESCRIPTION="Fast NumPy array functions written in C"
 HOMEPAGE="
@@ -14,9 +15,9 @@ HOMEPAGE="
 	https://pypi.org/project/Bottleneck/
 "
 SRC_URI="
-	https://github.com/pydata/bottleneck/archive/v${PV}.tar.gz
-		-> ${P}.gh.tar.gz
+	$(pypi_sdist_url --no-normalize Bottleneck)
 "
+S=${WORKDIR}/${P^}
 
 LICENSE="BSD"
 SLOT="0"
@@ -39,6 +40,6 @@ src_prepare() {
 }
 
 python_test() {
-	cd "${BUILD_DIR}/install$(python_get_sitedir)" || die
-	epytest
+	rm -rf bottleneck || die
+	epytest --pyargs bottleneck
 }
