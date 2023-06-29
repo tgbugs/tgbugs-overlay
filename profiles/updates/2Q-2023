@@ -1,3 +1,7 @@
 move dev-python/jupyter_core dev-python/jupyter-core
 move dev-python/jupyter_client dev-python/jupyter-client
+move dev-python/jupyter_events dev-python/jupyter-events
+move dev-python/jupyter_packaging dev-python/jupyter-packaging
 move dev-python/jupyterlab_pygments dev-python/jupyterlab-pygments
+
+move dev-python/prometheus_client dev-python/prometheus-client

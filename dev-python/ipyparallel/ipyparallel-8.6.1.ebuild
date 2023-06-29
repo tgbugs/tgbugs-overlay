@@ -35,7 +35,7 @@ RDEPEND="
 	>=dev-python/tornado-5.1[${PYTHON_USEDEP}]
 "
 BDEPEND="
-	dev-python/flit_core[${PYTHON_USEDEP}]
+	dev-python/flit-core[${PYTHON_USEDEP}]
 	test? (
 		dev-python/ipython[test]
 		dev-python/mock[${PYTHON_USEDEP}]
@@ -51,7 +51,6 @@ distutils_enable_tests pytest
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-7.1.0-test-timeouts.patch
-	"${FILESDIR}"/${PN}-8.3.0-additional-test-timeouts.patch
 )
 
 src_configure() {
@@ -73,10 +72,6 @@ python_test() {
 		ipyparallel/tests/test_client.py::TestClient::test_activate
 		ipyparallel/tests/test_client.py::TestClient::test_lazy_all_targets
 		ipyparallel/tests/test_client.py::TestClient::test_wait_for_engines
-	)
-	[[ ${EPYTHON} == python3.10 ]] && EPYTEST_DESELECT+=(
-		# failing due to irrelevant warnings
-		ipyparallel/tests/test_client.py::TestClient::test_local_ip_true_doesnt_trigger_warning
 	)
 	epytest
 }

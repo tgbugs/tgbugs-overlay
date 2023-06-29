@@ -7,36 +7,38 @@ DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{9..11} pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
-inherit distutils-r1 xdg-utils
+inherit distutils-r1 pypi xdg-utils
 
 DESCRIPTION="Jupyter Interactive Notebook"
 HOMEPAGE="https://jupyter.org"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
-	>=dev-libs/mathjax-2.4
+	>=dev-libs/mathjax-2.7.4
 	dev-python/argon2-cffi[${PYTHON_USEDEP}]
 	dev-python/jinja[${PYTHON_USEDEP}]
-	>=dev-python/terminado-0.8.3[${PYTHON_USEDEP}]
-	>=dev-python/tornado-6.0[${PYTHON_USEDEP}]
+	dev-python/ipykernel[${PYTHON_USEDEP}]
 	dev-python/ipython_genutils[${PYTHON_USEDEP}]
-	>=dev-python/traitlets-4.2.1[${PYTHON_USEDEP}]
 	>=dev-python/jupyter-core-4.6.1[${PYTHON_USEDEP}]
-	>=dev-python/pyzmq-17[${PYTHON_USEDEP}]
 	>=dev-python/jupyter-client-5.3.4[${PYTHON_USEDEP}]
+	>=dev-python/nbclassic-0.4.7[${PYTHON_USEDEP}]
 	dev-python/nbformat[${PYTHON_USEDEP}]
 	>=dev-python/nest_asyncio-1.5[${PYTHON_USEDEP}]
-	dev-python/ipykernel[${PYTHON_USEDEP}]
+	dev-python/prometheus-client[${PYTHON_USEDEP}]
+	>=dev-python/pyzmq-17[${PYTHON_USEDEP}]
 	>=dev-python/send2trash-1.8.0[${PYTHON_USEDEP}]
-	dev-python/prometheus_client[${PYTHON_USEDEP}]"
+	>=dev-python/terminado-0.8.3[${PYTHON_USEDEP}]
+	>=dev-python/tornado-6.1[${PYTHON_USEDEP}]
+	>=dev-python/traitlets-4.2.1[${PYTHON_USEDEP}]
+"
 
 BDEPEND="
-	>=dev-python/jupyter_packaging-0.9[${PYTHON_USEDEP}]
+	>=dev-python/jupyter-packaging-0.9[${PYTHON_USEDEP}]
 	test? (
+		dev-python/nbval[${PYTHON_USEDEP}]
 		dev-python/requests[${PYTHON_USEDEP}]
 		dev-python/requests-unixsocket[${PYTHON_USEDEP}]
 	)
@@ -44,18 +46,7 @@ BDEPEND="
 
 PDEPEND=">=dev-python/nbconvert-4.2.0[${PYTHON_USEDEP}]"
 
-PATCHES=(
-	"${FILESDIR}"/notebook-6.4.11-no-mathjax.patch
-)
-
 distutils_enable_tests pytest
-
-python_prepare_all() {
-	# disable bundled mathjax
-	sed -i 's/^.*MathJax.*$//' bower.json || die
-
-	distutils-r1_python_prepare_all
-}
 
 EPYTEST_DESELECT=(
 	# trash doesn't seem to work for us
@@ -78,14 +69,6 @@ EPYTEST_IGNORE=(
 	# selenium tests require geckodriver
 	notebook/tests/selenium
 )
-
-python_install() {
-	distutils-r1_python_install
-
-	ln -sf \
-		"${EPREFIX}/usr/share/mathjax" \
-		"${D}$(python_get_sitedir)/notebook/static/components/MathJax" || die
-}
 
 pkg_postinst() {
 	xdg_desktop_database_update

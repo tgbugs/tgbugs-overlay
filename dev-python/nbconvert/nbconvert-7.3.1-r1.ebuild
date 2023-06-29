@@ -6,7 +6,7 @@ EAPI=8
 DISTUTILS_USE_PEP517=hatchling
 PYTHON_COMPAT=( python3_{9..11} pypy3 )
 
-inherit distutils-r1 virtualx
+inherit distutils-r1 multiprocessing pypi virtualx
 
 DESCRIPTION="Converting Jupyter Notebooks"
 HOMEPAGE="
@@ -14,24 +14,24 @@ HOMEPAGE="
 	https://github.com/jupyter/nbconvert/
 	https://pypi.org/project/nbconvert/
 "
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ppc ppc64 ~riscv ~s390 sparc x86"
 
+# <mistune-3 for https://github.com/jupyter/nbconvert/pull/1820 (bug #908377)
 RDEPEND="
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/bleach[${PYTHON_USEDEP}]
 	dev-python/defusedxml[${PYTHON_USEDEP}]
 	$(python_gen_cond_dep '
 		>=dev-python/importlib-metadata-3.6[${PYTHON_USEDEP}]
-	' 3.8 3.9)
+	' 3.9)
 	>=dev-python/jinja-3.0[${PYTHON_USEDEP}]
 	>=dev-python/jupyter-core-4.7[${PYTHON_USEDEP}]
 	dev-python/jupyterlab-pygments[${PYTHON_USEDEP}]
 	>=dev-python/markupsafe-2.0[${PYTHON_USEDEP}]
-	>=dev-python/mistune-2.0.2[${PYTHON_USEDEP}]
+	<dev-python/mistune-3[${PYTHON_USEDEP}]
 	>=dev-python/nbclient-0.5.0[${PYTHON_USEDEP}]
 	>=dev-python/nbformat-5.1[${PYTHON_USEDEP}]
 	dev-python/packaging[${PYTHON_USEDEP}]
@@ -41,10 +41,10 @@ RDEPEND="
 	>=dev-python/traitlets-5.1.1[${PYTHON_USEDEP}]
 "
 BDEPEND="
-	dev-python/notebook[${PYTHON_USEDEP}]
 	test? (
 		dev-python/ipykernel[${PYTHON_USEDEP}]
 		>=dev-python/ipywidgets-7[${PYTHON_USEDEP}]
+		dev-python/pytest-xdist[${PYTHON_USEDEP}]
 	)
 "
 
@@ -56,14 +56,6 @@ src_prepare() {
 	sed -e 's:css = .*:raise PermissionError("You shall not fetch!"):' \
 		-i hatch_build.py || die
 	distutils-r1_src_prepare
-}
-
-python_configure() {
-	local src=$(
-		"${EPYTHON}" -c "import notebook as m; print(*m.__path__)" || die
-	)
-	cp "${src}/static/style/style.min.css" \
-		share/templates/classic/static/style.css || die
 }
 
 src_test() {
@@ -81,15 +73,22 @@ python_test() {
 		nbconvert/exporters/tests/test_qtpng.py::TestQtPNGExporter::test_export
 		nbconvert/tests/test_nbconvertapp.py::TestNbConvertApp::test_convert_full_qualified_name
 		nbconvert/tests/test_nbconvertapp.py::TestNbConvertApp::test_post_processor
+		# latex failing, might be too new pandoc
+		nbconvert/tests/test_nbconvertapp.py::TestNbConvertApp::test_filename_spaces
+		nbconvert/tests/test_nbconvertapp.py::TestNbConvertApp::test_pdf
+		# too new pandoc but we don't have old anymore
+		nbconvert/utils/tests/test_pandoc.py::TestPandoc::test_minimal_version
+		nbconvert/utils/tests/test_pandoc.py::TestPandoc::test_pandoc_available
 	)
 
-	nonfatal epytest --pyargs nbconvert || die
+	# virtx implies nonfatal, make it explicit to avoid confusion
+	nonfatal epytest -n "$(makeopts_jobs)" --pyargs nbconvert || die
 }
 
 pkg_postinst() {
-	if ! has_version app-text/pandoc ; then
+	if ! has_version virtual/pandoc; then
 		einfo "Pandoc is required for converting to formats other than Python,"
 		einfo "HTML, and Markdown. If you need this functionality, install"
-		einfo "app-text/pandoc."
+		einfo "app-text/pandoc or app-text/pandoc-bin."
 	fi
 }

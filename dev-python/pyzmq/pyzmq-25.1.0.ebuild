@@ -3,10 +3,11 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+DISTUTILS_EXT=1
 # TODO: Find out exactly where this error comes from
 # error: '<' not supported between instances of 'str' and 'int'
-#DISTUTILS_USE_PEP517=setuptools
+DISTUTILS_USE_PEP517=setuptools
+PYTHON_COMPAT=( python3_{10..11} pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
 inherit distutils-r1
@@ -15,14 +16,16 @@ DESCRIPTION="Lightweight and super-fast messaging library built on top of the Ze
 HOMEPAGE="
 	https://zeromq.org/languages/python/
 	https://pypi.org/project/pyzmq/
-	https://github.com/zeromq/pyzmq/"
+	https://github.com/zeromq/pyzmq/
+"
 SRC_URI="
 	https://github.com/zeromq/pyzmq/archive/v${PV}.tar.gz
-		-> ${P}.gh.tar.gz"
+		-> ${P}.gh.tar.gz
+"
 
 LICENSE="LGPL-3"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 ~arm arm64 hppa ~ia64 ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390 ~sparc x86 ~amd64-linux ~x86-linux"
 IUSE="drafts"
 
 # There are additional test failures if zeromq has the draft api enabled, but pyzmq has it disabled.
@@ -33,7 +36,7 @@ DEPEND="
 RDEPEND="${DEPEND}
 	$(python_gen_cond_dep '
 		dev-python/py[${PYTHON_USEDEP}]
-	' pypy3 )
+	' pypy3)
 "
 BDEPEND="
 	$(python_gen_cond_dep '
@@ -48,26 +51,21 @@ BDEPEND="
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-23.2.0-libdir.patch
+	# fix build_ext -j... invocation used by PEP517 build
+	# https://github.com/zeromq/pyzmq/pull/1872
+	"${FILESDIR}"/${P}-build_ext.patch
 )
 
 EPYTEST_DESELECT=(
 	# TODO
-	zmq/tests/test_constants.py::TestConstants::test_draft
-	zmq/tests/test_cython.py::test_cython
-
-	# Hangs often
-	zmq/tests/test_log.py::TestPubLog::test_blank_root_topic
+	zmq/tests/test_auth.py
+	zmq/tests/test_cython.py
+	zmq/tests/test_zmqstream.py
 )
 
 EPYTEST_IGNORE=(
 	# Avoid dependency on mypy
 	zmq/tests/test_mypy.py
-
-	# Broken upstream
-	zmq/tests/test_auth.py
-
-	# pytest-asyncio incompatibility?
-	zmq/tests/test_zmqstream.py
 )
 
 distutils_enable_tests pytest
@@ -84,6 +82,7 @@ python_prepare_all() {
 }
 
 python_test() {
-	cd "${BUILD_DIR}/lib" || die
-	epytest -p no:flaky
+	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+	cd "${BUILD_DIR}/install$(python_get_sitedir)" || die
+	epytest -p asyncio -p rerunfailures
 }

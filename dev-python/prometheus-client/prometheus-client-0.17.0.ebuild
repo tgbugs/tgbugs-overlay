@@ -4,20 +4,15 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+PYTHON_COMPAT=( python3_{10..12} pypy3 )
 
-inherit distutils-r1
+inherit distutils-r1 pypi
 
 DESCRIPTION="Python client for the Prometheus monitoring system"
 HOMEPAGE="
 	https://github.com/prometheus/client_python/
 	https://pypi.org/project/prometheus-client/
 "
-SRC_URI="
-	https://github.com/prometheus/client_python/archive/v${PV}.tar.gz
-		-> ${P}.gh.tar.gz
-"
-S="${WORKDIR}/client_python-${PV}"
 
 LICENSE="Apache-2.0"
 SLOT="0"
