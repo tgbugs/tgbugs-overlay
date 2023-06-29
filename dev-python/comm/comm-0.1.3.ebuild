@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=hatchling
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+PYTHON_COMPAT=( python3_{10..12} pypy3 )
 
 inherit distutils-r1
 
@@ -13,14 +13,15 @@ HOMEPAGE="
 	https://github.com/ipython/comm/
 	https://pypi.org/project/comm/
 "
+# no tests in sdist, as of 0.1.3
 SRC_URI="
-	https://github.com/ipython/comm/archive/${PV}.tar.gz
+	https://github.com/ipython/comm/archive/v${PV}.tar.gz
 		-> ${P}.gh.tar.gz
 "
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86"
 
 RDEPEND="
 	>=dev-python/traitlets-5.3[${PYTHON_USEDEP}]
