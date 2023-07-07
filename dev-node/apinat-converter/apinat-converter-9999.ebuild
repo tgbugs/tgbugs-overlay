@@ -14,7 +14,7 @@ SLOT="9999"
 KEYWORDS=""
 
 BDEPEND="
-	net-libs/nodejs:0/18"
+	>=net-libs/nodejs-18"
 
 RDEPEND="
 	net-libs/nodejs"
