@@ -3,7 +3,8 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+DISTUTILS_USE_PEP517=setuptools
+PYTHON_COMPAT=( python3_{10..12} pypy3 )
 inherit distutils-r1 pypi
 
 DESCRIPTION="A pure Python implementation of a sliding window memory map manager"
