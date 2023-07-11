@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=hatchling
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+PYTHON_COMPAT=( python3_{10..11} pypy3 )
 
 inherit distutils-r1
 
@@ -27,12 +27,13 @@ RDEPEND="
 	>=dev-python/jupyter-client-6.1.12[${PYTHON_USEDEP}]
 	>=dev-python/jupyter-core-5.1.0[${PYTHON_USEDEP}]
 	>=dev-python/nbformat-5.0[${PYTHON_USEDEP}]
-	>=dev-python/traitlets-5.3[${PYTHON_USEDEP}]
+	>=dev-python/traitlets-5.4[${PYTHON_USEDEP}]
 "
 BDEPEND="
 	test? (
+		dev-python/flaky[${PYTHON_USEDEP}]
 		dev-python/ipython[${PYTHON_USEDEP}]
-		dev-python/ipykernel[${PYTHON_USEDEP}]
+		>=dev-python/ipykernel-6.19.3[${PYTHON_USEDEP}]
 		dev-python/ipywidgets[${PYTHON_USEDEP}]
 		dev-python/nbconvert[${PYTHON_USEDEP}]
 		dev-python/pytest-asyncio[${PYTHON_USEDEP}]
