@@ -12,7 +12,7 @@ if [[ ${PV} == "9999" ]]; then
 	KEYWORDS=""
 	BDEPEND="app-editors/emacs"
 else
-	SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
+	inherit pypi
 	KEYWORDS="~amd64 ~x86"
 fi
 
