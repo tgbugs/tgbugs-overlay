@@ -35,14 +35,14 @@ IDEPEND="
 
 RDEPEND="
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
-	>=dev-python/augpathlib-0.0.25[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.27[${PYTHON_USEDEP}]
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/pennsieve[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]
 	dev-python/openpyxl[${PYTHON_USEDEP}]
 	>=dev-python/protcur-0.0.11[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.32[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.33[${PYTHON_USEDEP}]
 	>=dev-python/pysercomb-0.0.11[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
