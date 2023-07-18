@@ -74,12 +74,21 @@ RDEPEND="
 USERGROUP=sparc
 
 if [[ ${PV} == "9999" ]]; then
-	src_configure () { DISTUTILS_ARGS=( --release ); }
-
 	src_prepare () {
 		sed -i '1 i\import fastentrypoints' setup.py
 		# replace package version to keep python quiet
 		sed -i "s/__version__.\+$/__version__ = '9999.0.0+$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
+
+		# build from sdist to ensure that MANIFEST.in is honored
+		python setup.py --release sdist
+		mv dist/sparcur*.tar.gz ../
+		pushd ..
+		mv $(basename ${S}) git-src
+		tar xvzf sparcur-9999*.tar.gz
+		mv sparcur-9999*.tar.gz git-src/dist/
+		mv sparcur-9999* sparcur-9999
+		popd
+
 		default
 	}
 else
