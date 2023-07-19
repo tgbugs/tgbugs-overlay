@@ -8,10 +8,10 @@ inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
 	SRC_URI="
-	https://raw.githubusercontent.com/SciCrunch/NIF-Ontology/6bf13c6d392f472fa9f18b92f41da3a196d4c9fc/ttl/phenotype-core.ttl
-	https://raw.githubusercontent.com/SciCrunch/NIF-Ontology/6bf13c6d392f472fa9f18b92f41da3a196d4c9fc/ttl/phenotype-indicators.ttl
-	https://raw.githubusercontent.com/SciCrunch/NIF-Ontology/8b5e640fa19b59ea38363980ac5a6d1e9ae57e68/ttl/phenotypes.ttl
-	https://raw.githubusercontent.com/SciCrunch/NIF-Ontology/5733d5374c98cd66e05817454defbb96a1320fbd/ttl/generated/part-of-self.ttl
+	https://raw.githubusercontent.com/SciCrunch/NIF-Ontology/8b28dbf95db7bbb442443771fb6ad7b92e404c86/ttl/phenotype-core.ttl
+	https://raw.githubusercontent.com/SciCrunch/NIF-Ontology/ec7ad867a4aa529b3f24d10012dfaa5ce9a15620/ttl/phenotype-indicators.ttl
+	https://raw.githubusercontent.com/SciCrunch/NIF-Ontology/9c86b26ac3fdcd8cf063e979c95e27417e3ec355/ttl/phenotypes.ttl
+	https://raw.githubusercontent.com/SciCrunch/NIF-Ontology/47a4829d0803f8070617e6be6677bc3a7314b94a/ttl/generated/part-of-self.ttl
 	"
 	EGIT_REPO_URI="https://github.com/tgbugs/pyontutils.git"
 	inherit git-r3
@@ -29,9 +29,9 @@ SLOT="0"
 IUSE="dev models notebook test"
 RESTRICT="!test? ( test )"
 
-DEPEND="
-	>=dev-python/hyputils-0.0.8[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
+RDEPEND="
+	>=dev-python/hyputils-0.0.9[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.33[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
@@ -47,7 +47,6 @@ DEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 "
-RDEPEND="${DEPEND}"
 
 if [[ ${PV} == "9999" ]]; then
 	S="${S}/${PN}"
