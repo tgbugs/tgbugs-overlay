@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{9..11} )
+PYTHON_COMPAT=( pypy3 python3_{10..11} )
 PYPI_NO_NORMALIZE=1
 PYPI_PN=Pint
 
@@ -20,9 +20,9 @@ IUSE="babel uncertainties test"
 
 DEPEND=""
 RDEPEND="${DEPEND}
-	$(python_gen_cond_dep 'dev-python/importlib-resources[${PYTHON_USEDEP}]' pypy3)
 	babel? ( dev-python/Babel[${PYTHON_USEDEP}] )
 	uncertainties? ( dev-python/uncertainties[${PYTHON_USEDEP}] )
+	test? ( dev-python/pytest-subtests[${PYTHON_USEDEP}] )
 "
 
 RESTRICT="!test? ( test )"
