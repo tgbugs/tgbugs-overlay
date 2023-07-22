@@ -23,7 +23,28 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 
+src_prepare() {
+	default
+	export pg_versions=$(eselect postgresql list | tail -n +2 | awk '{ print $1 }')
+	local version
+	for version in ${pg_versions}; do
+		mkdir ${WORKDIR}/${version}
+		cp -a ${S}/* ${WORKDIR}/${version}/
+	done
+}
+
 src_compile() {
-	export PG_CONFIG=/usr/bin/pg_config
-	emake
+	local version
+	for version in ${pg_versions}; do
+		cd ${WORKDIR}/${version}
+		emake PG_CONFIG=/usr/bin/pg_config${version}
+	done
+}
+
+src_install() {
+	local version
+	for version in ${pg_versions}; do
+		cd ${WORKDIR}/${version}
+		emake PG_CONFIG=/usr/bin/pg_config${version} DESTDIR=${D} install
+	done
 }
