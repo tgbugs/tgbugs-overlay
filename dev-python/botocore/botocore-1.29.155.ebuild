@@ -53,6 +53,8 @@ src_prepare() {
 		-e 's:from botocore[.]vendored[.]:from :' \
 		{} + || die
 
+	find botocore/data -name '*.json' -exec gzip {} \; || die
+
 	distutils-r1_src_prepare
 }
 
