@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=hatchling
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+PYTHON_COMPAT=( python3_{10..11} pypy3 )
 
 inherit distutils-r1 multiprocessing pypi virtualx
 
@@ -19,21 +19,17 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ppc ppc64 ~riscv ~s390 sparc x86"
 
-# <mistune-3 for https://github.com/jupyter/nbconvert/pull/1820 (bug #908377)
 RDEPEND="
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/bleach[${PYTHON_USEDEP}]
 	dev-python/defusedxml[${PYTHON_USEDEP}]
-	$(python_gen_cond_dep '
-		>=dev-python/importlib-metadata-3.6[${PYTHON_USEDEP}]
-	' 3.9)
 	>=dev-python/jinja-3.0[${PYTHON_USEDEP}]
 	>=dev-python/jupyter-core-4.7[${PYTHON_USEDEP}]
 	dev-python/jupyterlab-pygments[${PYTHON_USEDEP}]
 	>=dev-python/markupsafe-2.0[${PYTHON_USEDEP}]
-	<dev-python/mistune-3[${PYTHON_USEDEP}]
+	<dev-python/mistune-4[${PYTHON_USEDEP}]
 	>=dev-python/nbclient-0.5.0[${PYTHON_USEDEP}]
-	>=dev-python/nbformat-5.1[${PYTHON_USEDEP}]
+	>=dev-python/nbformat-5.7[${PYTHON_USEDEP}]
 	dev-python/packaging[${PYTHON_USEDEP}]
 	>=dev-python/pandocfilters-1.4.1[${PYTHON_USEDEP}]
 	>=dev-python/pygments-2.4.1[${PYTHON_USEDEP}]
@@ -79,6 +75,8 @@ python_test() {
 		# too new pandoc but we don't have old anymore
 		nbconvert/utils/tests/test_pandoc.py::TestPandoc::test_minimal_version
 		nbconvert/utils/tests/test_pandoc.py::TestPandoc::test_pandoc_available
+		# crazy qtweb* stuff, perhaps permissions
+		nbconvert/exporters/tests/test_qtpdf.py::TestQtPDFExporter::test_export
 	)
 
 	# virtx implies nonfatal, make it explicit to avoid confusion
