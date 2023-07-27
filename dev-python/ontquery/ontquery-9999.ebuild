@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -45,8 +45,6 @@ RDEPEND="
 "
 
 if [[ ${PV} == "9999" ]]; then
-	BDEPEND="
-		dev-python/pyontutils[${PYTHON_USEDEP}]"
 	src_prepare () {
 		# replace package version to keep python quiet
 		sed -i "s/__version__.\+$/__version__ = '9999.0.0+$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
