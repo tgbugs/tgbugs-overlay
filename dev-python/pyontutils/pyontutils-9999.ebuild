@@ -42,7 +42,7 @@ RDEPEND="
 	>=dev-python/idlib-0.0.1_pre15[${PYTHON_USEDEP}]
 	>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
-	dev-python/nest_asyncio[${PYTHON_USEDEP}]
+	dev-python/nest-asyncio[${PYTHON_USEDEP}]
 	>=dev-python/ontquery-0.2.11[${PYTHON_USEDEP}]
 	>=dev-python/orthauth-0.0.16[${PYTHON_USEDEP}]
 	dev-python/pyld[${PYTHON_USEDEP}]
