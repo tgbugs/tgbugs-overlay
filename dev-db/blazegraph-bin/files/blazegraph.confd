@@ -2,3 +2,6 @@ JVM_OPTIONS="-Xmx4g"
 BLAZEGRAPH_PORT=9999
 BLAZEGRAPH_JOURNAL=/var/lib/blazegraph/blazegraph.jnl
 BLAZEGRAPH_PREFIXES=/var/lib/blazegraph/prefixes.conf
+# An example override-web.xml file can be found in
+# /usr/share/blazegraph/blazegraph.jar -> war/WEB-INF/override-web.xml
+BLAZEGRAPH_OVERRIDE_WEB_XML=/var/lib/blazegraph/override-web.xml
