@@ -7,5 +7,6 @@ DESCRIPTION="SCKAN SciGraph releases"
 HOMEPAGE="https://github.com/SciCrunch/sparc-curation"
 SRC_URI="https://github.com/SciCrunch/NIF-Ontology/releases/download/sckan-2023-01-23/sparc-sckan-graph-20230123T230930.zip -> ${P}.zip"
 
+KEYWORDS="*"
 LICENSE="CC-BY-4.0"
 SLOT="2023-08-04"
