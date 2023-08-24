@@ -14,7 +14,7 @@ SRC_URI="
 RESTRICT="mirror"
 
 LICENSE="LGPL-3 MIT Apache-2.0"
-SLOT="0/8.8"
+SLOT="0/8.9"
 KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86"
 IUSE="bc cgc +cs doc +futures +jit minimal +places +readline +threads +X"
 REQUIRED_USE="futures? ( || ( jit cs ) ) || ( bc cgc cs )"
