@@ -2,9 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=7
+EAPI=8
 
-inherit git-r3 eutils
+inherit git-r3
 
 EGIT_REPO_URI="git://github.com/mcellteam/cellblender.git"
 
