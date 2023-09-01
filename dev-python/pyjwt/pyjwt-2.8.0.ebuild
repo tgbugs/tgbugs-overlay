@@ -31,6 +31,11 @@ BDEPEND="
 
 distutils_enable_tests pytest
 
+EPYTEST_DESELECT=(
+	# Internet
+	tests/test_jwks_client.py::TestPyJWKClient::test_get_jwt_set_sslcontext_default
+)
+
 pkg_postinst() {
 	optfeature "cryptography" dev-python/cryptography
 }
