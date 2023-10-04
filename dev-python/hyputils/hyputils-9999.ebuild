@@ -20,8 +20,7 @@ HOMEPAGE="https://github.com/tgbugs/hyputils"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev memex test zendesk"
-REQUIRE_USE="test? ( memex )"
+IUSE="dev test zendesk"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
@@ -33,17 +32,6 @@ RDEPEND="
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
-	)
-	memex? (
-		dev-python/bleach[${PYTHON_USEDEP}]
-		dev-python/python-dateutil[${PYTHON_USEDEP}]
-		dev-python/jsonschema[${PYTHON_USEDEP}]
-		dev-python/mistune[${PYTHON_USEDEP}]
-		$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' 'python3*')
-		$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' 'pypy3')
-		dev-python/python-slugify[${PYTHON_USEDEP}]
-		dev-python/sqlalchemy[${PYTHON_USEDEP}]
-		dev-python/webob[${PYTHON_USEDEP}]
 	)
 	test? (
 		dev-python/factory_boy[${PYTHON_USEDEP}]

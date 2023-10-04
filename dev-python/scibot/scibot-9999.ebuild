@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{9..11} )
+PYTHON_COMPAT=( pypy3 python3_{10..12} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -36,11 +36,9 @@ RDEPEND="
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
 	www-servers/tornado[${PYTHON_USEDEP}]
-	www-servers/gunicorn[${PYTHON_USEDEP}]
-	>=dev-python/hyputils-0.0.6[memex,${PYTHON_USEDEP}]
+	>=dev-python/hyputils-0.0.6[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.23[${PYTHON_USEDEP}]
-	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
