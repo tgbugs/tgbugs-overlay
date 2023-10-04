@@ -21,10 +21,10 @@ SRC_URI="
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ~mips ppc ppc64 ~riscv ~s390 sparc x86 ~arm64-macos ~x64-macos"
 
 RDEPEND="
-	>=dev-python/traitlets-5.3[${PYTHON_USEDEP}]
+	>=dev-python/traitlets-4[${PYTHON_USEDEP}]
 "
 
 distutils_enable_tests pytest

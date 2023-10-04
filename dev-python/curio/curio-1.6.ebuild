@@ -3,12 +3,11 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{9..11} )
-inherit distutils-r1
+PYTHON_COMPAT=( pypy3 python3_{10..12} )
+inherit distutils-r1 pypi
 
 DESCRIPTION="Curio is a library for performing concurrent I/O with coroutines in Python 3."
 HOMEPAGE="https://github.com/dabeaz/curio"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"

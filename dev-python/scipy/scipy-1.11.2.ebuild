@@ -6,7 +6,7 @@ EAPI=8
 FORTRAN_NEEDED=fortran
 DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=meson-python
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+PYTHON_COMPAT=( python3_{10..11} pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
 inherit fortran-2 distutils-r1 multiprocessing
@@ -29,7 +29,8 @@ else
 	inherit pypi
 
 	# Upstream is often behind with doc updates
-	DOC_PV=${PV}
+	#DOC_PV=${PV}
+	DOC_PV=1.11.0
 
 	SRC_URI+="
 		doc? (
@@ -37,7 +38,7 @@ else
 		)"
 
 	if [[ ${PV} != *rc* ]] ; then
-		KEYWORDS="amd64 arm arm64 -hppa ~ia64 ~loong ppc ppc64 ~riscv ~s390 ~sparc x86"
+		KEYWORDS="amd64 arm arm64 -hppa ~ia64 ~loong ~ppc ppc64 ~riscv ~s390 ~sparc ~x86 ~arm64-macos ~x64-macos"
 	fi
 fi
 
@@ -47,7 +48,7 @@ IUSE="doc +fortran test-rust"
 
 # umfpack is technically optional but it's preferred to have it available.
 DEPEND="
-	>=dev-python/numpy-1.19.5[lapack,${PYTHON_USEDEP}]
+	>=dev-python/numpy-1.21.6[lapack,${PYTHON_USEDEP}]
 	sci-libs/arpack:=
 	sci-libs/umfpack
 	virtual/cblas
@@ -59,11 +60,11 @@ RDEPEND="
 "
 BDEPEND="
 	dev-lang/swig
-	>=dev-python/cython-0.29.18[${PYTHON_USEDEP}]
-	>=dev-python/meson-python-0.11[${PYTHON_USEDEP}]
-	dev-python/pybind11[${PYTHON_USEDEP}]
-	>=dev-util/meson-0.62.2
-	dev-util/patchelf
+	>=dev-python/cython-0.29.35[${PYTHON_USEDEP}]
+	>=dev-python/meson-python-0.12.1[${PYTHON_USEDEP}]
+	>=dev-python/pybind11-2.10.4[${PYTHON_USEDEP}]
+	>=dev-util/meson-1.1.0
+	!kernel_Darwin? ( dev-util/patchelf )
 	virtual/pkgconfig
 	doc? ( app-arch/unzip )
 	fortran? ( dev-python/pythran[${PYTHON_USEDEP}] )
@@ -86,10 +87,10 @@ src_unpack() {
 }
 
 python_configure_all() {
-	export SCIPY_USE_PYTHRAN=$(usex fortran 1 0)
 	DISTUTILS_ARGS=(
 		-Dblas=blas
 		-Dlapack=lapack
+		-Duse-pythran=$(usex fortran true false)
 	)
 }
 
@@ -102,6 +103,9 @@ python_test() {
 		scipy/datasets/tests/test_data.py::TestDatasets::test_ascent
 		scipy/datasets/tests/test_data.py::TestDatasets::test_face
 		scipy/datasets/tests/test_data.py::TestDatasets::test_electrocardiogram
+
+		# Precision issue with diff. blas?
+		scipy/optimize/tests/test__basinhopping.py::Test_Metropolis::test_gh7799
 	)
 	local EPYTEST_IGNORE=()
 

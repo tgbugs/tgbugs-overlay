@@ -5,7 +5,7 @@ EAPI=8
 
 DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+PYTHON_COMPAT=( python3_{10..11} pypy3 )
 PYTHON_REQ_USE='tk?,threads(+)'
 
 inherit distutils-r1 flag-o-matic multiprocessing prefix pypi
@@ -30,8 +30,8 @@ SRC_URI+="
 # Fonts: BitstreamVera, OFL-1.1
 LICENSE="BitstreamVera BSD matplotlib MIT OFL-1.1"
 SLOT="0"
-KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ppc ppc64 ~riscv ~s390 sparc x86"
-IUSE="cairo doc excel examples gtk3 latex qt5 tk webagg wxwidgets"
+KEYWORDS="~alpha amd64 arm arm64 hppa ~ia64 ~loong ~ppc ppc64 ~riscv ~s390 sparc ~x86 ~arm64-macos ~x64-macos"
+IUSE="cairo doc excel gtk3 latex qt5 tk webagg wxwidgets"
 
 # internal copy of pycxx highly patched
 #	dev-python/pycxx
@@ -41,7 +41,8 @@ RDEPEND="
 	>=dev-python/cycler-0.10.0-r1[${PYTHON_USEDEP}]
 	>=dev-python/fonttools-4.22.0[${PYTHON_USEDEP}]
 	>=dev-python/kiwisolver-1.2.0[${PYTHON_USEDEP}]
-	>=dev-python/numpy-1.20[${PYTHON_USEDEP}]
+	<dev-python/numpy-2[${PYTHON_USEDEP}]
+	>=dev-python/numpy-1.25[${PYTHON_USEDEP}]
 	>=dev-python/packaging-20.0[${PYTHON_USEDEP}]
 	>=dev-python/pillow-7.1.1[jpeg,webp,${PYTHON_USEDEP}]
 	>=dev-python/pyparsing-2.3.1[${PYTHON_USEDEP}]
@@ -88,6 +89,7 @@ RDEPEND="
 
 BDEPEND="
 	${RDEPEND}
+	dev-python/pybind11[${PYTHON_USEDEP}]
 	>=dev-python/setuptools-scm-7[${PYTHON_USEDEP}]
 	virtual/pkgconfig
 	doc? (
@@ -111,9 +113,11 @@ BDEPEND="
 		dev-python/mock[${PYTHON_USEDEP}]
 		dev-python/psutil[${PYTHON_USEDEP}]
 		dev-python/pytest-xdist[${PYTHON_USEDEP}]
-		>=dev-python/pygobject-3.40.1-r1:3[cairo?,${PYTHON_USEDEP}]
 		>=dev-python/tornado-6.0.4[${PYTHON_USEDEP}]
-		x11-libs/gtk+:3[introspection]
+		gtk3? (
+			>=dev-python/pygobject-3.40.1-r1:3[cairo?,${PYTHON_USEDEP}]
+			x11-libs/gtk+:3[introspection]
+		)
 	)
 "
 
@@ -144,14 +148,8 @@ python_prepare_all() {
 
 	local PATCHES=(
 		"${FILESDIR}"/matplotlib-3.3.3-disable-lto.patch
-		"${FILESDIR}"/matplotlib-3.7.1-test.patch
+		"${FILESDIR}"/matplotlib-3.8.0-test.patch
 	)
-
-	sed \
-		-e 's/matplotlib.pyparsing_py[23]/pyparsing/g' \
-		-i lib/matplotlib/{mathtext,fontconfig_pattern}.py \
-		|| die "sed pyparsing failed"
-	sed -i -e '/setuptools_scm/s:,<7::' setup.py || die
 
 	hprefixify setupext.py
 
@@ -247,12 +245,62 @@ python_test() {
 		tests/test_backend_qt.py::test_fig_sigint_override
 		# unhappy about xdist
 		tests/test_widgets.py::test_span_selector_animated_artists_callback
+		# timeout
+		tests/test_backends_interactive.py::test_webagg
 	)
+
 	[[ ${EPYTHON} == python3.11 ]] && EPYTEST_DESELECT+=(
 		# https://github.com/matplotlib/matplotlib/issues/23384
 		"tests/test_backends_interactive.py::test_figure_leak_20490[time_mem1-{'MPLBACKEND': 'qtagg', 'QT_API': 'PyQt5'}]"
 		"tests/test_backends_interactive.py::test_figure_leak_20490[time_mem1-{'MPLBACKEND': 'qtcairo', 'QT_API': 'PyQt5'}]"
 	)
+
+	case "${ABI}" in
+		alpha|arm|hppa|m68k|o32|ppc|s390|sh|sparc|x86)
+			EPYTEST_DESELECT+=(
+				# too large for 32-bit platforms
+				'tests/test_axes.py::test_psd_csd[png]'
+			)
+			;;
+		*)
+			;;
+	esac
+
+	if use hppa ; then
+		EPYTEST_DESELECT+=(
+			'tests/test_mathtext.py::test_mathtext_exceptions[hspace without value]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[hspace with invalid value]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[function without space]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[accent without space]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[frac without parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[frac with empty parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[binom without parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[binom with empty parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[genfrac without parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[genfrac with empty parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[sqrt without parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[sqrt with invalid value]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[overline without parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[overline with empty parameter]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[left with invalid delimiter]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[right with invalid delimiter]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[unclosed parentheses with sizing]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[unclosed parentheses without sizing]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[dfrac without parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[dfrac with empty parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[overset without parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[underset without parameters]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[unknown symbol]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[double superscript]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[double subscript]'
+			'tests/test_mathtext.py::test_mathtext_exceptions[super on sub without braces]'
+			'tests/test_quiver.py::test_barbs[png]'
+			'tests/test_quiver.py::test_barbs_pivot[png]'
+			'tests/test_quiver.py::test_barbs_flip[png]'
+			'tests/test_text.py::test_parse_math'
+			'tests/test_text.py::test_parse_math_rcparams'
+		)
+	fi
 
 	# we need to rebuild mpl against bundled freetype, otherwise
 	# over 1000 tests will fail because of mismatched font rendering
@@ -273,9 +321,4 @@ python_install_all() {
 	use doc && local HTML_DOCS=( doc/build/html/. )
 
 	distutils-r1_python_install_all
-
-	if use examples; then
-		dodoc -r examples
-		docompress -x /usr/share/doc/${PF}/examples
-	fi
 }

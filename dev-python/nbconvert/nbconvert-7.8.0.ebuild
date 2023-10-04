@@ -40,6 +40,7 @@ BDEPEND="
 	test? (
 		dev-python/ipykernel[${PYTHON_USEDEP}]
 		>=dev-python/ipywidgets-7[${PYTHON_USEDEP}]
+		dev-python/flaky[${PYTHON_USEDEP}]
 		dev-python/pytest-xdist[${PYTHON_USEDEP}]
 	)
 "

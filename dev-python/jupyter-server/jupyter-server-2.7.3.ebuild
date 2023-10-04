@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=hatchling
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+PYTHON_COMPAT=( python3_{10..11} pypy3 )
 
 inherit distutils-r1 pypi
 
@@ -17,7 +17,7 @@ HOMEPAGE="
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 hppa ~ia64 ~loong ppc ppc64 ~riscv ~s390 sparc x86"
+KEYWORDS="amd64 arm arm64 ~loong ~ppc ppc64 ~riscv ~s390 ~x86"
 
 RDEPEND="
 	>=dev-python/anyio-3.1.0[${PYTHON_USEDEP}]
@@ -26,13 +26,14 @@ RDEPEND="
 	>=dev-python/jupyter-client-7.4.4[${PYTHON_USEDEP}]
 	>=dev-python/jupyter-core-5.1.0[${PYTHON_USEDEP}]
 	dev-python/jupyter-server-terminals[${PYTHON_USEDEP}]
-	>=dev-python/jupyter-events-0.4.0[${PYTHON_USEDEP}]
+	>=dev-python/jupyter-events-0.6.0[${PYTHON_USEDEP}]
 	>=dev-python/nbconvert-6.4.4[${PYTHON_USEDEP}]
 	>=dev-python/nbformat-5.3.0[${PYTHON_USEDEP}]
+	dev-python/overrides[${PYTHON_USEDEP}]
 	dev-python/packaging[${PYTHON_USEDEP}]
 	dev-python/prometheus-client[${PYTHON_USEDEP}]
 	>=dev-python/pyzmq-24[${PYTHON_USEDEP}]
-	dev-python/send2trash[${PYTHON_USEDEP}]
+	>=dev-python/send2trash-1.8.2[${PYTHON_USEDEP}]
 	>=dev-python/terminado-0.8.3[${PYTHON_USEDEP}]
 	>=dev-python/tornado-6.2[${PYTHON_USEDEP}]
 	>=dev-python/traitlets-5.6.0[${PYTHON_USEDEP}]
@@ -42,6 +43,7 @@ RDEPEND="
 BDEPEND="
 	test? (
 		dev-python/ipykernel[${PYTHON_USEDEP}]
+		dev-python/flaky[${PYTHON_USEDEP}]
 		dev-python/pytest-console-scripts[${PYTHON_USEDEP}]
 		dev-python/pytest-jupyter[${PYTHON_USEDEP}]
 		dev-python/pytest-timeout[${PYTHON_USEDEP}]
@@ -66,6 +68,7 @@ PATCHES=(
 )
 
 python_test() {
+	# FIXME: tests seem to be affected by previously installed version
 	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 	epytest \
 		-p pytest_tornasync.plugin \
