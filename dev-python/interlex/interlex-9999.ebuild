@@ -35,6 +35,7 @@ RDEPEND="
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/elasticsearch-py[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
+	dev-python/flask-login[${PYTHON_USEDEP}]
 	dev-python/flask-restx[${PYTHON_USEDEP}]
 	dev-python/flask-sqlalchemy[${PYTHON_USEDEP}]
 	dev-python/tornado[${PYTHON_USEDEP}]
