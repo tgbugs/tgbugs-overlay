@@ -17,15 +17,13 @@ HOMEPAGE="
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~arm64 x86"
+KEYWORDS="amd64 ~arm arm64 x86"
 
 RDEPEND="
 	<dev-python/cachetools-6.0.0[${PYTHON_USEDEP}]
 	>=dev-python/pyasn1-0.1.7[${PYTHON_USEDEP}]
 	>=dev-python/pyasn1-modules-0.2.1[${PYTHON_USEDEP}]
 	>=dev-python/rsa-3.1.4[${PYTHON_USEDEP}]
-	dev-python/six[${PYTHON_USEDEP}]
-	!dev-python/namespace-google
 "
 BDEPEND="
 	test? (
@@ -40,22 +38,21 @@ BDEPEND="
 		dev-python/pyu2f[${PYTHON_USEDEP}]
 		dev-python/requests[${PYTHON_USEDEP}]
 		dev-python/responses[${PYTHON_USEDEP}]
-		>=dev-python/urllib3-2[${PYTHON_USEDEP}]
 	)
 "
 
 distutils_enable_tests pytest
 
-PATCHES=(
-	# https://github.com/googleapis/google-auth-library-python/pull/1290
-	"${FILESDIR}"/google-auth-2.20.0-urllib3-2.patch
-)
+python_test() {
+	local EPYTEST_IGNORE=(
+		# these are compatibility tests with oauth2client
+		# disable them to unblock removal of that package
+		tests/test__oauth2client.py
+	)
 
-EPYTEST_IGNORE=(
-	# these are compatibility tests with oauth2client
-	# disable them to unblock removal of that package
-	tests/test__oauth2client.py
-)
+	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+	epytest
+}
 
 python_compile() {
 	distutils-r1_python_compile
