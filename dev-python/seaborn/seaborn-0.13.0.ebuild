@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=flit
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+PYTHON_COMPAT=( python3_{10..11} pypy3 )
 inherit distutils-r1 multiprocessing pypi
 
 DESCRIPTION="Statistical data visualization"
@@ -13,24 +13,19 @@ HOMEPAGE="https://seaborn.pydata.org https://github.com/mwaskom/seaborn"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="amd64 ~x86 ~amd64-linux ~x86-linux"
-IUSE="stats"
 
 RDEPEND="
-	dev-python/matplotlib[${PYTHON_USEDEP}]
-	dev-python/numpy[${PYTHON_USEDEP}]
-	dev-python/pandas[${PYTHON_USEDEP}]
-	stats? (
-		dev-python/statsmodels[${PYTHON_USEDEP}]
-		dev-python/scipy[${PYTHON_USEDEP}]
-	)
+	>=dev-python/matplotlib-3.3[${PYTHON_USEDEP}]
+	>=dev-python/numpy-1.20[${PYTHON_USEDEP}]
+	>=dev-python/pandas-1.2[${PYTHON_USEDEP}]
+	>=dev-python/statsmodels-0.12[${PYTHON_USEDEP}]
+	>=dev-python/scipy-1.7[${PYTHON_USEDEP}]
 "
 BDEPEND="
-	test? ( dev-python/pytest-xdist[${PYTHON_USEDEP}] )
+	test? (
+		dev-python/pytest-xdist[${PYTHON_USEDEP}]
+	)
 "
-
-PATCHES=(
-	"${FILESDIR}"/${P}-matplotlib-3.7.patch
-)
 
 distutils_enable_tests pytest
 
