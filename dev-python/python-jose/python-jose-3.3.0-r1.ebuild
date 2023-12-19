@@ -1,19 +1,27 @@
 # Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-PYTHON_COMPAT=( python3_{9..11} pypy3 )
+DISTUTILS_USE_PEP517=setuptools
+PYTHON_COMPAT=( python3_{10..12} pypy3 )
+
 inherit distutils-r1
 
 DESCRIPTION="A JavaScript Object Signing and Encryption (JOSE) implementation in Python"
-HOMEPAGE="https://github.com/mpdavis/python-jose https://pypi.org/project/python-jose/"
+HOMEPAGE="
+	https://github.com/mpdavis/python-jose/
+	https://pypi.org/project/python-jose/
+"
 # pypi tarball lacks unit tests
-SRC_URI="https://github.com/mpdavis/python-jose/archive/${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="
+	https://github.com/mpdavis/python-jose/archive/${PV}.tar.gz
+		-> ${P}.gh.tar.gz
+"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~arm64 ~ppc64 ~riscv x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 ~arm arm64 ~ppc64 ~riscv x86 ~amd64-linux ~x86-linux"
 
 # TODO: require only one crypto backend?
 RDEPEND="
