@@ -31,6 +31,7 @@ IDEPEND="
 	acct-user/interlex"
 
 RDEPEND="
+	dev-python/argon2-cffi[${PYTHON_USEDEP}]
 	>=dev-python/celery-5.0.5[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/elasticsearch-py[${PYTHON_USEDEP}]
