@@ -20,9 +20,9 @@ KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 
 IUSE="+shacl"
 
-#BDEPEND="
-	#dev-python/poetry-dynamic-versioning
-#"
+BDEPEND="
+	dev-python/poetry-dynamic-versioning[${PYTHON_USEDEP}]
+"
 
 #PATCHES="${FILESDIR}/nodyn.patch"
 PATCHES="${FILESDIR}/no-shim.patch"
