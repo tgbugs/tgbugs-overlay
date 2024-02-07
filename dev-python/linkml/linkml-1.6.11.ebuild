@@ -26,7 +26,6 @@ KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 PATCHES="${FILESDIR}/no-shim.patch"
 
 RDEPEND="
-	>=dev-python/antlr4-python3-runtime-4.9.0[${PYTHON_USEDEP}]
 	>=dev-python/click-7.0[${PYTHON_USEDEP}]
 	>=dev-python/graphviz-0.10.1[${PYTHON_USEDEP}]
 	dev-python/hbreader[${PYTHON_USEDEP}]
