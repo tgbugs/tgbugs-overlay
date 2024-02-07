@@ -1,0 +1,12 @@
+diff --git a/sparqlslurper/__init__.py b/sparqlslurper/__init__.py
+index 21cb851..ef93e7d 100644
+--- a/sparqlslurper/__init__.py
++++ b/sparqlslurper/__init__.py
+@@ -1,6 +1,3 @@
+ from ._slurpygraph import QueryTriple, NodeType, RDFTriple, TM_NS, SlurpyGraph, QueryResultHook, QueryResultPrinter
+ from ._graphdb_slurpygraph import GraphDBSlurpyGraph, graphdb_id
+ from ._user_agent import SlurpyGraphWithAgent, SPARQLWrapperWithAgent
+-
+-import rdflib_shim                      # rdflib 5 / 6 bridge
+-shimed = rdflib_shim.RDFLIB_SHIM        # Make sure the import doesn't get stripped
+\ No newline at end of file

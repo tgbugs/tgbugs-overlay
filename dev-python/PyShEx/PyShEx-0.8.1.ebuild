@@ -19,14 +19,15 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 
+PATCHES="${FILESDIR}/no-shim.patch"
+
 RDEPEND="
 	dev-python/CFGraph[${PYTHON_USEDEP}]
 	dev-python/chardet[${PYTHON_USEDEP}]
 	>=dev-python/PyShExC-0.9.1[${PYTHON_USEDEP}]
 	>=dev-python/requests-2.22.0[${PYTHON_USEDEP}]
 	dev-python/urllib3[${PYTHON_USEDEP}]
+	>=dev-python/sparqlslurper-0.5.1[${PYTHON_USEDEP}]
 "
-#sparqlslurper>=0.5.1
-#sparqlwrapper>=1.8.5
 
 distutils_enable_tests pytest

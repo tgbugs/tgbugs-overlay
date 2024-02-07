@@ -1,0 +1,10 @@
+diff --git a/pyshex/__init__.py b/pyshex/__init__.py
+index a9d036b..b543072 100644
+--- a/pyshex/__init__.py
++++ b/pyshex/__init__.py
+@@ -1,5 +1,2 @@
+ from pyshex.prefixlib import PrefixLibrary, standard_prefixes, known_prefixes
+ from pyshex.shex_evaluator import ShExEvaluator
+-
+-import rdflib_shim
+-shim_installed = rdflib_shim.RDFLIB_SHIM
