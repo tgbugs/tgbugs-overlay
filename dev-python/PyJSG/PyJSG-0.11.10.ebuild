@@ -3,13 +3,13 @@
 
 EAPI=8
 
+PYPI_NO_NORMALIZE=1
 DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{9..11} pypy3 )
-inherit distutils-r1
+inherit pypi distutils-r1
 
 DESCRIPTION="JSON Schema Grammar bindings for Python"
 HOMEPAGE="https://github.com/hsolbrib/pyjsg"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="CC0-1.0"
 SLOT="0"

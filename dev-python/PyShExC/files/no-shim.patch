@@ -1,0 +1,8 @@
+diff --git a/pyshexc/__init__.py b/pyshexc/__init__.py
+index 5e13aa8..e69de29 100644
+--- a/pyshexc/__init__.py
++++ b/pyshexc/__init__.py
+@@ -1,2 +0,0 @@
+-import rdflib_shim
+-shimin = rdflib_shim.RDFLIB_SHIM
+\ No newline at end of file
