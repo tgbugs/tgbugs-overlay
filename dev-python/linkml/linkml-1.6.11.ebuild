@@ -18,7 +18,7 @@ LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 
-IUSE="+shacl"
+IUSE="+shacl test"
 
 BDEPEND="
 	dev-python/poetry-dynamic-versioning[${PYTHON_USEDEP}]
@@ -54,6 +54,9 @@ RDEPEND="
 	>=dev-python/watchdog-0.9.0[${PYTHON_USEDEP}]
 	shacl? (
 		>=dev-python/pyshacl-0.25.0[${PYTHON_USEDEP}]
+	)
+	test? (
+		dev-python/pytest-subtests[${PYTHON_USEDEP}]
 	)
 "
 
