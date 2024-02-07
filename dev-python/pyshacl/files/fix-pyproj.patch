@@ -1,0 +1,15 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index c9c33ab..3d2da31 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -52,8 +52,8 @@ include = [
+     { path = "pyproject.toml", format = "sdist" },
+     { path = "poetry.lock", format = "sdist" },
+     { path = "Makefile", format = "sdist" },
+-    { path = "*.md" },
+-    { path = "*.txt" },
++    { path = "*.md", format = "sdist"},
++    { path = "*.txt", format = "sdist" },
+     { path = "pyshacl/assets/*.pickle" },
+     { path = "pyshacl/*.spec" }
+ ]
