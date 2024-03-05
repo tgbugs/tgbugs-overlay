@@ -20,6 +20,7 @@ IUSE="bc cgc +cs doc +futures +jit minimal +places +readline +threads +X"
 REQUIRED_USE="futures? ( || ( jit cs ) ) || ( bc cgc cs )"
 
 RDEPEND="
+	app-arch/lz4
 	app-eselect/eselect-racket
 	dev-db/sqlite:3
 	media-libs/libpng:0
