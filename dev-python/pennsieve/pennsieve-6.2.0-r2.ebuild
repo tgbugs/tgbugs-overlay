@@ -5,11 +5,10 @@ EAPI=8
 
 DISTUTILS_USER_PEP517=setuptools
 PYTHON_COMPAT=( pypy3 python3_{9..11} )
-inherit distutils-r1
+inherit distutils-r1 pypi
 
 DESCRIPTION="Python client and command line tool for Pennsieve"
 HOMEPAGE="https://github.com/Pennsieve/pennsieve-python"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
@@ -19,8 +18,7 @@ IUSE="dev test +cli -agent -pandas"
 DEPEND="
 	>=dev-python/boto3-1.4[${PYTHON_USEDEP}]
 	>=dev-python/deprecated-1.2.0[${PYTHON_USEDEP}]
-	>=dev-python/future-0.15.0[${PYTHON_USEDEP}]
-	>=dev-python/python-jose-3.2.0[${PYTHON_USEDEP}]
+	dev-python/pyjwt[${PYTHON_USEDEP}]
 	>=dev-python/pytz-2016[${PYTHON_USEDEP}]
 	>=dev-python/requests-2.18[${PYTHON_USEDEP}]
 	>=dev-python/rsa-4.0[${PYTHON_USEDEP}]
@@ -49,11 +47,7 @@ RDEPEND="${DEPEND}"
 RESTRICT="!test? ( test )"
 
 PATCHES=(
-	"${FILESDIR}"/setup-no-cython.patch
-	"${FILESDIR}"/setup-notest.patch
-	"${FILESDIR}"/manifest-notest.patch
-	"${FILESDIR}"/no-futures-jose.patch
-	"${FILESDIR}"/no-protobuf.patch
+	"${FILESDIR}"/fix-test-cython-protobuf-jose-future.patch
 )
 
 distutils_enable_tests pytest

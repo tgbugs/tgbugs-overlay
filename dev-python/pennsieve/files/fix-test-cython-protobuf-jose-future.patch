@@ -1,0 +1,347 @@
+From ed21a550a4d45addfebfbab2a7487aca1debb26d Mon Sep 17 00:00:00 2001
+From: Tom Gillespie <tgbugs@gmail.com>
+Date: Mon, 25 Mar 2024 15:01:06 -0400
+Subject: [PATCH] remove py2, future, protobuf, cython, use pyjwt
+
+the package dropped py2 support long ago, but the code
+was never removed and the future package is being removed
+from various distros
+
+python-jose is no longer maintained and the functionality
+needed is available in pyjwt which is maintained
+
+protobuf is not longer needed due to dropping agent support
+
+also remove tests from packaging since they require keys
+
+remove setup requires cython as well since it is not needed
+---
+ MANIFEST.in                        | 1 +
+ pennsieve/api/agent.py             | 3 ---
+ pennsieve/api/base.py              | 6 +-----
+ pennsieve/api/concepts.py          | 3 +--
+ pennsieve/api/core.py              | 1 -
+ pennsieve/api/data.py              | 3 +--
+ pennsieve/api/timeseries.py        | 3 +--
+ pennsieve/api/transfers.py         | 3 +--
+ pennsieve/api/user.py              | 2 --
+ pennsieve/base.py                  | 7 ++-----
+ pennsieve/cache/cache.py           | 5 ++---
+ pennsieve/cli/pennsieve_profile.py | 1 -
+ pennsieve/client.py                | 3 +--
+ pennsieve/config.py                | 2 --
+ pennsieve/log.py                   | 2 --
+ pennsieve/models.py                | 3 +--
+ pennsieve/utils.py                 | 8 +++++---
+ requirements.txt                   | 6 +-----
+ setup.py                           | 5 +----
+ 20 files changed, 19 insertions(+), 50 deletions(-)
+
+diff --git a/MANIFEST.in b/MANIFEST.in
+index dc9b6f2..02308f6 100644
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -2,3 +2,4 @@ include requirements.txt
+ include README.rst
+ include INSTALL.rst
+ include LICENSE
++recursive-exclude tests *
+diff --git a/pennsieve/api/agent.py b/pennsieve/api/agent.py
+index 8a4ef29..4689476 100644
+--- a/pennsieve/api/agent.py
++++ b/pennsieve/api/agent.py
+@@ -1,6 +1,3 @@
+-from __future__ import division
+-from future.utils import raise_from
+-
+ import errno
+ import json
+ import os
+diff --git a/pennsieve/api/base.py b/pennsieve/api/base.py
+index 8d3e40e..595222a 100644
+--- a/pennsieve/api/base.py
++++ b/pennsieve/api/base.py
+@@ -1,14 +1,10 @@
+-from __future__ import absolute_import, division, print_function
+-from future import standard_library
+-from future.utils import integer_types, string_types
++from pennsieve.utils import integer_types, string_types
+ 
+ from warnings import warn
+ 
+ from pennsieve import log
+ from pennsieve.models import get_package_class
+ 
+-# urllib compatibility
+-standard_library.install_aliases()
+ import urllib.parse  # isort:skip
+ 
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/pennsieve/api/concepts.py b/pennsieve/api/concepts.py
+index 94f04fb..5d520c8 100644
+--- a/pennsieve/api/concepts.py
++++ b/pennsieve/api/concepts.py
+@@ -1,6 +1,5 @@
+ # -*- coding: utf-8 -*-
+-from __future__ import absolute_import, division, print_function
+-from future.utils import string_types
++from pennsieve.utils import string_types
+ 
+ import itertools
+ import json
+diff --git a/pennsieve/api/core.py b/pennsieve/api/core.py
+index 256a0cb..7b5521d 100644
+--- a/pennsieve/api/core.py
++++ b/pennsieve/api/core.py
+@@ -1,5 +1,4 @@
+ # -*- coding: utf-8 -*-
+-from __future__ import absolute_import, division, print_function
+ 
+ from warnings import warn
+ 
+diff --git a/pennsieve/api/data.py b/pennsieve/api/data.py
+index fd0bad2..a5434aa 100644
+--- a/pennsieve/api/data.py
++++ b/pennsieve/api/data.py
+@@ -1,6 +1,5 @@
+ # -*- coding: utf-8 -*-
+-from __future__ import absolute_import, division, print_function
+-from future.utils import string_types
++from pennsieve.utils import string_types
+ 
+ import datetime
+ import math
+diff --git a/pennsieve/api/timeseries.py b/pennsieve/api/timeseries.py
+index 2dd4f39..8d85700 100644
+--- a/pennsieve/api/timeseries.py
++++ b/pennsieve/api/timeseries.py
+@@ -1,8 +1,7 @@
+ # -*- coding: utf-8 -*-
+ 
+-from __future__ import absolute_import, division, print_function
+ from builtins import dict, object, range, zip
+-from future.utils import as_native_str, integer_types, string_types
++from pennsieve.utils import as_native_str, integer_types, string_types
+ 
+ import datetime
+ import itertools
+diff --git a/pennsieve/api/transfers.py b/pennsieve/api/transfers.py
+index 519e719..e76e44e 100644
+--- a/pennsieve/api/transfers.py
++++ b/pennsieve/api/transfers.py
+@@ -1,7 +1,6 @@
+ # -*- coding: utf-8 -*-
+-from __future__ import absolute_import, division, print_function
+ from builtins import dict, object
+-from future.utils import string_types
++from pennsieve.utils import string_types
+ 
+ import io
+ import os
+diff --git a/pennsieve/api/user.py b/pennsieve/api/user.py
+index 75d5d16..536d4c0 100644
+--- a/pennsieve/api/user.py
++++ b/pennsieve/api/user.py
+@@ -1,7 +1,5 @@
+ # -*- coding: utf-8 -*-
+ 
+-from __future__ import absolute_import, division, print_function
+-
+ from pennsieve.api.base import APIBase
+ 
+ 
+diff --git a/pennsieve/base.py b/pennsieve/base.py
+index 1dc4b61..3aecead 100644
+--- a/pennsieve/base.py
++++ b/pennsieve/base.py
+@@ -1,16 +1,13 @@
+ # -*- coding: utf-8 -*-
+-from __future__ import absolute_import, division, print_function
+ from builtins import dict, object
+-from future.utils import raise_from
+ 
+ import base64
+ import json
+ from warnings import warn
+ 
++import jwt
+ import boto3
+ import requests
+-from jose import jwk, jwt
+-from jose.utils import base64url_decode
+ from requests import Session
+ from requests.adapters import HTTPAdapter
+ from requests.exceptions import HTTPError
+@@ -129,7 +126,7 @@ class ClientSession(object):
+         id_token_jwt = response["AuthenticationResult"]["IdToken"]
+ 
+         # Since we passed the verification, we can now safely use the claims
+-        claims = jwt.get_unverified_claims(id_token_jwt)
++        claims = jwt.decode(id_token_jwt, algorithms=['RS256'], options={'verify_signature': False})
+ 
+         # Ensures that `self._session` exists
+         self.session
+diff --git a/pennsieve/cache/cache.py b/pennsieve/cache/cache.py
+index 635b720..2c70e6f 100644
+--- a/pennsieve/cache/cache.py
++++ b/pennsieve/cache/cache.py
+@@ -1,4 +1,3 @@
+-from __future__ import absolute_import, division, print_function
+ from builtins import filter, object, zip
+ 
+ import io
+@@ -18,8 +17,6 @@ from pennsieve.extensions import require_extension
+ from pennsieve.models import DataPackage, TimeSeriesChannel
+ from pennsieve.utils import usecs_since_epoch, usecs_to_datetime
+ 
+-from .cache_segment_pb2 import CacheSegment
+-
+ logger = log.get_logger("pennsieve.cache")
+ 
+ 
+@@ -84,6 +81,7 @@ def compact_cache(cache, max_mb):
+ 
+ @require_extension
+ def create_segment(channel, series):
++    raise NotImplementedError('no protobuf')
+     segment = CacheSegment()
+     segment.channelId = channel.id
+     segment.index = series.index.astype(np.int64).values.tobytes()
+@@ -93,6 +91,7 @@ def create_segment(channel, series):
+ 
+ @require_extension
+ def read_segment(channel, bytes):
++    raise NotImplementedError('no protobuf')
+     segment = CacheSegment.FromString(bytes)
+     index = pd.to_datetime(np.frombuffer(segment.index, np.int64))
+     data = np.frombuffer(segment.data, np.double)
+diff --git a/pennsieve/cli/pennsieve_profile.py b/pennsieve/cli/pennsieve_profile.py
+index a785c4f..250bbc7 100644
+--- a/pennsieve/cli/pennsieve_profile.py
++++ b/pennsieve/cli/pennsieve_profile.py
+@@ -41,7 +41,6 @@ For additional features, install the Pennsieve CLI Agent:
+ https://developer.pennsieve.io/agent
+ """
+ 
+-from __future__ import absolute_import, print_function
+ from builtins import input
+ 
+ import io
+diff --git a/pennsieve/client.py b/pennsieve/client.py
+index e73947e..ff14e70 100644
+--- a/pennsieve/client.py
++++ b/pennsieve/client.py
+@@ -1,9 +1,8 @@
+ # -*- coding: utf-8 -*-
+ 
+ # pennsieve-specific
+-from __future__ import absolute_import, division, print_function
+ from builtins import object
+-from future.utils import as_native_str
++from pennsieve.utils import as_native_str
+ 
+ from warnings import warn
+ 
+diff --git a/pennsieve/config.py b/pennsieve/config.py
+index 0f4b2a6..584a73a 100644
+--- a/pennsieve/config.py
++++ b/pennsieve/config.py
+@@ -142,8 +142,6 @@ Additional environment variables and their corresponding config options:
+ 
+ """
+ 
+-from __future__ import absolute_import, division, print_function
+-
+ import configparser
+ import os
+ from warnings import warn
+diff --git a/pennsieve/log.py b/pennsieve/log.py
+index 209c1d7..70c673b 100644
+--- a/pennsieve/log.py
++++ b/pennsieve/log.py
+@@ -1,5 +1,3 @@
+-from __future__ import absolute_import, division, print_function
+-
+ import logging
+ import os
+ 
+diff --git a/pennsieve/models.py b/pennsieve/models.py
+index 06180fa..7ed58aa 100644
+--- a/pennsieve/models.py
++++ b/pennsieve/models.py
+@@ -1,7 +1,6 @@
+ # -*- coding: utf-8 -*-
+-from __future__ import absolute_import, division, print_function
+ from builtins import object, zip
+-from future.utils import PY2, as_native_str, string_types
++from pennsieve.utils import PY2, as_native_str, string_types
+ 
+ import datetime
+ import io
+diff --git a/pennsieve/utils.py b/pennsieve/utils.py
+index 415af8e..1db992e 100644
+--- a/pennsieve/utils.py
++++ b/pennsieve/utils.py
+@@ -1,14 +1,16 @@
+ # -*- coding: utf-8 -*-
+ 
+-from __future__ import absolute_import, division, print_function
+-from future.utils import integer_types, string_types
+-
+ import datetime
+ 
+ from pennsieve.extensions import numpy as np
+ from pennsieve.extensions import pandas as pd
+ from pennsieve.extensions import require_extension
+ 
++integer_types = int,
++string_types = str,
++as_native_str = lambda: (lambda f: f)
++PY2 = False
++
+ # data type helpers
+ 
+ 
+diff --git a/requirements.txt b/requirements.txt
+index 7d3cdf6..a44831d 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,13 +1,9 @@
+ boto3
+ configparser>=3.5
+ deprecated>=1.2.0
+-future>=0.15.0
+-futures
+-protobuf>=3.2.0,<=3.20.1
+-python-jose==3.2.0
++pyjwt
+ pytz>=2016
+ requests>=2.18
+-rsa==4.0; python_version < '3.0'
+ rsa>=4.0; python_version > '3.0'
+ semver>=2.8.0
+ websocket-client>=0.57.0
+diff --git a/setup.py b/setup.py
+index fbe3c9e..56b80f7 100644
+--- a/setup.py
++++ b/setup.py
+@@ -1,5 +1,3 @@
+-from __future__ import absolute_import, division, print_function
+-
+ import io
+ import re
+ from os import path
+@@ -30,9 +28,8 @@ setup(
+     author_email="joostw@upenn.edu",
+     description="Python client for the Pennsieve Platform",
+     long_description=long_description,
+-    packages=find_packages(),
++    packages=find_packages(exclude=('tests',)),
+     package_dir={"pennsieve": "pennsieve"},
+-    setup_requires=["cython"],
+     install_requires=reqs,
+     extras_require={"data": ["numpy>=1.13", "pandas>=0.20"]},
+     python_requires=">=3.6, <4.0",
+-- 
+2.43.2
+
