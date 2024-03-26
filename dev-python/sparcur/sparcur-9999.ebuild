@@ -37,7 +37,7 @@ IDEPEND="
 
 RDEPEND="
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
-	>=dev-python/augpathlib-0.0.28[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.29[${PYTHON_USEDEP}]
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
 	>=dev-python/idlib-0.0.1_pre18[${PYTHON_USEDEP}]
