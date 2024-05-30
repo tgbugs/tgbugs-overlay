@@ -1,0 +1,21 @@
+diff --git a/pint/compat.py b/pint/compat.py
+index 552ff3f..b4cfeb3 100644
+--- a/pint/compat.py
++++ b/pint/compat.py
+@@ -21,7 +21,7 @@ from collections.abc import Iterable
+ 
+ try:
+     from uncertainties import UFloat, ufloat
+-    from uncertainties import unumpy as unp
++    unp = None
+ 
+     HAS_UNCERTAINTIES = True
+ except ImportError:
+@@ -78,6 +78,7 @@ try:
+     HAS_NUMPY = True
+     NUMPY_VER = np.__version__
+     if HAS_UNCERTAINTIES:
++        from uncertainties import unumpy as unp
+         NUMERIC_TYPES = (Number, Decimal, ndarray, np.number, UFloat)
+     else:
+         NUMERIC_TYPES = (Number, Decimal, ndarray, np.number)
