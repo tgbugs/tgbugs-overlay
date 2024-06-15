@@ -2,9 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI="6"
+EAPI="8"
 
-inherit eutils java-pkg-2
+inherit desktop java-pkg-2
 
 DESCRIPTION="Diagram and graph editor that generates high-quality drawings."
 HOMEPAGE="http://www.yworks.com/en/products_yed_about.html"
@@ -35,7 +35,7 @@ src_unpack() {
 src_install() {
 	java-pkg_dojar "${S}/${P}"/${PN}.jar
 	java-pkg_dojar "${S}/${P}"/lib/vectorgraphics.jar
-	java-pkg_dolauncher ${PN} --jar ${PN}.jar
+	java-pkg_dolauncher ${PN} --java_args "--add-opens=java.desktop/javax.swing=ALL-UNNAMED" --jar ${PN}.jar
 	make_desktop_entry ${PN} yEd
 	dodoc "${S}/${P}"/license.html
 }
