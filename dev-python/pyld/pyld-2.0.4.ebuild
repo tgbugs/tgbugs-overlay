@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{9..11} )
+PYTHON_COMPAT=( pypy3 python3_{10..12} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -29,12 +29,14 @@ IUSE="test"
 RESTRICT="!test? ( test )"
 
 DEPEND="
-	dev-python/frozendict[${PYTHON_USEDEP}]
+	dev-python/immutabledict[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 "
 RDEPEND="${DEPEND}"
+
+PATCHES=("${FILESDIR}/immdict.patch")
 
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
