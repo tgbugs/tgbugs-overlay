@@ -1,4 +1,4 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -13,25 +13,24 @@ HOMEPAGE="
 	https://github.com/boto/botocore/
 	https://pypi.org/project/botocore/
 "
+SRC_URI="
+	https://github.com/boto/botocore/archive/${PV}.tar.gz
+		-> ${P}.gh.tar.gz
+"
+
 LICENSE="Apache-2.0"
 SLOT="0"
-
-if [[ "${PV}" == "9999" ]]; then
-	EGIT_REPO_URI="https://github.com/boto/botocore"
-	inherit git-r3
-else
-	SRC_URI="
-		https://github.com/boto/botocore/archive/${PV}.tar.gz
-			-> ${P}.gh.tar.gz
-	"
-	KEYWORDS="amd64 arm arm64 ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
-fi
+KEYWORDS="amd64 arm arm64 ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
 
 RDEPEND="
-	dev-python/six[${PYTHON_USEDEP}]
 	<dev-python/jmespath-2[${PYTHON_USEDEP}]
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
 	>=dev-python/urllib3-1.25.4[${PYTHON_USEDEP}]
+"
+# unbundled packages
+RDEPEND+="
+	dev-python/requests[${PYTHON_USEDEP}]
+	dev-python/six[${PYTHON_USEDEP}]
 "
 BDEPEND="
 	test? (
@@ -63,6 +62,6 @@ python_test() {
 		tests/functional/test_six_threading.py::test_six_thread_safety
 	)
 
-	local -x EPYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 	epytest tests/{functional,unit}
 }

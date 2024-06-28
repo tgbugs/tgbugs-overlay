@@ -1,4 +1,4 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -10,7 +10,7 @@ PYTHON_REQ_USE="threads(+)"
 
 VIRTUALX_REQUIRED="manual"
 
-inherit distutils-r1 multiprocessing optfeature pypi virtualx
+inherit distutils-r1 optfeature pypi virtualx
 
 DESCRIPTION="Powerful data structures for data analysis and statistics"
 HOMEPAGE="
@@ -19,10 +19,10 @@ HOMEPAGE="
 	https://pypi.org/project/pandas/
 "
 
-SLOT="0"
 LICENSE="BSD"
-KEYWORDS="amd64 arm arm64 ~hppa ~ppc ~ppc64 ~riscv ~s390 ~sparc x86"
-IUSE="full-support minimal test X"
+SLOT="0"
+KEYWORDS="amd64 arm64 ~loong ~riscv x86"
+IUSE="big-endian full-support minimal test X"
 RESTRICT="!test? ( test )"
 
 RECOMMENDED_DEPEND="
@@ -42,17 +42,17 @@ OPTIONAL_DEPEND="
 	>=dev-python/matplotlib-3.6.1[${PYTHON_USEDEP}]
 	>=dev-python/openpyxl-3.0.7[${PYTHON_USEDEP}]
 	>=dev-python/sqlalchemy-1.4.36[${PYTHON_USEDEP}]
-	>=dev-python/tables-3.7.0[${PYTHON_USEDEP}]
 	>=dev-python/tabulate-0.8.10[${PYTHON_USEDEP}]
 	>=dev-python/xarray-2022.3.0[${PYTHON_USEDEP}]
 	>=dev-python/xlrd-2.0.1[${PYTHON_USEDEP}]
 	>=dev-python/xlsxwriter-3.0.3[${PYTHON_USEDEP}]
 	>=dev-python/xlwt-1.3.0[${PYTHON_USEDEP}]
-	!hppa? (
-		$(python_gen_cond_dep '
-			dev-python/statsmodels[${PYTHON_USEDEP}]
-		' python3_{8..10} )
+	!arm? ( !hppa? ( !ppc? ( !x86? (
 		>=dev-python/scipy-1.8.1[${PYTHON_USEDEP}]
+		dev-python/statsmodels[${PYTHON_USEDEP}]
+	) ) ) )
+	!big-endian? (
+		>=dev-python/tables-3.7.0[${PYTHON_USEDEP}]
 	)
 	X? (
 		|| (
@@ -64,7 +64,7 @@ OPTIONAL_DEPEND="
 	)
 "
 DEPEND="
-	>=dev-python/numpy-1.23.2[${PYTHON_USEDEP}]
+	>=dev-python/numpy-1.23.2:=[${PYTHON_USEDEP}]
 "
 COMMON_DEPEND="
 	${DEPEND}
@@ -73,8 +73,8 @@ COMMON_DEPEND="
 "
 BDEPEND="
 	${COMMON_DEPEND}
-	>=dev-util/meson-1.2.1
-	>=dev-python/cython-0.29.33[${PYTHON_USEDEP}]
+	>=dev-build/meson-1.2.1
+	>=dev-python/cython-3.0.5[${PYTHON_USEDEP}]
 	>=dev-python/versioneer-0.28[${PYTHON_USEDEP}]
 	test? (
 		${VIRTUALX_DEPEND}
@@ -84,12 +84,10 @@ BDEPEND="
 		>=dev-python/hypothesis-6.46.1[${PYTHON_USEDEP}]
 		>=dev-python/openpyxl-3.0.10[${PYTHON_USEDEP}]
 		>=dev-python/pymysql-1.0.2[${PYTHON_USEDEP}]
-		>=dev-python/pytest-7.3.2[${PYTHON_USEDEP}]
-		>=dev-python/pytest-xdist-2.2.0[${PYTHON_USEDEP}]
-		>=dev-python/psycopg-2.9.3:2[${PYTHON_USEDEP}]
 		>=dev-python/xlsxwriter-3.0.3[${PYTHON_USEDEP}]
 		x11-misc/xclip
 		x11-misc/xsel
+		!!dev-python/pyarrow
 	)
 "
 RDEPEND="
@@ -99,10 +97,8 @@ RDEPEND="
 	full-support? ( ${OPTIONAL_DEPEND} )
 "
 
-PATCHES=(
-	# a quick hack, it's already fixed in main
-	"${FILESDIR}/pandas-2.1.1-which.patch"
-)
+EPYTEST_XDIST=1
+distutils_enable_tests pytest
 
 src_test() {
 	virtx distutils-r1_src_test
@@ -142,6 +138,7 @@ python_test() {
 
 		# deprecation warning
 		tests/io/pytables/test_retain_attributes.py::test_retain_index_attributes2
+		'tests/computation/test_eval.py::TestEval::test_scalar_unary[numexpr-pandas]'
 
 		# Needs 64-bit time_t (TODO: split into 32-bit arch only section)
 		tests/tseries/offsets/test_year.py::test_add_out_of_pydatetime_range
@@ -171,18 +168,25 @@ python_test() {
 
 		# blosc2 version
 		tests/io/pytables/test_file_handling.py::test_complibs\[blosc2-{1..9}\]
+
+		# requires -Werror
+		tests/tslibs/test_to_offset.py::test_to_offset_lowercase_frequency_deprecated
+		tests/tslibs/test_to_offset.py::test_to_offset_uppercase_frequency_deprecated
+
+		# requires pyarrow
+		tests/io/formats/style/test_bar.py::test_style_bar_with_pyarrow_NA_values
+		tests/series/test_api.py::TestSeriesMisc::test_inspect_getmembers
+
+		# assumes that it will fail due to -mfpmath=387 on 32-bit arches,
+		# so it XPASS-es in every other scenario
+		tests/tools/test_to_timedelta.py::TestTimedeltas::test_to_timedelta_float
 	)
 
-	case ${EPYTHON} in
-		python3.12)
-			EPYTEST_DESELECT+=(
-				tests/io/pytables/test_select.py::test_select_dtypes
-				tests/io/pytables/test_select.py::test_frame_select
-				# deprecation warnings
-				tests/io/excel/test_writers.py::TestRoundTrip::test_read_excel_parse_dates
-			)
-			;;
-	esac
+	if ! has_version "dev-python/scipy[${PYTHON_USEDEP}]"; then
+		EPYTEST_DESELECT+=(
+			tests/plotting/test_misc.py::test_savefig
+		)
+	fi
 
 	local -x LC_ALL=C.UTF-8
 	cd "${BUILD_DIR}/install$(python_get_sitedir)" || die
@@ -190,13 +194,12 @@ python_test() {
 	# --no-strict-data-files is necessary since upstream prevents data
 	# files from even being included in GitHub archives, sigh
 	# https://github.com/pandas-dev/pandas/issues/54907
+	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 	epytest pandas/tests \
 		--no-strict-data-files \
-		--maxfail=32 \
-		-m "not single and not slow and not network" \
-		-n "$(makeopts_jobs)" --dist=worksteal ||
+		-m "not single_cpu and not slow and not network and not db" ||
 		die "Tests failed with ${EPYTHON}"
-	rm test-data.xml || die
+	rm test-data.xml test_stata.dta || die
 }
 
 pkg_postinst() {
