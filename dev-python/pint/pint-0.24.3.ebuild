@@ -20,6 +20,9 @@ IUSE="babel uncertainties test"
 
 DEPEND=""
 RDEPEND="${DEPEND}
+	dev-python/appdirs
+	dev-python/flexcache
+	dev-python/flexparser
 	babel? ( dev-python/Babel[${PYTHON_USEDEP}] )
 	uncertainties? ( dev-python/uncertainties[${PYTHON_USEDEP}] )
 	test? ( dev-python/pytest-subtests[${PYTHON_USEDEP}] )
