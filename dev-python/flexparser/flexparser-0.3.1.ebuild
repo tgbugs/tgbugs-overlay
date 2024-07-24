@@ -14,7 +14,7 @@ HOMEPAGE="
 	https://github.com/hgrecco/flexparser
 "
 
-LICENSE="MIT"
+LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 
