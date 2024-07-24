@@ -34,7 +34,7 @@ RDEPEND="
 	dev-python/argon2-cffi[${PYTHON_USEDEP}]
 	>=dev-python/celery-5.0.5[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
-	dev-python/elasticsearch-py[${PYTHON_USEDEP}]
+	dev-python/elasticsearch[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/flask-login[${PYTHON_USEDEP}]
 	dev-python/flask-restx[${PYTHON_USEDEP}]
