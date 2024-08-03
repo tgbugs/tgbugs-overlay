@@ -30,7 +30,9 @@ RDEPEND="
 	>=dev-python/aiohttp-3[${PYTHON_USEDEP}]
 	<dev-python/elastic-transport-9[${PYTHON_USEDEP}]
 	>=dev-python/elastic-transport-8.13[${PYTHON_USEDEP}]
-	>=dev-python/orjson-3[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
+		>=dev-python/orjson-3[${PYTHON_USEDEP}]
+		' python3*)
 	<dev-python/requests-3[${PYTHON_USEDEP}]
 	>=dev-python/requests-2.4[${PYTHON_USEDEP}]
 "

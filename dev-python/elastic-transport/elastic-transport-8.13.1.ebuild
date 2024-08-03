@@ -37,7 +37,9 @@ BDEPEND="
 		dev-python/mock[${PYTHON_USEDEP}]
 		dev-python/opentelemetry-api[${PYTHON_USEDEP}]
 		dev-python/opentelemetry-sdk[${PYTHON_USEDEP}]
-		dev-python/orjson[${PYTHON_USEDEP}]
+		$(python_gen_cond_dep '
+			dev-python/orjson[${PYTHON_USEDEP}]
+			' python3*)
 		dev-python/pytest-asyncio[${PYTHON_USEDEP}]
 		dev-python/pytest-httpserver[${PYTHON_USEDEP}]
 		dev-python/requests[${PYTHON_USEDEP}]
