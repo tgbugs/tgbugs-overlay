@@ -39,7 +39,7 @@ BDEPEND="
 		dev-python/opentelemetry-sdk[${PYTHON_USEDEP}]
 		$(python_gen_cond_dep '
 			dev-python/orjson[${PYTHON_USEDEP}]
-			' python3*)
+			' 'python3*')
 		dev-python/pytest-asyncio[${PYTHON_USEDEP}]
 		dev-python/pytest-httpserver[${PYTHON_USEDEP}]
 		dev-python/requests[${PYTHON_USEDEP}]
