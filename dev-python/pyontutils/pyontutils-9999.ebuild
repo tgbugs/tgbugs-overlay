@@ -30,7 +30,7 @@ BDEPEND="${BDEPEND}
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
 
 RDEPEND="
-	>=dev-python/augpathlib-0.0.23[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.31[${PYTHON_USEDEP}]
 	dev-python/clifn[${PYTHON_USEDEP}]
 	dev-python/colorlog[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
