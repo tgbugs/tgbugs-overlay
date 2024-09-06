@@ -5,7 +5,7 @@ EAPI=8
 
 DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=meson-python
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
 VIRTUALX_REQUIRED="manual"
@@ -21,7 +21,7 @@ HOMEPAGE="
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 arm64 ~loong ~riscv x86"
+KEYWORDS="amd64 ~arm64 ~loong ~riscv ~x86"
 IUSE="big-endian full-support minimal test X"
 RESTRICT="!test? ( test )"
 
@@ -80,14 +80,15 @@ BDEPEND="
 		${VIRTUALX_DEPEND}
 		${RECOMMENDED_DEPEND}
 		${OPTIONAL_DEPEND}
+		dev-libs/apache-arrow[brotli,parquet,snappy]
 		>=dev-python/beautifulsoup4-4.11.1[${PYTHON_USEDEP}]
 		>=dev-python/hypothesis-6.46.1[${PYTHON_USEDEP}]
 		>=dev-python/openpyxl-3.0.10[${PYTHON_USEDEP}]
+		>=dev-python/pyarrow-10.0.1[parquet,${PYTHON_USEDEP}]
 		>=dev-python/pymysql-1.0.2[${PYTHON_USEDEP}]
 		>=dev-python/xlsxwriter-3.0.3[${PYTHON_USEDEP}]
 		x11-misc/xclip
 		x11-misc/xsel
-		!!dev-python/pyarrow
 	)
 "
 RDEPEND="
@@ -99,6 +100,11 @@ RDEPEND="
 
 EPYTEST_XDIST=1
 distutils_enable_tests pytest
+
+PATCHES=(
+	# https://github.com/pandas-dev/pandas/pull/59065
+	"${FILESDIR}/${P}-py313.patch"
+)
 
 src_test() {
 	virtx distutils-r1_src_test
@@ -173,18 +179,28 @@ python_test() {
 		tests/tslibs/test_to_offset.py::test_to_offset_lowercase_frequency_deprecated
 		tests/tslibs/test_to_offset.py::test_to_offset_uppercase_frequency_deprecated
 
-		# requires pyarrow
-		tests/io/formats/style/test_bar.py::test_style_bar_with_pyarrow_NA_values
-		tests/series/test_api.py::TestSeriesMisc::test_inspect_getmembers
-
 		# assumes that it will fail due to -mfpmath=387 on 32-bit arches,
 		# so it XPASS-es in every other scenario
 		tests/tools/test_to_timedelta.py::TestTimedeltas::test_to_timedelta_float
+
+		# newer matplotlib?
+		tests/plotting/frame/test_frame.py::TestDataFramePlots::test_group_subplot_invalid_column_name
 	)
 
 	if ! has_version "dev-python/scipy[${PYTHON_USEDEP}]"; then
 		EPYTEST_DESELECT+=(
 			tests/plotting/test_misc.py::test_savefig
+		)
+	fi
+
+	if has_version ">=dev-python/numexpr-2.10[${PYTHON_USEDEP}]"; then
+		EPYTEST_DESELECT+=(
+			'tests/computation/test_eval.py::TestTypeCasting::test_binop_typecasting[numexpr-python-left_right0-float64-/]'
+			'tests/computation/test_eval.py::TestTypeCasting::test_binop_typecasting[numexpr-python-left_right1-float64-/]'
+			'tests/computation/test_eval.py::TestTypeCasting::test_binop_typecasting[numexpr-pandas-left_right0-float64-/]'
+			'tests/computation/test_eval.py::TestTypeCasting::test_binop_typecasting[numexpr-pandas-left_right1-float64-/]'
+			'tests/computation/test_eval.py::TestOperations::test_simple_arith_ops[numexpr-python]'
+			'tests/computation/test_eval.py::TestOperations::test_simple_arith_ops[numexpr-pandas]'
 		)
 	fi
 
@@ -196,7 +212,7 @@ python_test() {
 	# https://github.com/pandas-dev/pandas/issues/54907
 	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 	epytest pandas/tests \
-		--no-strict-data-files \
+		--no-strict-data-files -o xfail_strict=false \
 		-m "not single_cpu and not slow and not network and not db" ||
 		die "Tests failed with ${EPYTHON}"
 	rm test-data.xml test_stata.dta || die
