@@ -29,7 +29,7 @@ RDEPEND="
 	dev-python/pyreadstat[${PYTHON_USEDEP}]
 	dev-python/python-slugify[${PYTHON_USEDEP}]
 	dev-python/visions[${PYTHON_USEDEP}]
-	dev-python/yaml[${PYTHON_USEDEP}]
+	dev-python/pyyaml[${PYTHON_USEDEP}]
 "
 
 PATCHES=( "${FILESDIR}/healdata-utils-0.5.2-cleanup-unused-imports.patch" )
