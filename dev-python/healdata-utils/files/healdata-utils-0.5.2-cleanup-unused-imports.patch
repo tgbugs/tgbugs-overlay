@@ -1,0 +1,105 @@
+From 2a3e5b3be3e689da4e1afc2b1ddb7fe067472cb3 Mon Sep 17 00:00:00 2001
+From: Tom Gillespie <tgbugs@gmail.com>
+Date: Fri, 6 Sep 2024 18:46:39 -0700
+Subject: [PATCH] cleanup unused imports
+
+---
+ src/healdata_utils/cli.py                              |  3 +--
+ src/healdata_utils/conversion.py                       | 10 ----------
+ .../transforms/csvdatadict/conversion.py               |  6 ++----
+ src/healdata_utils/transforms/excel/conversion.py      |  5 ++++-
+ 4 files changed, 7 insertions(+), 17 deletions(-)
+
+diff --git a/src/healdata_utils/cli.py b/src/healdata_utils/cli.py
+index 2b2a0ce..d71321f 100644
+--- a/src/healdata_utils/cli.py
++++ b/src/healdata_utils/cli.py
+@@ -7,7 +7,6 @@ command line interface for generating HEAL data dictionary/vlmd json files
+ import click 
+ import json
+ from pathlib import Path
+-import petl as etl
+ import pandas as pd
+ import csv
+ from collections import deque
+@@ -250,4 +249,4 @@ def template(outputfile,overwrite,numfields):
+ 
+         
+ if __name__=='__main__':
+-    vlmd()
+\ No newline at end of file
++    vlmd()
+diff --git a/src/healdata_utils/conversion.py b/src/healdata_utils/conversion.py
+index 178865e..2264a58 100644
+--- a/src/healdata_utils/conversion.py
++++ b/src/healdata_utils/conversion.py
+@@ -6,10 +6,8 @@ command line interface for generating HEAL data dictionary/vlmd json files
+ from functools import partial
+ import json
+ from pathlib import Path
+-import petl as etl
+ import pandas as pd
+ import csv
+-from collections import deque
+ import click
+ from slugify import slugify
+ 
+@@ -154,14 +152,6 @@ def _write_vlmd(
+     
+     # print CSV data dictionary and report
+     quoting = csv.QUOTE_NONNUMERIC if output_csv_quoting else csv.QUOTE_MINIMAL
+-    # NOTE: quoting non-numeric to allow special characters for nested delimiters within string columns (ie "=")
+-    # (
+-    #     etl.fromdicts(templatecsv)
+-    #     .tocsv(
+-    #         csvtemplate_path,
+-    #         quoting=csv.QUOTE_NONNUMERIC if output_csv_quoting else csv.QUOTE_MINIMAL)
+-
+-    # )
+     pd.DataFrame(templatecsv).to_csv(csvtemplate_path, quoting=quoting, index=False)
+     print()
+     print(f"CSV data dictionary file written to {str(csvtemplate_path.resolve())}")
+diff --git a/src/healdata_utils/transforms/csvdatadict/conversion.py b/src/healdata_utils/transforms/csvdatadict/conversion.py
+index c649d15..bc6528e 100644
+--- a/src/healdata_utils/transforms/csvdatadict/conversion.py
++++ b/src/healdata_utils/transforms/csvdatadict/conversion.py
+@@ -7,13 +7,11 @@ goes the other way (from json to csv as well)
+ 
+ see convert_templatecsv_to_json and convert_json_to_templatecsv
+ ''' 
+-import petl as etl
+ import pandas as pd
+ from pathlib import Path
+ import collections
+-# from frictionless import Resource,Package
+ from healdata_utils.io import read_delim
+-from healdata_utils import schemas,utils,mappings
++from healdata_utils import schemas, utils, mappings
+ from healdata_utils.mappings import versions
+ from os import PathLike
+ import re
+@@ -235,4 +233,4 @@ def convert_datadictcsv(
+     fields_csv = tbl_csv.to_dict(orient="records")
+     template_csv = dict(**data_dictionary_props_csv,fields=fields_csv)
+ 
+-    return {"templatejson":template_json,"templatecsv":template_csv}
+\ No newline at end of file
++    return {"templatejson":template_json,"templatecsv":template_csv}
+diff --git a/src/healdata_utils/transforms/excel/conversion.py b/src/healdata_utils/transforms/excel/conversion.py
+index 50bd7a9..65b2f2f 100644
+--- a/src/healdata_utils/transforms/excel/conversion.py
++++ b/src/healdata_utils/transforms/excel/conversion.py
+@@ -1,6 +1,9 @@
+-from healdata_utils.io import read_excel,pd
++import pandas as pd
++from healdata_utils.io import read_excel
+ from healdata_utils.types import typesets
+ from healdata_utils.transforms.jsontemplate.conversion import convert_templatejson
++
++
+ def convert_dataexcel(file_path,data_dictionary_props=None,sheet_name=None,multiple_data_dicts=True):
+     """ 
+     converts a file or file like object (eg pandas.ExcelFile) into a data dictionary
+-- 
+2.44.2
+
