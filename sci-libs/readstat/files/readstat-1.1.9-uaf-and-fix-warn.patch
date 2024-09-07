@@ -1,0 +1,37 @@
+diff --git a/src/bin/readstat.c b/src/bin/readstat.c
+index aab6c9a..e3fbbd1 100644
+--- a/src/bin/readstat.c
++++ b/src/bin/readstat.c
+@@ -154,7 +154,7 @@ readstat_error_t parse_file(readstat_parser_t *parser, const char *input_filenam
+     return error;
+ }
+ 
+-static void print_version() {
++static void print_version(void) {
+     fprintf(stdout, "ReadStat version " READSTAT_VERSION "\n");
+ }
+ 
+@@ -397,8 +397,6 @@ cleanup:
+         module->finish(rs_ctx->module_ctx);
+     }
+ 
+-    free(rs_ctx);
+-
+     if (error != READSTAT_OK) {
+         if (file_exists) {
+             fprintf(stderr, "Error opening %s: File exists (Use -f to overwrite)\n", output_filename);
+@@ -406,9 +404,14 @@ cleanup:
+             fprintf(stderr, "Error processing %s: %s\n", rs_ctx->error_filename, readstat_error_message(error));
+             unlink(output_filename);
+         }
++
++	free(rs_ctx);
++
+         return 1;
+     }
+ 
++    free(rs_ctx);
++
+     return 0;
+ }
+ 

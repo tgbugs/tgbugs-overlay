@@ -17,6 +17,8 @@ RDEPEND="
 	virtual/libiconv
 "
 
+PATCHES=( "${FILESDIR}/readstat-1.1.9-uaf-and-fix-warn.patch" )
+
 src_prepare() {
 	default
 	eautoreconf
