@@ -27,7 +27,7 @@ RDEPEND="
 	dev-python/openpyxl[${PYTHON_USEDEP}]
 	dev-python/pandas[${PYTHON_USEDEP}]
 	dev-python/pyreadstat[${PYTHON_USEDEP}]
-	dev-python/slugify[${PYTHON_USEDEP}]
+	dev-python/python-slugify[${PYTHON_USEDEP}]
 	dev-python/visions[${PYTHON_USEDEP}]
 	dev-python/yaml[${PYTHON_USEDEP}]
 "
