@@ -2,14 +2,13 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=6
+EAPI=7
 
-inherit eutils udev versionator
+inherit udev
 
 DESCRIPTION="USB-based electronics prototyping platform compatible with Arduino"
 HOMEPAGE="https://www.pjrc.com/teensy/"
 
-MY_PV="$(replace_all_version_separators '')"
 MY_PN="${PN/-bin}"
 MY_P="${MY_PN}-${PV}"
 
