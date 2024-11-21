@@ -37,7 +37,7 @@ src_compile() {
 	local version
 	for version in ${pg_versions}; do
 		cd ${WORKDIR}/${version}
-		emake PG_CONFIG=/usr/bin/pg_config${version}
+		emake PG_CONFIG=/usr/bin/pg_config${version} PG_CPPFLAGS=-Wno-int-conversion
 	done
 }
 
