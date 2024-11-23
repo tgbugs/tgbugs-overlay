@@ -48,10 +48,4 @@ if [[ ${PV} == "9999" ]]; then
 	}
 fi
 
-python_test() {
-	distutils_install_for_testing
-	cd "${TEST_DIR}" || die
-	cp -r "${S}/test" . || die
-	cp "${S}/setup.cfg" . || die
-	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
-}
+distutils_enable_tests pytest
