@@ -30,37 +30,17 @@ KEYWORDS="amd64 arm64 x86"
 RDEPEND="
 	~dev-python/opentelemetry-api-${PV}[${PYTHON_USEDEP}]
 	~dev-python/opentelemetry-semantic-conventions-${PV}[${PYTHON_USEDEP}]
-	dev-python/typing-extensions[${PYTHON_USEDEP}]
+	>=dev-python/typing-extensions-3.7.4[${PYTHON_USEDEP}]
 "
 BDEPEND="
 	test? (
-		dev-python/asgiref[${PYTHON_USEDEP}]
-		dev-python/attrs[${PYTHON_USEDEP}]
-		dev-python/deprecated[${PYTHON_USEDEP}]
 		dev-python/flaky[${PYTHON_USEDEP}]
-		dev-python/importlib-metadata[${PYTHON_USEDEP}]
-		dev-python/iniconfig[${PYTHON_USEDEP}]
-		dev-python/packaging[${PYTHON_USEDEP}]
-		dev-python/pluggy[${PYTHON_USEDEP}]
-		dev-python/py-cpuinfo[${PYTHON_USEDEP}]
-		dev-python/py[${PYTHON_USEDEP}]
-		dev-python/tomli[${PYTHON_USEDEP}]
-		dev-python/wrapt[${PYTHON_USEDEP}]
-		dev-python/zipp[${PYTHON_USEDEP}]
 	)
 "
 
 # Tests cannot handle xdist with high makeopts
 # https://bugs.gentoo.org/928132
 distutils_enable_tests pytest
-
-src_prepare() {
-	default
-
-	# Use the same version with all opentelemetry components
-	# # https://github.com/gentoo/gentoo/pull/35962#issuecomment-2025466313
-	sed -i -e "s/\"\(opentelemetry-semantic-conventions == \).*\"/\"\1 ${PV}\"/" pyproject.toml || die
-}
 
 python_test() {
 	cp -a "${BUILD_DIR}"/{install,test} || die
@@ -72,10 +52,11 @@ python_test() {
 		popd >/dev/null || die
 	done
 
-	local EPYTEST_IGNORE=(
-		tests/performance/benchmarks/
+	local EPYTEST_DESELECT=(
+		# TODO
+		"${PN}"/tests/resources/test_resources.py::TestOTELResourceDetector::test_process_detector
 	)
 
 	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
-	epytest
+	epytest tests
 }

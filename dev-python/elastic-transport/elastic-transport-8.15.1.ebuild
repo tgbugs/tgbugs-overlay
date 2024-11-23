@@ -1,10 +1,10 @@
-# Copyright 2023 Gentoo Authors
+# Copyright 2023-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{11..13} pypy3 )
 
 inherit distutils-r1
 
@@ -33,10 +33,13 @@ RDEPEND="
 BDEPEND="
 	test? (
 		dev-python/aiohttp[${PYTHON_USEDEP}]
-		dev-python/mock[${PYTHON_USEDEP}]
+		dev-python/httpx[${PYTHON_USEDEP}]
+		dev-python/opentelemetry-api[${PYTHON_USEDEP}]
+		dev-python/opentelemetry-sdk[${PYTHON_USEDEP}]
 		dev-python/pytest-asyncio[${PYTHON_USEDEP}]
 		dev-python/pytest-httpserver[${PYTHON_USEDEP}]
 		dev-python/requests[${PYTHON_USEDEP}]
+		dev-python/respx[${PYTHON_USEDEP}]
 		dev-python/trustme[${PYTHON_USEDEP}]
 	)
 "
@@ -44,21 +47,20 @@ BDEPEND="
 distutils_enable_sphinx docs/sphinx \
 	dev-python/furo \
 	dev-python/sphinx-autodoc-typehints
+EPYTEST_XDIST=1
 distutils_enable_tests pytest
-
-src_prepare() {
-	# unpin deps
-	sed -i -e 's:, *<[0-9.]*::' setup.py || die
-	distutils-r1_src_prepare
-}
 
 python_test() {
 	local EPYTEST_DESELECT=(
+		# Fails in upstream CI as well as of 8.13.1
+		# https://github.com/elastic/elastic-transport-python/commit/39488817cd5da824101322e40652d17938f0acac
+		tests/node/test_tls_versions.py::test_unsupported_tls_versions[https://tls-v1-2.badssl.com:1012-772-RequestsHttpNode]
 		# fragile to random warnings
 		tests/node/test_http_aiohttp.py::TestAiohttpHttpNode::test_uses_https_if_verify_certs_is_off
 		tests/node/test_urllib3_chain_certs.py::test_assert_fingerprint_in_cert_chain
 	)
 
 	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
-	epytest -p asyncio -o addopts=
+	# https://github.com/encode/httpx/discussions/3214#discussioncomment-10830925
+	epytest -p asyncio -o addopts= -k "not (test_unsupported_tls_versions and HttpxAsyncHttpNode)"
 }

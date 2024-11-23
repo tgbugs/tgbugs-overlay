@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 
 inherit distutils-r1
 
@@ -25,7 +25,7 @@ SLOT="0"
 KEYWORDS="amd64 arm64 x86"
 
 RDEPEND="
-	<dev-python/protobuf-5[${PYTHON_USEDEP}]
+	<dev-python/protobuf-6[${PYTHON_USEDEP}]
 	>=dev-python/protobuf-3.19.0[${PYTHON_USEDEP}]
 "
 BDEPEND="
@@ -38,3 +38,8 @@ BDEPEND="
 distutils_enable_tests pytest
 distutils_enable_sphinx docs \
 	dev-python/sphinx-rtd-theme
+
+python_test() {
+	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+	epytest
+}

@@ -32,18 +32,7 @@ RDEPEND="
 "
 BDEPEND="
 	test? (
-		dev-python/asgiref[${PYTHON_USEDEP}]
-		dev-python/attrs[${PYTHON_USEDEP}]
-		dev-python/flaky[${PYTHON_USEDEP}]
-		dev-python/iniconfig[${PYTHON_USEDEP}]
-		dev-python/packaging[${PYTHON_USEDEP}]
-		dev-python/pluggy[${PYTHON_USEDEP}]
-		dev-python/py-cpuinfo[${PYTHON_USEDEP}]
-		dev-python/py[${PYTHON_USEDEP}]
-		dev-python/tomli[${PYTHON_USEDEP}]
 		dev-python/typing-extensions[${PYTHON_USEDEP}]
-		dev-python/wrapt[${PYTHON_USEDEP}]
-		dev-python/zipp[${PYTHON_USEDEP}]
 	)
 "
 
@@ -53,19 +42,21 @@ src_prepare() {
 	default
 
 	# Unnecessary restriction
-	# https://github.com/open-telemetry/opentelemetry-python/pull/3576
-	sed -i -e '/importlib-metadata/s:, <= 7.0::' pyproject.toml || die
+	sed -i -e '/importlib-metadata/s:, <= [0-9.]*::' pyproject.toml || die
 }
 
 python_test() {
 	cp -a "${BUILD_DIR}"/{install,test} || die
 	local -x PATH=${BUILD_DIR}/test/usr/bin:${PATH}
 
-	for dep in opentelemetry-semantic-conventions opentelemetry-sdk tests/opentelemetry-test-utils ; do
+	for dep in opentelemetry-semantic-conventions opentelemetry-sdk \
+		tests/opentelemetry-test-utils
+	do
 		pushd "${WORKDIR}/${MY_P}/${dep}" >/dev/null || die
 		distutils_pep517_install "${BUILD_DIR}"/test
 		popd >/dev/null || die
 	done
 
+	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 	epytest
 }

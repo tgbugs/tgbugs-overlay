@@ -4,8 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYPI_NO_NORMALIZE=1
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 
 inherit distutils-r1 pypi
 
@@ -33,6 +32,7 @@ BDEPEND="
 		dev-python/mock[${PYTHON_USEDEP}]
 		dev-python/moto[${PYTHON_USEDEP}]
 		dev-python/pyopenssl[${PYTHON_USEDEP}]
+		dev-python/pytest-asyncio[${PYTHON_USEDEP}]
 		dev-python/pytest-localserver[${PYTHON_USEDEP}]
 		dev-python/pyu2f[${PYTHON_USEDEP}]
 		dev-python/requests[${PYTHON_USEDEP}]
@@ -50,7 +50,7 @@ python_test() {
 	)
 
 	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
-	epytest
+	epytest -p asyncio
 }
 
 python_compile() {

@@ -4,7 +4,6 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYPI_NO_NORMALIZE=1
 PYPI_PN="PyJWT"
 PYTHON_COMPAT=( python3_{10..13} pypy3 )
 
@@ -18,7 +17,7 @@ HOMEPAGE="
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 ~arm arm64 ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 ~arm arm64 ~loong ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
 
 RDEPEND="
 	!dev-python/python-jwt

@@ -5,7 +5,7 @@ EAPI=8
 
 DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 
 inherit distutils-r1 optfeature pypi
 
@@ -21,15 +21,18 @@ SLOT="0"
 KEYWORDS="amd64 arm64 ~loong ~riscv ~amd64-linux"
 IUSE="examples"
 
+# NB: upstream requires building with numpy-2 but supports 1.x
+# at runtime
 DEPEND="
-	>=dev-python/numpy-1.22.3[${PYTHON_USEDEP}]
+	>=dev-python/numpy-2.0.0[${PYTHON_USEDEP}]
 	>=dev-python/scipy-1.8[${PYTHON_USEDEP}]
 "
 RDEPEND="
-	${DEPEND}
+	>=dev-python/numpy-1.22.3[${PYTHON_USEDEP}]
 	>=dev-python/packaging-21.3[${PYTHON_USEDEP}]
 	>=dev-python/pandas-1.4[${PYTHON_USEDEP}]
 	>=dev-python/patsy-0.5.6[${PYTHON_USEDEP}]
+	>=dev-python/scipy-1.8[${PYTHON_USEDEP}]
 "
 BDEPEND="
 	${DEPEND}
@@ -58,15 +61,6 @@ python_prepare_all() {
 python_test() {
 	local -x MKL_NUM_THREADS=1
 	local -x OMP_NUM_THREADS=1
-	local EPYTEST_DESELECT=(
-		# note that test path should be without "statsmodels/" prefix
-		imputation/tests/test_mice.py::TestMICE::test_combine
-		stats/tests/test_mediation.py::test_mixedlm
-		"stats/tests/test_corrpsd.py::test_corrpsd_threshold[0]"
-
-		# new warning from pandas
-		tsa/base/tests/test_tsa_indexes.py::test_instantiation_valid
-	)
 	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 
 	cd "${BUILD_DIR}/install$(python_get_sitedir)" || die
