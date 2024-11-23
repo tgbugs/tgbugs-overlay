@@ -4,11 +4,10 @@
 EAPI=8
 
 PYTHON_COMPAT=( pypy3 python3_{10..12} )
-inherit distutils-r1
+inherit distutils-r1 pypi
 
 DESCRIPTION="Your friendly neighborhood web scraper"
 HOMEPAGE="https://github.com/jmcarp/robobrowser"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"

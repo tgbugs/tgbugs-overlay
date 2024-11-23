@@ -3,12 +3,11 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{10..12} )
-inherit distutils-r1
+PYTHON_COMPAT=( pypy3 python3_{10..13} )
+inherit distutils-r1 pypi
 
 DESCRIPTION="Module for the Hunspell spellchecker engine"
 HOMEPAGE="https://github.com/blatinier/pyhunspell"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-3"
 SLOT="0"

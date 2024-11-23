@@ -13,10 +13,10 @@ if [[ ${PV} == "9999" ]]; then
 	inherit git-r3
 	KEYWORDS=""
 else
+	inherit pypi
 	MY_PN=neu${PN}
 	MY_P=${MY_PN}-${PV/_pre/.dev}  # 1.1.1_pre0 -> 1.1.1.dev0
 	S=${WORKDIR}/${MY_P}
-	SRC_URI="mirror://pypi/n/${MY_PN}/${MY_P}.tar.gz"
 	KEYWORDS="~amd64 ~x86"
 fi
 

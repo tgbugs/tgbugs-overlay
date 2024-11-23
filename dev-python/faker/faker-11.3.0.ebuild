@@ -3,15 +3,16 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{10..12} )
-inherit distutils-r1
+PYTHON_COMPAT=( pypy3 python3_{10..13} )
+PYPI_PN="Faker"
+PYPI_NO_NORMALIZE=1
+inherit distutils-r1 pypi
 
 MY_PN=Faker
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Faker is a Python package that generates fake data for you."
 HOMEPAGE="https://github.com/joke2k/faker"
-SRC_URI="mirror://pypi/${MY_P:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
