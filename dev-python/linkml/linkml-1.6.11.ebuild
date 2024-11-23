@@ -32,7 +32,7 @@ RDEPEND="
 	>=dev-python/graphviz-0.10.1[${PYTHON_USEDEP}]
 	dev-python/hbreader[${PYTHON_USEDEP}]
 	>=dev-python/isodate-0.6.0[${PYTHON_USEDEP}]
-	>=dev-python/jinja-3.1.0[${PYTHON_USEDEP}]
+	>=dev-python/jinja2-3.1.0[${PYTHON_USEDEP}]
 	>=dev-python/jsonasobj2-1.0.3[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-4.0.0[${PYTHON_USEDEP}]
 	dev-python/linkml-dataops[${PYTHON_USEDEP}]

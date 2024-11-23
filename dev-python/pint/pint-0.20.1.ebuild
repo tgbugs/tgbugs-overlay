@@ -21,7 +21,7 @@ IUSE="babel uncertainties test"
 DEPEND=""
 RDEPEND="${DEPEND}
 	$(python_gen_cond_dep 'dev-python/importlib-resources[${PYTHON_USEDEP}]' pypy3)
-	babel? ( dev-python/Babel[${PYTHON_USEDEP}] )
+	babel? ( dev-python/babel[${PYTHON_USEDEP}] )
 	uncertainties? ( dev-python/uncertainties[${PYTHON_USEDEP}] )
 "
 

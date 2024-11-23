@@ -35,7 +35,7 @@ RDEPEND="
 	dev-python/colorlog[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/funowl[${PYTHON_USEDEP}]
-	dev-python/GitPython[${PYTHON_USEDEP}]
+	dev-python/gitpython[${PYTHON_USEDEP}]
 	dev-python/google-api-python-client[${PYTHON_USEDEP}]
 	dev-python/google-auth-oauthlib[${PYTHON_USEDEP}]
 	dev-python/htmlfn[${PYTHON_USEDEP}]

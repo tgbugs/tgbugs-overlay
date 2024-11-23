@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 
 RDEPEND="
-	dev-python/jinja[${PYTHON_USEDEP}]
+	dev-python/jinja2[${PYTHON_USEDEP}]
 	dev-python/jsonpatch[${PYTHON_USEDEP}]
 	dev-python/jsonpath-ng[${PYTHON_USEDEP}]
 	>=dev-python/linkml-runtime-1.1.6[${PYTHON_USEDEP}]

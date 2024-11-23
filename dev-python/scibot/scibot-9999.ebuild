@@ -35,7 +35,7 @@ RDEPEND="
 	dev-python/curio[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
 	dev-python/flask[${PYTHON_USEDEP}]
-	www-servers/tornado[${PYTHON_USEDEP}]
+	dev-python/tornado[${PYTHON_USEDEP}]
 	>=dev-python/hyputils-0.0.6[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.23[${PYTHON_USEDEP}]
