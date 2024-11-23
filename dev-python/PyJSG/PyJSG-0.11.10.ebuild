@@ -5,7 +5,7 @@ EAPI=8
 
 PYPI_NO_NORMALIZE=1
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 inherit pypi distutils-r1
 
 DESCRIPTION="JSON Schema Grammar bindings for Python"
@@ -17,8 +17,8 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 DEPEND="
-	=dev-python/antlr4-python3-runtime-4.9.3
-	>=dev-python/jsonasobj-1.2.1"
+	=dev-python/antlr4-python3-runtime-4.9.3[${PYTHON_USEDEP}]
+	>=dev-python/jsonasobj-1.2.1[${PYTHON_USEDEP}]"
 RDEPEND="${DEPEND}"
 
 RESTRICT="!test? ( test )"
@@ -30,6 +30,5 @@ PATCHES=(
 distutils_enable_tests pytest
 
 python_test() {
-	distutils_install_for_testing
 	pytest -vv || die "tests fail with ${EPYTHON}"
 }

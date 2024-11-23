@@ -3,12 +3,11 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
-inherit distutils-r1
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
+inherit distutils-r1 pypi
 
 DESCRIPTION="JSON objects as first class python objects."
 HOMEPAGE="https://github.com/hsolbrib/jsonasobj"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="CC0-1.0"
 SLOT="0"
@@ -23,6 +22,5 @@ RESTRICT="!test? ( test )"
 distutils_enable_tests pytest
 
 python_test() {
-	distutils_install_for_testing
 	pytest -vv || die "tests fail with ${EPYTHON}"
 }

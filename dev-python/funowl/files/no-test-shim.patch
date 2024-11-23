@@ -1,0 +1,19 @@
+diff --git a/tests/test_issues/test_rdflib_bindings.py b/tests/test_issues/test_rdflib_bindings.py
+index 30db8f7..df42a14 100644
+--- a/tests/test_issues/test_rdflib_bindings.py
++++ b/tests/test_issues/test_rdflib_bindings.py
+@@ -3,12 +3,12 @@ from dataclasses import dataclass
+ from typing import Tuple, Optional, List, Dict
+ 
+ import rdflib
+-import rdflib_shim
++#import rdflib_shim
+ 
+ from tests import RDFLIB_PREFIXES_ARE_BROKEN, PREFIXES_BROKEN_MESSAGE
+ 
+ # Make sure the import above works
+-shimed = rdflib_shim.RDFLIB_SHIM
++#shimed = rdflib_shim.RDFLIB_SHIM
+ 
+ # Code to evaluate how we can use the rdflib namespace library to manage our namespace behavior.  What we need in
+ # funowl is:

@@ -16,6 +16,7 @@ IUSE=""
 
 DEPEND="
 	dev-python/bcp47[${PYTHON_USEDEP}]
+	dev-python/jsonasobj[${PYTHON_USEDEP}]
 	>=dev-python/PyJSG-0.11.6[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-6.2.0[${PYTHON_USEDEP}]
 	dev-python/rfc3987[${PYTHON_USEDEP}]
@@ -25,7 +26,8 @@ RDEPEND="${DEPEND}"
 RESTRICT="!test? ( test )"
 
 PATCHES=(
-	"${FILESDIR}"/no-shim.patch
+	"${FILESDIR}"/no-shim-0.2.3.patch
+	"${FILESDIR}"/no-test-shim.patch
 	"${FILESDIR}"/no-setup-requires.patch
 )
 

@@ -22,6 +22,5 @@ RESTRICT="!test? ( test )"
 distutils_enable_tests pytest
 
 python_test() {
-	distutils_install_for_testing
 	pytest -vv || die "tests fail with ${EPYTHON}"
 }

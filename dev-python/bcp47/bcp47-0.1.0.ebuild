@@ -3,12 +3,11 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
-inherit distutils-r1
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
+inherit distutils-r1 pypi
 
 DESCRIPTION="BCP47 LCID language codes, plain and simple"
 HOMEPAGE="https://github.com/highfestiva/bcp47.py"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
@@ -17,12 +16,3 @@ IUSE=""
 
 DEPEND=""
 RDEPEND="${DEPEND}"
-
-RESTRICT="!test? ( test )"
-
-distutils_enable_tests pytest
-
-python_test() {
-	distutils_install_for_testing
-	pytest -vv || die "tests fail with ${EPYTHON}"
-}

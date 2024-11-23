@@ -3,12 +3,12 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
-inherit distutils-r1
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
+PYPI_NO_NORMALIZE=1
+inherit distutils-r1 pypi
 
 DESCRIPTION="Subcommand REPL for click apps"
 HOMEPAGE="https://github.com/click-contrib/click-repl"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
