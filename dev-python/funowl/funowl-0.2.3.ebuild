@@ -3,7 +3,8 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+DISTUTILS_USE_PEP517=setuptools
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 inherit distutils-r1 pypi
 
 DESCRIPTION="Pythonic representation of OWL through the OWL functional syntax"
@@ -34,5 +35,5 @@ PATCHES=(
 distutils_enable_tests pytest
 
 python_test() {
-	pytest -vv || die "tests fail with ${EPYTHON}"
+	epytest -vv || die "tests fail with ${EPYTHON}"
 }

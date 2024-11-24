@@ -3,7 +3,8 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{10..12} )
+DISTUTILS_USE_PEP517=setuptools
+PYTHON_COMPAT=( pypy3 python3_{10..13} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -40,6 +41,8 @@ RDEPEND="
 	)
 "
 
+distutils_enable_tests pytest
+
 if [[ ${PV} == "9999" ]]; then
 	src_prepare () {
 		# replace package version to keep python quiet
@@ -51,9 +54,5 @@ fi
 python_test() {
 	git config --global user.email "${USER}@ebuild-testing.${HOSTNAME}"
 	git config --global user.name "Portage Testing"
-	distutils_install_for_testing
-	cd "${TEST_DIR}" || die
-	cp -r "${S}/test" . || die
-	cp "${S}/setup.cfg" . || die
-	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
+	PYTHONWARNINGS=ignore epytest -v --color=yes || die "Tests fail with ${EPYTHON}"
 }

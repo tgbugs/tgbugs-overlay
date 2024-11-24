@@ -3,9 +3,9 @@
 
 EAPI=8
 
-PYPI_NO_NORMALIZE=1
 DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{10..13} pypy3 )
+PYPI_NO_NORMALIZE=1
 inherit pypi distutils-r1
 
 DESCRIPTION="JSON Schema Grammar bindings for Python"
@@ -30,5 +30,5 @@ PATCHES=(
 distutils_enable_tests pytest
 
 python_test() {
-	pytest -vv || die "tests fail with ${EPYTHON}"
+	epytest -vv || die "tests fail with ${EPYTHON}"
 }

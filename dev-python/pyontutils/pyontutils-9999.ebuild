@@ -3,6 +3,7 @@
 
 EAPI=8
 
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{10..12} pypy3 )
 inherit distutils-r1
 
@@ -67,6 +68,8 @@ RDEPEND="
 	)
 "
 
+distutils_enable_tests pytest
+
 if [[ ${PV} == "9999" ]]; then
 	src_configure () { DISTUTILS_ARGS=( --release ); }
 
@@ -84,16 +87,8 @@ else
 fi
 
 python_test() {
-	distutils_install_for_testing
-	esetup.py install_data --install-dir="${TEST_DIR}"
-	cd "${TEST_DIR}" || die
-	cp -r "${S}/test" . || die
-	cp "${S}/setup.cfg" . || die
-	mkdir -p "ttlser/test" || die
-	cp "${S}/ttlser/test/nasty.ttl" "ttlser/test" || die
-	mkdir -p "nifstd/scigraph" || die  # FIXME the decoupling between test location and code location reveals many bugs
-	cp "${S}/nifstd/scigraph/graphload-base-template.yaml" "nifstd/scigraph" || die
-	pytest || die "Tests fail with ${EPYTHON}"
+	esetup.py install_data
+	epytest || die "Tests fail with ${EPYTHON}"
 }
 
 python_install_all() {

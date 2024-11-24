@@ -3,6 +3,7 @@
 
 EAPI=8
 
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{10..13} pypy3 )
 inherit distutils-r1 pypi
 
@@ -22,5 +23,5 @@ RESTRICT="!test? ( test )"
 distutils_enable_tests pytest
 
 python_test() {
-	pytest -vv || die "tests fail with ${EPYTHON}"
+	epytest -vv || die "tests fail with ${EPYTHON}"
 }

@@ -3,6 +3,7 @@
 
 EAPI=8
 
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( pypy3 python3_{10..12} )
 PYPI_NO_NORMALIZE=1
 PYPI_PN=pint
@@ -38,4 +39,11 @@ distutils_enable_tests pytest
 src_prepare () {
 	default
 	sed -i "s/PACKAGE_VERSION/${PV}/" ${S}/${PN}/__init__.py
+}
+
+python_test () {
+	local EPYTEST_IGNORE=(
+		pint/testsuite/benchmarks
+	)
+	epytest
 }

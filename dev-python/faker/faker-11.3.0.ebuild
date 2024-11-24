@@ -3,6 +3,7 @@
 
 EAPI=8
 
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( pypy3 python3_{10..13} )
 PYPI_PN="Faker"
 PYPI_NO_NORMALIZE=1
@@ -39,15 +40,13 @@ RDEPEND="${DEPEND}"
 
 S=${WORKDIR}/${MY_P}
 
+distutils_enable_tests pytest
+
 python_prepare_all() {
 	sed -i '/pytest-runner/d' setup.py
 	distutils-r1_python_prepare_all
 }
 
 python_test() {
-	distutils_install_for_testing
-	cd "${TEST_DIR}" || die
-	cp -r "${S}/tests" . || die
-	cp "${S}/setup.cfg" . || die
 	pytest || die "Tests fail with ${EPYTHON}"
 }
