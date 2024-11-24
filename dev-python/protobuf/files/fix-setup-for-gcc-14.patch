@@ -1,0 +1,10 @@
+--- a/setup.py
++++ b/setup.py
+@@ -72,6 +72,7 @@
+             + glob.glob('utf8_range/*.c'),
+             include_dirs=[current_dir, os.path.join(current_dir, 'utf8_range')],
+             language='c',
++            extra_compile_args=['-Wno-implicit-function-declaration', '-Wno-int-conversion'],
+             extra_link_args=extra_link_args,
+         )
+     ],

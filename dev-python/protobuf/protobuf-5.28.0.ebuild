@@ -27,3 +27,5 @@ SRC_URI="
 LICENSE="BSD"
 SLOT="0/$(ver_cut 1-3)"
 KEYWORDS="~alpha amd64 arm arm64 ~loong ~mips ppc64 ~riscv ~sparc x86 ~amd64-linux ~x86-linux ~x64-macos"
+
+PATCHES="${FILESDIR}/fix-setup-for-gcc-14.patch"
