@@ -3,8 +3,8 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+DISTUTILS_USE_PEP517=poetry
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 
 inherit pypi distutils-r1
 
@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 
 RDEPEND="
-	>=dev-python/rdflib-6.0.2[${PYTHON_USEDEP}]
+	>=dev-python/rdflib-7.1.1[${PYTHON_USEDEP}]
 "
 
 distutils_enable_tests pytest
