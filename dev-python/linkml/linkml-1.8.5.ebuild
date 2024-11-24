@@ -3,8 +3,8 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=standalone
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+DISTUTILS_USE_PEP517=poetry
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 
 inherit pypi distutils-r1
 
@@ -20,12 +20,15 @@ KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 
 IUSE="+shacl test"
 
-BDEPEND="
-	dev-python/poetry-dynamic-versioning[${PYTHON_USEDEP}]
-"
+# this is dev dependency
+#BDEPEND="
+	#dev-python/poetry-dynamic-versioning[${PYTHON_USEDEP}]
+#"
 
-#PATCHES="${FILESDIR}/nodyn.patch"
-PATCHES="${FILESDIR}/no-shim.patch"
+PATCHES=(
+	"${FILESDIR}/no-dyn.patch"
+	#"${FILESDIR}/no-shim.patch"
+)
 
 RDEPEND="
 	>=dev-python/click-7.0[${PYTHON_USEDEP}]

@@ -3,7 +3,8 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{10..12} )
+DISTUTILS_USE_PEP517=setuptools
+PYTHON_COMPAT=( pypy3 python3_{10..13} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -62,6 +63,8 @@ RDEPEND="
 	)
 "
 
+distutils_enable_tests pytest
+
 if [[ ${PV} == "9999" ]]; then
 	S="${S}/${PN%%-*}"
 	src_prepare () {
@@ -81,12 +84,8 @@ python_test() {
 	if [[ ${PV} == "9999" ]]; then
 		git remote add origin ${EGIT_REPO_URI}
 	fi
-	distutils_install_for_testing
-	esetup.py install_data --install-dir="${TEST_DIR}"
-	cd "${TEST_DIR}" || die
-	cp -r "${S}/test" . || die
-	cp "${S}/setup.cfg" . || die
-	pytest -v --color=yes -s || die "Tests fail with ${EPYTHON}"
+	esetup.py install_data
+	epytest -s -v --color=yes -s || die "Tests fail with ${EPYTHON}"
 }
 
 python_install_all() {

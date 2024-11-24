@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=poetry
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 
 inherit pypi distutils-r1
 
@@ -17,6 +17,13 @@ HOMEPAGE="
 LICENSE="CC0-1.0"
 SLOT="0"
 KEYWORDS="~amd64 ~arm ~arm64 ~x86"
+
+PATCHES="${FILESDIR}/no-dyn.patch"
+
+# this is dev dependency
+#BDEPEND="
+	#dev-python/poetry-dynamic-versioning[${PYTHON_USEDEP}]
+#"
 
 RDEPEND="
 	dev-python/click[${PYTHON_USEDEP}]
