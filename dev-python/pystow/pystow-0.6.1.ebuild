@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 
 inherit pypi distutils-r1
 
@@ -22,6 +22,12 @@ RDEPEND="
 	dev-python/click[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/tqdm[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
+		dev-python/typing-extensions[${PYTHON_USEDEP}]
+	' 3.10 pypy3)
+	test? (
+		dev-python/requests-file[${PYTHON_USEDEP}]
+	)
 "
 
 distutils_enable_tests pytest
