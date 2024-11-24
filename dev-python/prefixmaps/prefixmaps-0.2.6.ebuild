@@ -3,8 +3,8 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=standalone
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+DISTUTILS_USE_PEP517=poetry
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 
 inherit pypi distutils-r1
 
@@ -22,11 +22,14 @@ BDEPEND="
 	dev-python/poetry-dynamic-versioning[${PYTHON_USEDEP}]
 "
 
-#PATCHES="${FILESDIR}/nodyn.patch"
+PATCHES=(
+	"${FILESDIR}/no-dyn.patch"
+)
 
 RDEPEND="
-	>=dev-python/bioregistry-0.10.65[${PYTHON_USEDEP}]
+	>=dev-python/bioregistry-0.11.10[${PYTHON_USEDEP}]
 	>=dev-python/click-8.1.3[${PYTHON_USEDEP}]
+	>=dev-python/curies-0.5.3[${PYTHON_USEDEP}]
 	>=dev-python/myst-parser-2.0.0[${PYTHON_USEDEP}]
 	>=dev-python/pydantic-2.5[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
@@ -34,4 +37,4 @@ RDEPEND="
 	>=dev-python/requests-2.28.1[${PYTHON_USEDEP}]
 "
 
-distutils_enable_tests pytest
+distutils_enable_tests import-check
