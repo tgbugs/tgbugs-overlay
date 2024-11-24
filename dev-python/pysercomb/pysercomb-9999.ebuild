@@ -3,7 +3,8 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 python3_{10..12} )
+DISTUTILS_USE_PEP517=setuptools
+PYTHON_COMPAT=( pypy3 python3_{10..13} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
