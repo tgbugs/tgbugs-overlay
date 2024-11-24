@@ -10,6 +10,6 @@ index c9c33ab..3d2da31 100644
 -    { path = "*.txt" },
 +    { path = "*.md", format = "sdist"},
 +    { path = "*.txt", format = "sdist" },
+     { path = "pyshacl/py.typed" },
      { path = "pyshacl/assets/*.pickle" },
      { path = "pyshacl/*.spec" }
- ]

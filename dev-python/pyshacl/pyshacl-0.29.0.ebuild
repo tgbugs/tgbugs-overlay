@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=poetry
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 
 inherit pypi distutils-r1
 
@@ -22,10 +22,12 @@ PATCHES="${FILESDIR}/fix-pyproj.patch"
 
 RDEPEND="
 	>=dev-python/html5lib-1.1[${PYTHON_USEDEP}]
-	>dev-python/importlib-metadata-6[${PYTHON_USEDEP}]
-	>=dev-python/owlrl-6.0.2[${PYTHON_USEDEP}]
-	>=dev-python/rdflib-6.3.2[${PYTHON_USEDEP}]
-	>=dev-python/packaging-6.0.2[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
+		>=dev-python/importlib-metadata-6[${PYTHON_USEDEP}]
+	' 3.10 3.11)
+	>=dev-python/owlrl-7.1.2[${PYTHON_USEDEP}]
+	>=dev-python/rdflib-7.1.1[${PYTHON_USEDEP}]
+	>=dev-python/packaging-21.3[${PYTHON_USEDEP}]
 	>=dev-python/prettytable-3.7.0[${PYTHON_USEDEP}]
 "
 
