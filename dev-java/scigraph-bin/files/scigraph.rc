@@ -45,8 +45,7 @@ start_stop_daemon_args="
 --group ${SVCGROUP}
 --user ${SVCUSER}
 --stdout ${SERVICES_LOG}
---stderr ${SERVICES_LOG}
---env DISPLAY=${DISPLAY}"
+--stderr ${SERVICES_LOG}"
 
 depend() {
     after net
@@ -65,8 +64,5 @@ start_pre() {
        touch "${SERVICES_LOG}"
     fi
     chown -R ${SVCUSER}:${SVCGROUP} ${SERVICES_LOG_LOC}
-    if [ ! -f "/tmp/.X${DISPLAY//:}-lock" ] ; then
-        Xvfb ${DISPLAY} -screen 0 1024x768x24 &
-    fi
     checkpath --directory --mode 0700 --owner root:root "${run_dir}/${SVCNAME}"
 }

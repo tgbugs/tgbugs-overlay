@@ -26,8 +26,7 @@ IDEPEND="
 	acct-user/scigraph"
 
 RDEPEND="
-	>=virtual/jre-1.8
-	x11-misc/xvfb-run"
+	>=virtual/jre-1.8"
 
 BDEPEND="
 	>=virtual/jdk-1.8
@@ -98,7 +97,6 @@ src_install() {
 		echo 'fi' >> "${ED}${GRAPHLOAD_EXECUTABLE}"
 		chmod 0755 "${ED}${GRAPHLOAD_EXECUTABLE}"
 	fi
-
 
 	newinitd "${FILESDIR}/${MY_PN}.rc" "${MY_PN}"
 	newconfd "${FILESDIR}/${MY_PN}.confd" "${MY_PN}"
