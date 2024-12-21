@@ -2,11 +2,12 @@ diff --git a/setup.py b/setup.py
 index 6382dd3..62fa48a 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -8,7 +8,5 @@ if sys.version_info < (3, 8, 0):
+@@ -8,7 +8,5 @@
      warn(f"FunOwl needs python 3.8 or later.  Current version: {sys.version_info}")
- 
+
  setup(
 -    setup_requires=['pbr'],
 -    pbr=True,
-     py_modules=['funowl']
+-    py_modules=['funowl']
++    packages=['funowl']
  )
