@@ -9,5 +9,5 @@ index 6382dd3..62fa48a 100644
 -    setup_requires=['pbr'],
 -    pbr=True,
 -    py_modules=['funowl']
-+    packages=['funowl']
++    packages=['funowl', 'funowl.base', 'funowl.converters', 'funowl.terminals', 'funowl.writers']
  )
