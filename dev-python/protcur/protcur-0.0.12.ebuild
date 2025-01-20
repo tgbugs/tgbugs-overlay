@@ -35,10 +35,10 @@ IDEPEND="
 RDEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
 	dev-python/htmlfn[${PYTHON_USEDEP}]
-	>=dev-python/hyputils-0.0.9[${PYTHON_USEDEP}]
+	>=dev-python/hyputils-0.0.10[${PYTHON_USEDEP}]
 	dev-python/markdown[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.32[${PYTHON_USEDEP}]
-	>=dev-python/pysercomb-0.0.9[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.36[${PYTHON_USEDEP}]
+	>=dev-python/pysercomb-0.0.13[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
@@ -69,7 +69,7 @@ fi
 
 python_test() {
 	esetup.py install_data
-	PYTHONWARNINGS=ignore epytest -v --color=yes || die "Tests fail with ${EPYTHON}"
+	PYTHONWARNINGS=ignore pytest -v --color=yes || die "Tests fail with ${EPYTHON}"
 }
 
 python_install_all() {
