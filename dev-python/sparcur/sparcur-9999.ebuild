@@ -38,17 +38,17 @@ IDEPEND="
 
 RDEPEND="
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
-	>=dev-python/augpathlib-0.0.31[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.33[${PYTHON_USEDEP}]
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
 	dev-python/dicttoxml[${PYTHON_USEDEP}]
-	>=dev-python/idlib-0.0.1_pre18[${PYTHON_USEDEP}]
+	>=dev-python/idlib-0.0.1_pre22[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]
 	dev-python/openpyxl[${PYTHON_USEDEP}]
 	dev-python/pennsieve[${PYTHON_USEDEP}]
-	>=dev-python/protcur-0.0.11[${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.33[${PYTHON_USEDEP}]
-	>=dev-python/pysercomb-0.0.11[${PYTHON_USEDEP}]
-	dev-python/terminaltables[${PYTHON_USEDEP}]
+	>=dev-python/protcur-0.0.12[${PYTHON_USEDEP}]
+	>=dev-python/pyontutils-0.1.37[${PYTHON_USEDEP}]
+	>=dev-python/pysercomb-0.0.13[${PYTHON_USEDEP}]
+	dev-python/terminaltables3[${PYTHON_USEDEP}]
 	cron? (
 		dev-python/celery[${PYTHON_USEDEP}]
 		dev-python/redis[${PYTHON_USEDEP}]
