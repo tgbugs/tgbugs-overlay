@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -31,7 +31,7 @@ BDEPEND="${BDEPEND}
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
 
 RDEPEND="
-	>=dev-python/augpathlib-0.0.31[${PYTHON_USEDEP}]
+	>=dev-python/augpathlib-0.0.32[${PYTHON_USEDEP}]
 	dev-python/clifn[${PYTHON_USEDEP}]
 	dev-python/colorlog[${PYTHON_USEDEP}]
 	dev-python/docopt[${PYTHON_USEDEP}]
@@ -40,18 +40,18 @@ RDEPEND="
 	dev-python/google-api-python-client[${PYTHON_USEDEP}]
 	dev-python/google-auth-oauthlib[${PYTHON_USEDEP}]
 	dev-python/htmlfn[${PYTHON_USEDEP}]
-	>=dev-python/idlib-0.0.1_pre15[${PYTHON_USEDEP}]
+	>=dev-python/idlib-0.0.1_pre22[${PYTHON_USEDEP}]
 	>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/nest-asyncio[${PYTHON_USEDEP}]
 	>=dev-python/ontquery-0.2.11[${PYTHON_USEDEP}]
-	>=dev-python/orthauth-0.0.16[${PYTHON_USEDEP}]
+	>=dev-python/orthauth-0.0.18[${PYTHON_USEDEP}]
 	dev-python/pyld[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
-	>=dev-python/ttlser-1.1.4[${PYTHON_USEDEP}]
+	>=dev-python/ttlser-1.1.6[${PYTHON_USEDEP}]
 	dev-python/terminaltables[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
