@@ -40,7 +40,7 @@ RDEPEND="
 		dev-python/google-auth-oauthlib[${PYTHON_USEDEP}]
 	)
 	rdf? (
-		>=dev-python/pyontutils-0.1.32[${PYTHON_USEDEP}]
+		>=dev-python/pyontutils-0.1.36[${PYTHON_USEDEP}]
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
