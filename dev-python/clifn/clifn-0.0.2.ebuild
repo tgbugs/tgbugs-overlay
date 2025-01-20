@@ -26,7 +26,6 @@ RESTRICT="!test? ( test )"
 
 RDEPEND="
 	dev-python/docopt[${PYTHON_USEDEP}]
-	dev-python/terminaltables[${PYTHON_USEDEP}]
 	dev? (
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
