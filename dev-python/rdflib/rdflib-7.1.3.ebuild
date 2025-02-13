@@ -1,4 +1,4 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -7,12 +7,17 @@ DISTUTILS_USE_PEP517=poetry
 PYTHON_COMPAT=( python3_{10..13} pypy3 )
 PYTHON_REQ_USE="sqlite?,threads(+)"
 
-inherit distutils-r1 pypi
+inherit distutils-r1
 
 DESCRIPTION="RDF library containing a triple store and parser/serializer"
 HOMEPAGE="
 	https://github.com/RDFLib/rdflib/
 	https://pypi.org/project/rdflib/
+"
+# tests removed in 7.1.2
+SRC_URI="
+	https://github.com/RDFLib/rdflib/archive/${PV}.tar.gz
+		-> ${P}.gh.tar.gz
 "
 
 LICENSE="BSD"
@@ -21,22 +26,19 @@ KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv sparc x86"
 IUSE="examples sqlite"
 
 RDEPEND="
-	<dev-python/isodate-1[${PYTHON_USEDEP}]
-	>=dev-python/isodate-0.7.2[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
+		<dev-python/isodate-1[${PYTHON_USEDEP}]
+		>=dev-python/isodate-0.7.2[${PYTHON_USEDEP}]
+	' 3.10)
 	dev-python/html5lib[${PYTHON_USEDEP}]
 	<dev-python/pyparsing-4[${PYTHON_USEDEP}]
-	>=dev-python/pyparsing-2.1.0[${PYTHON_USEDEP}]
+	>=dev-python/pyparsing-3.2.0[${PYTHON_USEDEP}]
 "
 BDEPEND="
 	test? (
 		dev-python/requests[${PYTHON_USEDEP}]
 	)
 "
-
-PATCHES=(
-	# https://src.fedoraproject.org/fork/salimma/rpms/python-rdflib/blob/d2fbf492897262350bd569f1566b97a54e092cd9/f/rdflib-py3_13-fix-pickler.diff
-	"${FILESDIR}/${PN}-7.1.0-py3_13-fix-pickler.diff"
-)
 
 distutils_enable_tests pytest
 
