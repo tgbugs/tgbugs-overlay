@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=setuptools
+DISTUTILS_USE_PEP517=hatchling
 PYTHON_COMPAT=( python3_{11..12} pypy3 )
 
 inherit distutils-r1
@@ -29,7 +29,7 @@ RDEPEND="
 	<dev-python/aiohttp-4[${PYTHON_USEDEP}]
 	>=dev-python/aiohttp-3[${PYTHON_USEDEP}]
 	<dev-python/elastic-transport-9[${PYTHON_USEDEP}]
-	>=dev-python/elastic-transport-8.13[${PYTHON_USEDEP}]
+	>=dev-python/elastic-transport-8.15.1[${PYTHON_USEDEP}]
 	$(python_gen_cond_dep '
 		>=dev-python/orjson-3[${PYTHON_USEDEP}]
 		' 'python3*')
@@ -44,6 +44,7 @@ BDEPEND="
 		dev-python/opentelemetry-api[${PYTHON_USEDEP}]
 		dev-python/opentelemetry-sdk[${PYTHON_USEDEP}]
 		dev-python/pandas[${PYTHON_USEDEP}]
+		dev-python/pyarrow[${PYTHON_USEDEP}]
 		dev-python/pytest-asyncio[${PYTHON_USEDEP}]
 		dev-python/python-dateutil[${PYTHON_USEDEP}]
 		>=dev-python/pyyaml-5.4[${PYTHON_USEDEP}]
@@ -55,14 +56,6 @@ distutils_enable_sphinx docs/sphinx \
 	dev-python/sphinx-autodoc-typehints \
 	dev-python/sphinx-rtd-theme
 distutils_enable_tests pytest
-
-src_prepare() {
-	# https://github.com/elastic/elasticsearch-py/pull/2552/
-	sed -i -e '/float_/d' elasticsearch/serializer.py \
-		test_elasticsearch/test_serializer.py || die
-
-	distutils-r1_src_prepare
-}
 
 python_test() {
 	local EPYTEST_IGNORE=(
