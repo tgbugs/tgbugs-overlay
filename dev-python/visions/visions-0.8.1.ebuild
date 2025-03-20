@@ -24,6 +24,7 @@ RDEPEND="
 	>=dev-python/attrs-19.3.0[${PYTHON_USEDEP}]
 	>=dev-python/networkx-2.4[${PYTHON_USEDEP}]
 	>=dev-python/multimethod-1.4[${PYTHON_USEDEP}]
+	dev-python/puremagic[${PYTHON_USEDEP}]
 "
 
 distutils_enable_tests pytest
