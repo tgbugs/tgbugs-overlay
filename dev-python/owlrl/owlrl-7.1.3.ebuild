@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 
 RDEPEND="
-	>=dev-python/rdflib-7.1.1[${PYTHON_USEDEP}]
+	>=dev-python/rdflib-7.1.3[${PYTHON_USEDEP}]
 "
 
 distutils_enable_tests pytest
