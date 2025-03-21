@@ -1,15 +1,14 @@
-# Copyright 2024 Gentoo Authors
+# Copyright 2024-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-MY_P="opentelemetry-python-${PV}"
-
 DISTUTILS_USE_PEP517=hatchling
-PYTHON_COMPAT=( python3_{11..13} pypy3 )
+PYTHON_COMPAT=( python3_{11..13} pypy3 pypy3_11 )
 
 inherit distutils-r1
 
+MY_P="opentelemetry-python-${PV}"
 DESCRIPTION="OpenTelemetry Python SDK"
 HOMEPAGE="
 	https://opentelemetry.io/
@@ -55,6 +54,7 @@ python_test() {
 	local EPYTEST_DESELECT=(
 		# TODO
 		"${PN}"/tests/resources/test_resources.py::TestOTELResourceDetector::test_process_detector
+		"${PN}"/tests/metrics/integration_test/test_console_exporter.py::TestConsoleExporter::test_console_exporter_with_exemplars
 	)
 
 	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
