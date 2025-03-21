@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..13} pypy3)
+PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
 
 inherit distutils-r1
 
@@ -20,12 +20,12 @@ SRC_URI="
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
 
 RDEPEND="
 	>=dev-python/botocore-${PV}[${PYTHON_USEDEP}]
 	>=dev-python/jmespath-0.7.1[${PYTHON_USEDEP}]
-	>=dev-python/s3transfer-0.10.0[${PYTHON_USEDEP}]
+	>=dev-python/s3transfer-0.11.0[${PYTHON_USEDEP}]
 "
 
 EPYTEST_XDIST=1
