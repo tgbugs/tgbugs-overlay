@@ -1,18 +1,17 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYPI_NO_NORMALIZE=1
 PYPI_PN=GitPython
-PYTHON_COMPAT=( python3_{10..13} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
 PYTHON_REQ_USE="threads(+)"
 
 inherit distutils-r1 pypi
 
 TEST_P=GitPython-${PV}
-GITDB_P=gitdb-4.0.11
+GITDB_P=gitdb-4.0.12
 SMMAP_P=smmap-5.0.1
 
 DESCRIPTION="Library used to interact with Git repositories"
@@ -60,6 +59,8 @@ src_test() {
 
 	cd "${T}"/test || die
 	git rev-parse HEAD > .git/refs/remotes/origin/master || die
+	# this tries to fetch again
+	sed -i -e '/git submodule/d' init-tests-after-clone.sh || die
 	TRAVIS=1 ./init-tests-after-clone.sh || die
 	cat test/fixtures/.gitconfig >> ~/.gitconfig || die
 
