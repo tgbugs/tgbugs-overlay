@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=poetry
-PYTHON_COMPAT=( python3_{10..13} pypy3 )
+PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
 PYTHON_REQ_USE="sqlite?,threads(+)"
 
 inherit distutils-r1
@@ -29,7 +29,7 @@ RDEPEND="
 	$(python_gen_cond_dep '
 		<dev-python/isodate-1[${PYTHON_USEDEP}]
 		>=dev-python/isodate-0.7.2[${PYTHON_USEDEP}]
-	' 3.10)
+	' 3.10 pypy3)
 	dev-python/html5lib[${PYTHON_USEDEP}]
 	<dev-python/pyparsing-4[${PYTHON_USEDEP}]
 	>=dev-python/pyparsing-3.2.0[${PYTHON_USEDEP}]

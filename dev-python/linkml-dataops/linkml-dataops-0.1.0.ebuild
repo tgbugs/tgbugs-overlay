@@ -4,7 +4,7 @@
 EAPI=8
 
 #DISTUTILS_USE_PEP517=poetry  # only if it was from git I think
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..12} pypy3 pypy3_11 )
 
 inherit pypi distutils-r1
 

@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( pypy3 python3_{10..12} )
+PYTHON_COMPAT=( pypy3 pypy3_11 python3_{10..12} )
 PYPI_NO_NORMALIZE=1
 PYPI_PN=Pint
 
@@ -21,7 +21,7 @@ IUSE="babel uncertainties test"
 
 DEPEND=""
 RDEPEND="${DEPEND}
-	$(python_gen_cond_dep 'dev-python/importlib-resources[${PYTHON_USEDEP}]' pypy3)
+	$(python_gen_cond_dep 'dev-python/importlib-resources[${PYTHON_USEDEP}]' pypy3 pypy3_11)
 	babel? ( dev-python/babel[${PYTHON_USEDEP}] )
 	uncertainties? ( dev-python/uncertainties[${PYTHON_USEDEP}] )
 "

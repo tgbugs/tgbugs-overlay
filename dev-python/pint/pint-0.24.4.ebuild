@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( pypy3 python3_{10..12} )
+PYTHON_COMPAT=( pypy3 pypy3_11 python3_{10..12} )
 PYPI_NO_NORMALIZE=1
 PYPI_PN=pint
 
@@ -29,7 +29,7 @@ RDEPEND="${DEPEND}
 	test? ( dev-python/pytest-subtests[${PYTHON_USEDEP}] )
 	$(python_gen_cond_dep '
 		dev-python/typing-extensions[${PYTHON_USEDEP}]
-	' 3.10 pypy3)
+	' 3.10 pypy3 pypy3_11)
 "
 
 RESTRICT="!test? ( test )"

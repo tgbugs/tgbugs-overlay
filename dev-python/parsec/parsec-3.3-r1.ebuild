@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..12} pypy3 )
+PYTHON_COMPAT=( python3_{10..12} pypy3 pypy3_11 )
 inherit distutils-r1 pypi
 
 DESCRIPTION="A universal Python parser combinator library inspired by Parsec Haskell library"
