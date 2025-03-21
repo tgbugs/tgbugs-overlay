@@ -1,15 +1,14 @@
-# Copyright 2024 Gentoo Authors
+# Copyright 2024-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-MY_P="opentelemetry-python-${PV}"
-
 DISTUTILS_USE_PEP517=hatchling
-PYTHON_COMPAT=( python3_{11..13} pypy3 )
+PYTHON_COMPAT=( python3_{11..13} pypy3 pypy3_11 )
 
 inherit distutils-r1
 
+MY_P="opentelemetry-python-${PV}"
 DESCRIPTION="OpenTelemetry Python API"
 HOMEPAGE="
 	https://opentelemetry.io/
