@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit desktop optfeature wrapper xdg-utils
+inherit desktop optfeature wrapper xdg-utils edos2unix
 
 MY_PN="KeePass"
 DESCRIPTION="A free, open source, light-weight and easy-to-use password manager"
@@ -30,6 +30,7 @@ PATCHES=( "${FILESDIR}/${PN}-2.53-xsl-path-detection.patch" )
 QA_PREBUILT="usr/lib64/keepass/KeePass.exe.so"
 
 src_prepare() {
+	edos2unix ${S}/KeePass/Forms/AboutForm.cs
 	# KeePass looks for some XSL files in the same folder as the executable,
 	# we prefer to have it in /usr/share/KeePass. Apply patch using base function.
 	# This XSL file will not be upstreamed since the KeePass creator said that
