@@ -3,7 +3,7 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=setuptools
+DISTUTILS_USE_PEP517=hatchling
 PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
 
 inherit pypi distutils-r1
@@ -12,6 +12,12 @@ DESCRIPTION="Easily pick a place to store data for your Python code."
 HOMEPAGE="
 	https://pypi.org/project/pystow/
 	https://github.com/cthoyt/pystow
+"
+
+# pypi tarballs are missing test data
+SRC_URI="
+	https://github.com/cthoyt/${PN}/archive/v${PV}.tar.gz
+		-> ${P}.gh.tar.gz
 "
 
 LICENSE="MIT"
@@ -29,5 +35,8 @@ RDEPEND="
 		dev-python/requests-file[${PYTHON_USEDEP}]
 	)
 "
+PATCHES=(
+	"${FILESDIR}/patch-in-hatch.patch"
+)
 
 distutils_enable_tests pytest
