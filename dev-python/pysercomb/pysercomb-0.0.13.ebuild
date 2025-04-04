@@ -1,4 +1,4 @@
-# Copyright 2019-2020 Gentoo Authors
+# Copyright 2019-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -36,8 +36,13 @@ RDEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 	units? (
-		dev-python/protcur[${PYTHON_USEDEP}]
 		>=dev-python/pint-0.16.1[babel,uncertainties,${PYTHON_USEDEP}]
+	)
+"
+
+PDEPEND="
+	units? (
+		dev-python/protcur[${PYTHON_USEDEP}]
 	)
 "
 
