@@ -44,7 +44,7 @@ RDEPEND="
 	>=dev-python/idlib-0.0.1_pre22[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]
 	dev-python/openpyxl[${PYTHON_USEDEP}]
-	dev-python/pennsieve[${PYTHON_USEDEP}]
+	<dev-python/pennsieve-7[${PYTHON_USEDEP}]
 	>=dev-python/protcur-0.0.12[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.37[${PYTHON_USEDEP}]
 	>=dev-python/pysercomb-0.0.13[${PYTHON_USEDEP}]
