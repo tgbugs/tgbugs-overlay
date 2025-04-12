@@ -1,9 +1,10 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISTUTILS_USE_PEP517=hatchling
+DISTUTILS_UPSTREAM_PEP517=hatchling
 PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
 
 inherit pypi distutils-r1
@@ -35,8 +36,5 @@ RDEPEND="
 		dev-python/requests-file[${PYTHON_USEDEP}]
 	)
 "
-PATCHES=(
-	"${FILESDIR}/patch-in-hatch.patch"
-)
 
 distutils_enable_tests pytest
