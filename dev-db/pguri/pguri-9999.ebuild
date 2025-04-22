@@ -12,7 +12,7 @@ DESCRIPTION="uri datatype for PostgreSQL"
 HOMEPAGE="https://github.com/petere/pguri"
 SRC_URI=""
 
-LICENSE=""
+LICENSE="POSTGRESQL"
 SLOT="0"
 KEYWORDS=""
 IUSE=""
