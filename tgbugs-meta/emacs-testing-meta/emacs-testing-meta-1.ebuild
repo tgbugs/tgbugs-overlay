@@ -10,10 +10,11 @@ SLOT="0"
 KEYWORDS="amd64 arm arm64 x86"
 
 RDEPEND="
-app-editors/emacs:18
+#app-editors/emacs:18  # exclude due to masking due to multilib dep
 app-editors/emacs:26
 app-editors/emacs:27
 app-editors/emacs:28
 app-editors/emacs:29
 app-editors/emacs:30
 "
+RDEPEND="$(echo "${RDEPEND}" | "${EPREFIX}"/bin/sed 's/[[:blank:]]*#.*$//')"

@@ -28,4 +28,4 @@ RDEPEND="
 =dev-python/sxpyr-9999
 =dev-python/ttlser-9999
 "
-RDEPEND="$(echo "${RDEPEND}" | "${EPREFIX}"/bin/sed 's/[[:blank:]]*#.\+;//')"
+RDEPEND="$(echo "${RDEPEND}" | "${EPREFIX}"/bin/sed 's/[[:blank:]]*#.*$//')"

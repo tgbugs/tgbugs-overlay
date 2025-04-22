@@ -28,4 +28,4 @@ tgbugs-meta/racket-meta
 tgbugs-meta/sparcron-meta
 tgbugs-meta/tex-meta
 "
-RDEPEND="$(echo "${RDEPEND}" | "${EPREFIX}"/bin/sed 's/[[:blank:]]*#.\+;//')"
+RDEPEND="$(echo "${RDEPEND}" | "${EPREFIX}"/bin/sed 's/[[:blank:]]*#.*$//')"
