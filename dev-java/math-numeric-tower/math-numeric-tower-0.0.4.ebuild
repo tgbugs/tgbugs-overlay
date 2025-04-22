@@ -1,15 +1,14 @@
 # Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-inherit java-pkg-2 java-ant-2
+inherit java-pkg-2 java-utils-2
 
 EGIT_REF="77a80d8"
 
 MY_PN=${PN/-/.}
 MY_P=${MY_PN}-${PV}
-echo $MY_PN
 
 DESCRIPTION="Math functions for Clojure's numeric tower"
 HOMEPAGE="https://clojure.org/ https://github.com/clojure/math.numeric-tower"
@@ -17,10 +16,10 @@ SRC_URI="https://github.com/clojure/${MY_PN}/archive/${MY_P}.tar.gz -> ${P}.tar.
 
 LICENSE="EPL-1.0"
 SLOT="0"
-KEYWORDS="~amd64 ~x86 ~x86-linux"
+KEYWORDS="~amd64 ~x86-linux"
 IUSE=""
 
-CDEPEND="dev-java/ant-core:0"
+CDEPEND="dev-java/ant:0"
 RDEPEND=">=virtual/jre-1.8:*"
 DEPEND="
 	${CDEPEND}
@@ -28,12 +27,13 @@ DEPEND="
 
 S="${WORKDIR}/${MY_PN}-${MY_P}"
 
-EANT_TASKS="jar"
-EANT_EXTRA_ARGS="-Dmaven.build.finalName=${MY_P}"
-
 src_prepare() {
 	default
 	cp "${FILESDIR}/build.xml" . || die
+}
+
+src_compile() {
+	eant jar -Dmaven.build.finalName=${MY_P}
 }
 
 src_install() {
