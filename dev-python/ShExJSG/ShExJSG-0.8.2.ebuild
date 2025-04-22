@@ -4,7 +4,7 @@
 EAPI=8
 
 PYPI_NO_NORMALIZE=1
-#DISTUTILS_USE_PEP517=poetry  # only if it was from git I think
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( python3_{10..12} pypy3 pypy3_11 )
 
 inherit pypi distutils-r1
