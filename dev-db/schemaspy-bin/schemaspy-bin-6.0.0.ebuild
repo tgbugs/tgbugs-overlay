@@ -16,7 +16,7 @@ SRC_URI="https://github.com/${MY_PN}/${MY_PN}/releases/download/v${PV}/${MY_P}.j
 
 LICENSE="LGPL-3+"
 SLOT="6.0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~amd64"
 IUSE="+postgres +mysql"
 
 COMMON_DEP=""
