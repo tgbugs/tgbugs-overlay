@@ -8,10 +8,12 @@ DESCRIPTION="meta package for emacs testing"
 LICENSE="metapackage"
 SLOT="0"
 KEYWORDS="amd64 arm arm64 x86"
+IUSE="multilib"
 
 RDEPEND="
-#app-editors/emacs:18  # exclude due to masking due to multilib dep
-app-editors/emacs:26
+x86?         ( app-editors/emacs:18 )
+multilib?    ( app-editors/emacs:18 )
+!elibc_musl? ( app-editors/emacs:26 )  # see gentoo/profiles/features/musl/package.mask
 app-editors/emacs:27
 app-editors/emacs:28
 app-editors/emacs:29
