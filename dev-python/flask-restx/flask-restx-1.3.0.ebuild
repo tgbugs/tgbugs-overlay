@@ -3,6 +3,7 @@
 
 EAPI=8
 
+DISTUTILS_USE_PEP517=setuptools
 PYTHON_COMPAT=( pypy3 pypy3_11 python3_{10..12} )
 
 PYPI_NO_NORMALIZE=1
@@ -15,9 +16,6 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="dev doc test"
-RESTRICT="
-	!test? ( test )
-"
 
 DEPEND=""
 RDEPEND="${DEPEND}
@@ -52,3 +50,6 @@ RDEPEND="${DEPEND}
 		dev-python/tzlocal[${PYTHON_USEDEP}]
 	)
 "
+
+# pypi is missing certain important non-python files due to incorrect packaging
+#distutils_enable_tests pytest
