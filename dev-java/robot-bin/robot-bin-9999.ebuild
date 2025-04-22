@@ -16,7 +16,7 @@ EGIT_REPO_URI="https://github.com/ontodev/robot.git"
 
 LICENSE="BSD"
 SLOT="9999"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~amd64"
 IUSE=""
 
 COMMON_DEP=""
