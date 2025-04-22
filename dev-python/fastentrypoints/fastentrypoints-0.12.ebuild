@@ -3,7 +3,8 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( pypy3 pypy3_11 python3_{10..12} )
+DISTUTILS_USE_PEP517=setuptools
+PYTHON_COMPAT=( pypy3 pypy3_11 python3_{10..13} )
 inherit distutils-r1 pypi
 
 DESCRIPTION="Makes entry_points specified in setup.py load more quickly"
@@ -13,9 +14,6 @@ LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="test"
-RESTRICT="!test? ( test )"
 
-DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
-"
-RDEPEND="${DEPEND}"
+# pypi missing tests
+#distutils_enable_tests pytest
