@@ -22,10 +22,7 @@ HOMEPAGE="https://github.com/tgbugs/pyontutils"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="dev -minimal -ontload spell test"
-RESTRICT="
-	!test? ( test )
-"
+IUSE="dev minimal ontload spell test"
 
 BDEPEND="${BDEPEND}
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
