@@ -12,8 +12,11 @@ KEYWORDS="amd64 arm64"
 
 RDEPEND="
 dev-lisp/abcl
-dev-lisp/clozurecl
-dev-lisp/clisp
+!elibc_musl? (  # build failures on musl
+	dev-lisp/clozurecl
+	dev-lisp/clisp
+)
 dev-lisp/ecl
 dev-lisp/sbcl
 "
+RDEPEND="$(echo "${RDEPEND}" | "${EPREFIX}"/bin/sed 's/[[:blank:]]*#.*$//')"
