@@ -13,6 +13,7 @@ KEYWORDS="amd64 arm64"
 # FIXME why is rabbitmq-server in here ???
 RDEPEND="
 app-arch/zip
+app-misc/protege-bin
 app-misc/screen
 app-misc/yq
 app-text/pandoc-cli
