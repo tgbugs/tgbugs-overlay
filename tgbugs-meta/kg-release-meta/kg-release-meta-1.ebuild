@@ -4,10 +4,11 @@
 EAPI=8
 
 DESCRIPTION="meta package for SPARC Knowledge Graph release images"
+HOMEPAGE="https://github.com/tgbugs/dockerfiles"
 
 LICENSE="metapackage"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 x86"
+KEYWORDS="amd64 arm64"
 
 RDEPEND="
 dev-db/blazegraph-bin

@@ -4,10 +4,11 @@
 EAPI=8
 
 DESCRIPTION="meta package for live ebuilds"
+HOMEPAGE="https://github.com/tgbugs/dockerfiles"
 
 LICENSE="metapackage"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 x86"
+KEYWORDS="amd64 arm64"
 
 # FIXME I suspect we don't need this one because
 # we use it when not installed and sets are faster

@@ -4,10 +4,11 @@
 EAPI=8
 
 DESCRIPTION="meta package for shells"
+HOMEPAGE="https://github.com/tgbugs/dockerfiles"
 
 LICENSE="metapackage"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 x86"
+KEYWORDS="amd64 arm64"
 
 # TODO consider sys-apps/busybox?
 RDEPEND="
