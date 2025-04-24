@@ -43,7 +43,7 @@ RDEPEND="
 	dev-python/flask-sqlalchemy[${PYTHON_USEDEP}]
 	dev-python/tornado[${PYTHON_USEDEP}]
 	www-servers/gunicorn[${PYTHON_USEDEP}]
-	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{10..12})
+	$(python_gen_cond_dep 'dev-python/psycopg:2[${PYTHON_USEDEP}]' python3_{10..13})
 	$(python_gen_cond_dep 'dev-python/psycopg2cffi[${PYTHON_USEDEP}]' pypy3 pypy3_11)
 	>=dev-python/pyontutils-0.1.32[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-6.0.2[${PYTHON_USEDEP}]

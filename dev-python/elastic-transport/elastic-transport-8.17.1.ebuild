@@ -55,16 +55,11 @@ distutils_enable_tests pytest
 
 python_test() {
 	local EPYTEST_DESELECT=(
-		# >=aiohttp-3.11 throws DeprecationWarning which cannot be filtered for this test
-		# https://github.com/aio-libs/aiohttp/pull/9726
-		# https://github.com/elastic/elastic-transport-python/pull/61
-		tests/async_/test_httpserver.py::test_simple_request
 		# fragile to random warnings
 		tests/node/test_http_aiohttp.py::TestAiohttpHttpNode::test_uses_https_if_verify_certs_is_off
 		tests/node/test_urllib3_chain_certs.py::test_assert_fingerprint_in_cert_chain
 	)
 
 	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
-	# https://github.com/encode/httpx/discussions/3214#discussioncomment-10830925
-	epytest -p asyncio -o addopts= -k "not (test_unsupported_tls_versions and HttpxAsyncHttpNode)"
+	epytest -p asyncio -o addopts=
 }
