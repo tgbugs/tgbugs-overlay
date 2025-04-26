@@ -20,7 +20,7 @@ KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-li
 
 RDEPEND="
 	<dev-python/botocore-2[${PYTHON_USEDEP}]
-	>=dev-python/botocore-1.36.0[${PYTHON_USEDEP}]
+	>=dev-python/botocore-1.37.4[${PYTHON_USEDEP}]
 "
 
 distutils_enable_tests pytest
