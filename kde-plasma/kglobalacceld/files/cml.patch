@@ -1,9 +1,10 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -48,7 +48,6 @@
+@@ -47,7 +47,5 @@
+ find_package(KF6WindowSystem ${KF6_MIN_VERSION} REQUIRED)
  find_package(KF6GlobalAccel ${KF6_MIN_VERSION} REQUIRED)
  find_package(KF6Service ${KF6_MIN_VERSION} REQUIRED)
- find_package(KF6KIO ${KF6_MIN_VERSION} REQUIRED)
+-find_package(KF6KIO ${KF6_MIN_VERSION} REQUIRED)
 -find_package(KF6JobWidgets ${KF6_MIN_VERSION} REQUIRED)
  
  
