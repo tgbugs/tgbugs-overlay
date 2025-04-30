@@ -14,7 +14,7 @@ DESCRIPTION="Framework providing transparent file and data management"
 
 LICENSE="LGPL-2+"
 KEYWORDS="amd64 arm64 ~loong ppc64 ~riscv ~x86"
-IUSE="acl +minimal +kwallet wayland notlisted X"
+IUSE="acl +minimal +kwallet wayland X"
 
 # tests hang
 RESTRICT="test"
@@ -33,10 +33,6 @@ COMMON_DEPEND="
 	=kde-frameworks/kservice-${KDE_CATV}*:6
 	=kde-frameworks/kxmlgui-${KDE_CATV}*:6
 	=kde-frameworks/solid-${KDE_CATV}*:6
-	notlisted? (
-		=kde-frameworks/knotifications-${KDE_CATV}*:6
-		=kde-frameworks/ktextwidgets-${KDE_CATV}*:6
-	)
 	!minimal? (
 		=kde-frameworks/kbookmarks-${KDE_CATV}*:6
 		=kde-frameworks/kcolorscheme-${KDE_CATV}*:6
