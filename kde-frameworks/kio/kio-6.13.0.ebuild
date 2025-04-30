@@ -72,7 +72,9 @@ RDEPEND="${COMMON_DEPEND}
 # Typical KIO revdeps (dolphin, krusader et al.) can rely on this dep
 PDEPEND="
 	>=kde-frameworks/kded-${KDE_CATV}:6
-	kde-plasma/keditfiletype
+	!minimal? (
+		kde-plasma/keditfiletype
+	)
 "
 
 PATCHES=(
