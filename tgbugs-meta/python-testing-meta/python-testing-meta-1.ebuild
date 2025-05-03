@@ -24,7 +24,7 @@ dev-lang/pypy:2.7
 dev-lang/pypy:3.10
 dev-lang/pypy:3.11
 dev-python/pip
-dev-python/pipenv
+#dev-python/pipenv  # missing 3.13 and pypy3.11 compat
 dev-python/pytest
 "
 RDEPEND="$(echo "${RDEPEND}" | "${EPREFIX}"/bin/sed 's/[[:blank:]]*#.*$//')"
