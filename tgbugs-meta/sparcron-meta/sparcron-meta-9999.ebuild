@@ -10,7 +10,7 @@ LICENSE="metapackage"
 SLOT="0"
 KEYWORDS=""
 
-LIVE_DEPEND="
+BDEPEND="
 =dev-python/augpathlib-9999
 =dev-python/clifn-9999
 =dev-python/htmlfn-9999
@@ -26,7 +26,7 @@ LIVE_DEPEND="
 =dev-python/ttlser-9999
 "
 
-RDEPEND="${LIVE_DEPEND}
+RDEPEND="${BDEPEND}
 dev-db/redict
 #dev-python/pip  # FIXME do we still need pip for debug (pudb)?
 dev-python/sparcur
