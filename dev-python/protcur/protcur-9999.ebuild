@@ -11,6 +11,7 @@ if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/tgbugs/protc.git"
 	inherit git-r3
 	KEYWORDS=""
+	BDEPEND="dev-python/orthauth"
 else
 	inherit pypi
 	KEYWORDS="~amd64 ~x86"
@@ -24,7 +25,7 @@ SLOT="0"
 IUSE="dev test"
 RESTRICT="!test? ( test )"
 
-BDEPEND="
+BDEPEND="${BDEPEND}
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
 
 IDEPEND="
