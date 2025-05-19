@@ -1,4 +1,4 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -26,13 +26,11 @@ RESTRICT="!test? ( test )"
 
 SVCDEPEND="
 	>=dev-python/orthauth-0.0.14[yaml,${PYTHON_USEDEP}]
-	>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
 	>=dev-python/rdflib-6.0.0[${PYTHON_USEDEP}]
 	dev-python/requests[${PYTHON_USEDEP}]
 "
 RDEPEND="
 	dev? (
-		>=dev-python/pyontutils-0.1.5[${PYTHON_USEDEP}]
 		dev-python/pytest-cov[${PYTHON_USEDEP}]
 		dev-python/wheel[${PYTHON_USEDEP}]
 	)
@@ -45,9 +43,23 @@ RDEPEND="
 	)
 "
 
+PDEPEND="
+	dev? (
+		>=dev-python/pyontutils-0.1.5[${PYTHON_USEDEP}]
+	)
+	services? (
+		>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
+	)
+	test? (
+		>=dev-python/pyontutils-0.1.27[${PYTHON_USEDEP}]
+	)
+"
+
 distutils_enable_tests pytest
 
 if [[ ${PV} == "9999" ]]; then
+	BDEPEND="
+		dev-python/pyontutils[${PYTHON_USEDEP}]"
 	src_prepare () {
 		# replace package version to keep python quiet
 		sed -i "s/__version__.\+$/__version__ = '9999.0.0+$(git rev-parse --short HEAD)'/" ${PN}/__init__.py
