@@ -41,7 +41,6 @@ RDEPEND="
 	>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/nest-asyncio[${PYTHON_USEDEP}]
-	>=dev-python/ontquery-0.2.11[${PYTHON_USEDEP}]
 	>=dev-python/orthauth-0.0.18[${PYTHON_USEDEP}]
 	dev-python/pyld[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
@@ -67,6 +66,9 @@ RDEPEND="
 distutils_enable_tests pytest
 
 if [[ ${PV} == "9999" ]]; then
+	PDEPEND="
+		>=dev-python/ontquery-0.2.11[${PYTHON_USEDEP}]"
+
 	src_configure () { DISTUTILS_ARGS=( --release ); }
 
 	src_prepare () {
@@ -76,6 +78,8 @@ if [[ ${PV} == "9999" ]]; then
 		default
 	}
 else
+	RDEPEND="${RDEPEND}
+		>=dev-python/ontquery-0.2.11[${PYTHON_USEDEP}]"
 	src_prepare () {
 		sed -i '1 i\import fastentrypoints' setup.py
 		default
