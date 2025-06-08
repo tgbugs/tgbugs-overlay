@@ -47,7 +47,7 @@ src_unpack() {
 	sed -i "/<artifactId>robot<\/artifactId>/{N;s/<version>.\+<\/version>/<version>${HASH}<\/version>/}" robot-mock-plugin/pom.xml
 	sed -i "/<artifactId>robot<\/artifactId>/{N;s/<version>.\+<\/version>/<version>${HASH}<\/version>/}" robot-maven-plugin/pom.xml
 	# why isn't this in src_compile you ask? network-sandbox is the answer
-	mvn -DskipTests clean install || die "compile failed"
+	/usr/bin/mvn -DskipTests clean install || die "compile failed"
 	popd
 }
 

@@ -57,7 +57,7 @@ src_unpack() {
 	sed -i "/<groupId>io.scigraph<\/groupId>/{N;s/<version>.\+<\/version>/<version>${HASH}<\/version>/}" SciGraph-services/pom.xml
 	#eapply_user
 	# why isn't this in src_compile you ask? network-sandbox is the answer
-	mvn -DskipTests -DskipITs clean install || die "compile failed"
+	/usr/bin/mvn -DskipTests -DskipITs clean install || die "compile failed"
 	popd
 }
 
