@@ -11,6 +11,7 @@ SLOT="0"
 KEYWORDS="amd64 arm64"
 
 RDEPEND="
+tgbugs-meta/db-meta
 tgbugs-meta/debug-meta
 tgbugs-meta/docker-meta
 tgbugs-meta/dynapad-meta
