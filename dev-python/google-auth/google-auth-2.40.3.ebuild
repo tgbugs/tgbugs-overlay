@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..13} pypy3_11 )
+PYTHON_COMPAT=( python3_{11..13} pypy3_11 )
 
 inherit distutils-r1 pypi
 
@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="amd64 arm64 x86"
 
 RDEPEND="
-	<dev-python/cachetools-6.0.0[${PYTHON_USEDEP}]
+	dev-python/cachetools[${PYTHON_USEDEP}]
 	>=dev-python/pyasn1-0.1.7[${PYTHON_USEDEP}]
 	>=dev-python/pyasn1-modules-0.2.1[${PYTHON_USEDEP}]
 	>=dev-python/rsa-3.1.4[${PYTHON_USEDEP}]
@@ -31,7 +31,6 @@ BDEPEND="
 		dev-python/flask[${PYTHON_USEDEP}]
 		dev-python/freezegun[${PYTHON_USEDEP}]
 		dev-python/mock[${PYTHON_USEDEP}]
-		dev-python/moto[${PYTHON_USEDEP}]
 		>=dev-python/pyjwt-2.0[${PYTHON_USEDEP}]
 		dev-python/pyopenssl[${PYTHON_USEDEP}]
 		dev-python/pytest-asyncio[${PYTHON_USEDEP}]
@@ -68,5 +67,6 @@ python_test() {
 	)
 
 	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+	distutils_write_namespace google
 	epytest -p asyncio
 }
