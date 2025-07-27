@@ -11,7 +11,7 @@ SLOT="0"
 KEYWORDS="amd64 arm64"
 
 RDEPEND="
-app-misc/elasticsearch
+#app-misc/elasticsearch  # skip due to license nonsense for now
 dev-db/mariadb
 dev-db/postgresql
 dev-db/redict
