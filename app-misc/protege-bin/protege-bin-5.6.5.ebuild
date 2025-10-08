@@ -14,7 +14,7 @@ https://bitbucket.org/dtsarkov/factplusplus/downloads/uk.ac.manchester.cs.owl.fa
 "
 
 LICENSE="BSD-2"
-SLOT="${PV}"
+SLOT="0"
 KEYWORDS="~amd64"
 IUSE="+reasoners"
 
