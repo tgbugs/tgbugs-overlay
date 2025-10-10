@@ -9,8 +9,8 @@ HOMEPAGE="https://github.com/tgbugs/dockerfiles"
 LICENSE="metapackage"
 SLOT="0"
 KEYWORDS="amd64 arm64"
+IUSE="nest"
 
-# FIXME why is rabbitmq-server in here ???
 RDEPEND="
 app-arch/zip
 app-misc/protege-bin
@@ -27,7 +27,11 @@ dev-util/shellcheck
 media-gfx/inkscape
 tgbugs-meta/kg-release-meta
 tgbugs-meta/racket-meta
-tgbugs-meta/sparcron-meta
+tgbugs-meta/sparcron-meta  # pulls in rabbitmq-server
 tgbugs-meta/tex-meta
+nest? (
+	acct-group/docker
+	app-containers/docker-cli
+)
 "
 RDEPEND="$(echo "${RDEPEND}" | "${EPREFIX}"/bin/sed 's/[[:blank:]]*#.*$//')"
