@@ -81,11 +81,11 @@ src_configure() {
 		--collectsdir="${EPREFIX}"/usr/share/racket/collects \
 		--pkgsdir="${EPREFIX}"/usr/share/racket/pkgs \
 		--enable-postlink="${postlink}" \
-		--enable-shared \
+		--disable-shared \
 		--enable-float \
 		--enable-libffi \
 		--enable-foreign \
-		--disable-libs \
+		--enable-libs \
 		--disable-strip \
 		--enable-useprefix \
 		--disable-cgcdefault \
