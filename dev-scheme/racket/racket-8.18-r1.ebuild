@@ -1,9 +1,9 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit pax-utils
+inherit pax-utils dot-a toolchain-funcs
 
 DESCRIPTION="General purpose, multi-paradigm Lisp-Scheme programming language"
 HOMEPAGE="https://racket-lang.org/"
@@ -37,12 +37,25 @@ DEPEND="${RDEPEND}"
 S="${WORKDIR}/racket-${PV}/src"
 
 src_prepare() {
+	# Prepare the environment.
+	unset PLTADDONDIR PLTCOLLECTS PLTCONFIGDIR PLTUSERHOME
+
 	rm -r bc/foreign/libffi || die 'failed to remove bundled libffi'
 	default
 	eapply_user
 }
 
 src_configure() {
+	# Compilation of Zuo does not respect the autoconf configuration.
+	tc-export CC
+
+	lto-guarantee-fat
+
+	einfo "Configuring Zuo in ${S}/zuo"
+	pushd "${S}/zuo" >/dev/null || die
+	econf
+	popd >/dev/null || die
+
 	# According to vapier, we should use the bundled libtool
 	# such that we don't preclude cross-compile. Thus don't use
 	# --enable-lt=/usr/bin/libtool
@@ -91,16 +104,19 @@ src_configure() {
 
 src_compile() {
 	if use cgc; then
-		emake cgc
+		CC_FOR_BUILD="$(tc-getCC)" emake cgc
 	fi
 
 	if use bc; then
-		emake bc
+		CC_FOR_BUILD="$(tc-getCC)" emake bc
 	fi
 
 	if use cs; then
-		emake cs
+		CC_FOR_BUILD="$(tc-getCC)" emake cs
 	fi
+
+	# Recompile Zuo with optimizations.
+	emake -C zuo
 }
 
 src_install() {
@@ -138,9 +154,14 @@ src_install() {
 		rm -r "${PATH_CS}"
 	fi
 
+	# Install Zuo.
+	emake -C zuo DESTDIR="${ED}" install
+
+	strip-lto-bytecode
+
 	# raco needs decompressed files for packages doc installation bug 662424
 	if use doc; then
 		docompress -x /usr/share/doc/${PF}
 	fi
-	find "${ED}" \( -name "*.a" -o -name "*.la" \) -delete || die
+	find "${ED}" -name "*.la" -delete || die
 }
