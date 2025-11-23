@@ -7,11 +7,9 @@ DESCRIPTION="meta package for emacs packages"
 HOMEPAGE="https://github.com/tgbugs/dockerfiles"
 SLOT="0"
 KEYWORDS="amd64 arm64"
-IUSE="sly"
 
 RDEPEND="
-sly? ( tgbugs-meta/emacs-pkgs-min-meta )
-!sly? ( tgbugs-meta/emacs-pkgs-min-meta[-sly] )
+tgbugs-meta/emacs-pkgs-min-meta
 app-emacs/tramp-theme
 app-emacs/quelpa
 app-emacs/quelpa-use-package
@@ -81,9 +79,8 @@ app-emacs/keychain-environment
 #app-emacs/libyaml  # quelpa github
 #app-emacs/lisp-mode  # built-in
  #app-emacs/datum-comments  # git
- !sly? (
  app-emacs/slime
- app-emacs/ac-slime )
+ app-emacs/ac-slime
 app-emacs/lsp-java
 app-emacs/lua-mode
  #app-emacs/magithub  # primary use case handle by git-link
@@ -98,7 +95,7 @@ app-emacs/ninja-mode
  #app-emacs/org-eldoc  # git
  #app-emacs/org-expiry  # git
  app-emacs/engrave-faces
- app-emacs/org-books
+ #app-emacs/org-books  # pulls in helm-org which is broken due to use of easy-menu-add-item ... possibly because helm is not installed?
  #app-emacs/elgannt  # quelpa github
  #app-emacs/lentic  # fun but too experimental
  #app-emacs/ob-async  # broken

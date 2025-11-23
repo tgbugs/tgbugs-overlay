@@ -7,7 +7,6 @@ DESCRIPTION="meta package for minimal emacs packages"
 HOMEPAGE="https://github.com/tgbugs/dockerfiles"
 SLOT="0"
 KEYWORDS="amd64 arm64"
-IUSE="+sly"
 
 RDEPEND="
 app-emacs/evil
@@ -23,11 +22,9 @@ app-emacs/undo-tree
 app-emacs/vterm
 app-emacs/yaml-mode
 app-emacs/zmq
-sly? (
 app-emacs/sly
  app-emacs/ac-sly
  app-emacs/sly-repl-ansi-color
-)
 "
 
 RDEPEND="$(echo "${RDEPEND}" | "${EPREFIX}"/bin/sed 's/[[:blank:]]*#.*$//')"
