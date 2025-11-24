@@ -19,5 +19,6 @@ dev-python/pip
 media-gfx/feh
 media-gfx/graphviz
 tgbugs-meta/emacs-meta
+tgbugs-meta/emacs-pkgs-min-meta
 x11-misc/xdg-user-dirs
 "
