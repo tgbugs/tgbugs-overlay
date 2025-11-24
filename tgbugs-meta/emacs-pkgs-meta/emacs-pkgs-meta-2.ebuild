@@ -70,9 +70,6 @@ app-emacs/json-mode
 app-emacs/js2-mode
 app-emacs/julia-mode
 app-emacs/julia-repl
-app-emacs/jupyter
- app-emacs/simple-httpd
- app-emacs/websocket
 app-emacs/keychain-environment
 #app-emacs/libyaml  # quelpa github
 #app-emacs/lisp-mode  # built-in

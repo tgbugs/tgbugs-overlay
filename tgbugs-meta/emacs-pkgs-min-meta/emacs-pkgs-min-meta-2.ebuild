@@ -10,9 +10,9 @@ KEYWORDS="amd64 arm64"
 
 RDEPEND="
 app-emacs/csv-mode
-app-emacs/cypher-mode
 app-emacs/evil
 app-emacs/flycheck
+app-emacs/jupyter
 app-emacs/magit
 app-emacs/markdown-mode
 app-emacs/ob-cypher  # git
@@ -25,7 +25,6 @@ app-emacs/sparql-mode  # git
 app-emacs/undo-tree
 app-emacs/vterm
 app-emacs/yaml-mode
-app-emacs/zmq
 app-emacs/sly
  app-emacs/ac-sly
  app-emacs/sly-repl-ansi-color
