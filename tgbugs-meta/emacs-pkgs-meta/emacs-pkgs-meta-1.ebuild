@@ -26,8 +26,6 @@ app-emacs/color-theme-modern
 #app-emacs/conf-mode  # built-in ???
 app-emacs/crdt
 app-emacs/crontab-mode
-app-emacs/csv-mode
-app-emacs/cypher-mode
 #app-emacs/dired  # built-in
 app-emacs/docker
 app-emacs/dockerfile-mode
@@ -99,7 +97,6 @@ app-emacs/ninja-mode
  #app-emacs/elgannt  # quelpa github
  #app-emacs/lentic  # fun but too experimental
  #app-emacs/ob-async  # broken
- #app-emacs/ob-cypher  # git
  app-emacs/ob-hy
  #app-emacs/oc  # org built-in
  #app-emacs/oc-biblatex  # git

@@ -9,11 +9,15 @@ SLOT="0"
 KEYWORDS="amd64 arm64"
 
 RDEPEND="
+app-emacs/csv-mode
+app-emacs/cypher-mode
 app-emacs/evil
 app-emacs/flycheck
 app-emacs/magit
 app-emacs/markdown-mode
+app-emacs/ob-cypher  # git
 app-emacs/org-mode
+app-emacs/orgstrap
 app-emacs/powershell
 app-emacs/racket-mode
 app-emacs/rainbow-delimiters
