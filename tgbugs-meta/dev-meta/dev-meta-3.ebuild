@@ -16,6 +16,7 @@ tgbugs-meta/debug-meta
 tgbugs-meta/docker-meta
 tgbugs-meta/dynapad-meta
 tgbugs-meta/emacs-testing-meta
+tgbugs-meta/emacs-pkgs-meta
 tgbugs-meta/kg-dev-meta
 tgbugs-meta/lisp-meta
 tgbugs-meta/python-testing-meta
