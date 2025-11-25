@@ -170,5 +170,7 @@ src_install() {
 }
 
 pkg_postinst() {
-	eselect racket set cs || die
+	if { eselect racket show | grep -q unset; }; then
+		eselect racket set cs || die
+	fi
 }
