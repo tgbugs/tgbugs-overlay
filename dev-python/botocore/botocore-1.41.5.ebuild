@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{11..13} pypy3_11 )
+PYTHON_COMPAT=( python3_{11..14} pypy3_11 )
 
 inherit distutils-r1
 
@@ -20,7 +20,7 @@ SRC_URI="
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv ~sparc x86"
 
 RDEPEND="
 	<dev-python/jmespath-2[${PYTHON_USEDEP}]
@@ -38,6 +38,7 @@ BDEPEND="
 	)
 "
 
+EPYTEST_PLUGINS=()
 EPYTEST_XDIST=1
 distutils_enable_tests pytest
 
@@ -62,6 +63,5 @@ python_test() {
 		tests/functional/test_six_threading.py::test_six_thread_safety
 	)
 
-	local -x PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 	epytest tests/{functional,unit}
 }
