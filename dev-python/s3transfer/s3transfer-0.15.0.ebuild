@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..13} pypy3_11 )
+PYTHON_COMPAT=( python3_{11..14} pypy3_11 )
 
 inherit distutils-r1 pypi
 
@@ -16,22 +16,25 @@ HOMEPAGE="
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv ~sparc x86"
 
 RDEPEND="
 	<dev-python/botocore-2[${PYTHON_USEDEP}]
 	>=dev-python/botocore-1.37.4[${PYTHON_USEDEP}]
 "
 
+EPYTEST_PLUGINS=()
+EPYTEST_XDIST=1
 distutils_enable_tests pytest
 
 src_prepare() {
+	distutils-r1_src_prepare
+
 	# do not rely on bundled deps in botocore (sic!)
 	find -name '*.py' -exec sed -i \
 		-e 's:from botocore[.]vendored import:import:' \
 		-e 's:from botocore[.]vendored[.]:from :' \
 		{} + || die
-	distutils-r1_src_prepare
 }
 
 python_test() {
