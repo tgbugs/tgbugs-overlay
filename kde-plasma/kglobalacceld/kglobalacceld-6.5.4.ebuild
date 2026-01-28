@@ -42,7 +42,7 @@ BDEPEND=">=dev-qt/qttools-${QTMIN}:6[linguist]"
 PATCHES=(
 	"${FILESDIR}"/cml.patch
 	"${FILESDIR}"/src-cml.patch
-	"${FILESDIR}"/ksac.patch
+	"${FILESDIR}"/ksac-6.5.4.patch
 )
 
 src_configure() {

@@ -1,0 +1,52 @@
+--- a/src/kserviceactioncomponent.cpp
++++ b/src/kserviceactioncomponent.cpp
+@@ -12,9 +12,11 @@
+ 
+ #include <QFileInfo>
+ 
++/*
+ #include <KIO/ApplicationLauncherJob>
+ #include <KIO/UntrustedProgramHandlerInterface>
+ #include <KNotificationJobUiDelegate>
++*/
+ 
+ #include "config-kglobalaccel.h"
+ #if HAVE_X11
+@@ -22,6 +24,7 @@
+ #include <private/qtx11extras_p.h>
+ #endif
+ 
++/*
+ class UntrustedProgramHandler : public KIO::UntrustedProgramHandlerInterface
+ {
+ public:
+@@ -30,11 +33,12 @@
+     {
+     }
+ 
+-    void showUntrustedProgramWarning(KJob * /*job*/, const QString & /*programName*/) override
++    void showUntrustedProgramWarning(KJob *, const QString &) override
+     {
+         Q_EMIT result(true);
+     }
+ };
++*/
+ 
+ QString makeUniqueName(const KService::Ptr &service)
+ {
+@@ -59,6 +63,7 @@
+         return;
+     }
+ 
++    /*
+     KIO::ApplicationLauncherJob *job = nullptr;
+ 
+     if (shortcut.uniqueName() == QLatin1String("_launch")) {
+@@ -89,6 +94,7 @@
+     }
+ #endif
+     job->start();
++    */
+ }
+ 
+ void KServiceActionComponent::loadFromService()
