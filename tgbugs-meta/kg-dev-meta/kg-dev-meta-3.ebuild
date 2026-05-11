@@ -9,7 +9,7 @@ HOMEPAGE="https://github.com/tgbugs/dockerfiles"
 LICENSE="metapackage"
 SLOT="0"
 KEYWORDS="amd64 arm64"
-IUSE="nest"
+IUSE="nest thesis"
 
 RDEPEND="
 app-arch/zip
@@ -22,7 +22,9 @@ dev-libs/redland
 dev-lisp/sbcl
 dev-node/apinat-converter  # needed for apinatomy;
 dev-python/nifstd-tools
-dev-python/seaborn  # FIXME was for thesis maybe? queries.org but commented out?;
+thesis? (
+	dev-python/seaborn  # FIXME was for thesis maybe? queries.org but commented out?;
+)
 dev-util/shellcheck
 media-gfx/inkscape
 tgbugs-meta/kg-release-meta
