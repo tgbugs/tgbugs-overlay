@@ -31,7 +31,9 @@ RDEPEND="
 	dev-python/anyio[${PYTHON_USEDEP}]
 	<dev-python/elastic-transport-10[${PYTHON_USEDEP}]
 	>=dev-python/elastic-transport-9.2.0[${PYTHON_USEDEP}]
-	>=dev-python/orjson-3[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
+		>=dev-python/orjson-3[${PYTHON_USEDEP}]
+		' 'python3*')
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
 	<dev-python/requests-3[${PYTHON_USEDEP}]
 	>=dev-python/requests-2.4[${PYTHON_USEDEP}]
