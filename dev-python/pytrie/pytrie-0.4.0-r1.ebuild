@@ -6,7 +6,7 @@ EAPI=8
 DISTUTILS_USE_PEP517=setuptools
 PYPI_NO_NORMALIZE=1
 PYPI_PN="PyTrie"
-PYTHON_COMPAT=( python3_{10..13} pypy3 pypy3_11 )
+PYTHON_COMPAT=( python3_{10..13} )
 
 inherit distutils-r1 pypi
 
@@ -18,10 +18,17 @@ HOMEPAGE="
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 arm arm64 ~riscv ~sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 arm arm64 ~riscv ~sparc x86"
+IUSE="test"
+RESTRICT="!test? ( test )"
 
 RDEPEND="
 	dev-python/sortedcontainers[${PYTHON_USEDEP}]
+"
+BDEPEND="
+	test? (
+		dev-python/test[${PYTHON_USEDEP}]
+	)
 "
 
 distutils_enable_tests unittest
