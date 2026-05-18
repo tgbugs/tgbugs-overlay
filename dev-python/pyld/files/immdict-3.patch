@@ -1,0 +1,106 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 244c905..70f2ec3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -99,7 +99,7 @@
+   - Added a `ContextResolver` which can use a shared LRU cache for storing
+     externally retrieved contexts, and the result of processing them relative
+     to a particular active context.
+-  - Return a `frozendict` from context processing and reduce deepcopies.
++  - Return a `immutabledict` from context processing and reduce deepcopies.
+   - Store inverse context in an LRU cache rather than trying to modify a frozen context.
+   - Don't set `@base` in initial context and don't resolve a relative IRI
+     when setting `@base` in a context, so that the document location can
+diff --git a/lib/pyld/context_resolver.py b/lib/pyld/context_resolver.py
+index 343d366..90abae3 100644
+--- a/lib/pyld/context_resolver.py
++++ b/lib/pyld/context_resolver.py
+@@ -8,7 +8,7 @@
+ .. moduleauthor:: Gregg Kellogg <gregg@greggkellogg.net>
+ """
+ 
+-from frozendict import frozendict
++from immutabledict import immutabledict
+ 
+ from c14n.Canonicalize import canonicalize
+ from pyld import iri_resolver, jsonld
+@@ -46,7 +46,7 @@     def resolve(self, active_ctx, context, base, cycles=None):
+             cycles = set()
+ 
+         # process `@context`
+-        if isinstance(context, (dict, frozendict)) and '@context' in context:
++        if isinstance(context, (dict, immutabledict)) and '@context' in context:
+             context = context['@context']
+ 
+         # context is one or more contexts
+@@ -70,7 +70,7 @@     def resolve(self, active_ctx, context, base, cycles=None):
+                     all_resolved.append(resolved)
+             elif ctx is None or ctx is False:
+                 all_resolved.append(ResolvedContext(False))
+-            elif not isinstance(ctx, dict) and not isinstance(ctx, frozendict):
++            elif not isinstance(ctx, dict) and not isinstance(ctx, immutabledict):
+                 raise jsonld.JsonLdError(
+                     'Invalid JSON-LD syntax; @context must be an object.',
+                     'jsonld.SyntaxError',
+@@ -175,7 +175,7 @@     def _fetch_context(self, active_ctx, url, cycles):
+             ) from cause
+ 
+         # ensure ctx is an object
+-        if not isinstance(context, dict) and not isinstance(context, frozendict):
++        if not isinstance(context, dict) and not isinstance(context, immutabledict):
+             raise jsonld.JsonLdError(
+                 'Dereferencing a URL did not result in a JSON object. The '
+                 + 'response was valid JSON, but it was not a JSON object.',
+@@ -206,7 +206,7 @@     def _resolve_context_urls(self, context, base):
+         :param context: the context.
+         :param base: the base IRI to use to resolve relative IRIs.
+         """
+-        if not isinstance(context, dict) and not isinstance(context, frozendict):
++        if not isinstance(context, dict) and not isinstance(context, immutabledict):
+             return
+ 
+         ctx = context.get('@context')
+@@ -219,11 +219,11 @@     def _resolve_context_urls(self, context, base):
+             for num, element in enumerate(ctx):
+                 if isinstance(element, str):
+                     ctx[num] = iri_resolver.resolve(element, base)
+-                elif isinstance(element, (dict, frozendict)):
++                elif isinstance(element, (dict, immutabledict)):
+                     self._resolve_context_urls({'@context': element}, base)
+             return
+ 
+-        if not isinstance(ctx, dict) and not isinstance(ctx, frozendict):
++        if not isinstance(ctx, dict) and not isinstance(ctx, immutabledict):
+             # no @context URLs can be found in non-object
+             return
+ 
+diff --git a/lib/pyld/jsonld.py b/lib/pyld/jsonld.py
+index ce18f0d..40d4ac4 100644
+--- a/lib/pyld/jsonld.py
++++ b/lib/pyld/jsonld.py
+@@ -27,7 +27,7 @@
+ 
+ import lxml.html
+ from cachetools import LRUCache
+-from frozendict import frozendict
++from immutabledict import immutabledict
+ 
+ from c14n.Canonicalize import canonicalize
+ from pyld.__about__ import __copyright__, __license__, __version__
+@@ -6032,7 +6032,7 @@ def _is_object(v):
+ 
+     :return: True if the value is an Object, False if not.
+     """
+-    return isinstance(v, (dict, frozendict))
++    return isinstance(v, (dict, immutabledict))
+ 
+ 
+ def _is_empty_object(v):
+@@ -6287,7 +6287,7 @@ def _is_relative_iri(v):
+ 
+ def freeze(value):
+     if isinstance(value, dict):
+-        return frozendict(value)
++        return immutabledict(value)
+     return value
+

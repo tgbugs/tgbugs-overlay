@@ -13,11 +13,6 @@ if [[ ${PV} == "9999" ]]; then
 	KEYWORDS=""
 else
 	inherit pypi
-	MY_PN=PyLD
-	MY_PV=${PV/_pre/.dev}
-	MY_P=${MY_PN}-${MY_PV}  # 1.1.1_pre0 -> 1.1.1.dev0
-	S=${WORKDIR}/${MY_P}
-	SRC_URI="$(pypi_sdist_url --no-normalize "${MY_PN}" "${MY_PV}")"
 	KEYWORDS="~amd64 ~x86"
 fi
 
@@ -37,7 +32,7 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 
-PATCHES=("${FILESDIR}/immdict.patch")
+PATCHES=("${FILESDIR}/immdict-3.patch")
 
 distutils_enable_tests pytest
 
