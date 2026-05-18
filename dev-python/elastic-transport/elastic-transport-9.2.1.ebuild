@@ -37,7 +37,9 @@ BDEPEND="
 		dev-python/httpx[${PYTHON_USEDEP}]
 		dev-python/opentelemetry-api[${PYTHON_USEDEP}]
 		dev-python/opentelemetry-sdk[${PYTHON_USEDEP}]
-		dev-python/orjson[${PYTHON_USEDEP}]
+		$(python_gen_cond_dep '
+			>=dev-python/orjson-3[${PYTHON_USEDEP}]
+			' 'python3*')
 		dev-python/requests[${PYTHON_USEDEP}]
 		dev-python/respx[${PYTHON_USEDEP}]
 		dev-python/trustme[${PYTHON_USEDEP}]
