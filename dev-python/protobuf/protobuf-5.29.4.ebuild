@@ -8,7 +8,7 @@ EAPI=8
 
 DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..13} pypy3_11 )
+PYTHON_COMPAT=( python3_{10..14} pypy3_11 )
 PYPI_PN="protobuf"
 
 inherit distutils-r1 pypi
