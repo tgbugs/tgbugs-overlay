@@ -40,7 +40,6 @@ RDEPEND="
 	app-text/xlsx2csv[${PYTHON_USEDEP}]
 	>=dev-python/augpathlib-0.0.33[${PYTHON_USEDEP}]
 	dev-python/beautifulsoup4[${PYTHON_USEDEP}]
-	dev-python/dicttoxml[${PYTHON_USEDEP}]
 	>=dev-python/idlib-0.0.1_pre22[${PYTHON_USEDEP}]
 	>=dev-python/jsonschema-3.2.0[${PYTHON_USEDEP}]
 	dev-python/openpyxl[${PYTHON_USEDEP}]
