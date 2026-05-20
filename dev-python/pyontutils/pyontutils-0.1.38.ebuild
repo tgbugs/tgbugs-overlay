@@ -38,7 +38,9 @@ RDEPEND="
 	dev-python/google-auth-oauthlib[${PYTHON_USEDEP}]
 	dev-python/htmlfn[${PYTHON_USEDEP}]
 	>=dev-python/idlib-0.0.1_pre22[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
 	>=dev-python/joblib-1.1.0[${PYTHON_USEDEP}]
+	' 'python3*')
 	dev-python/lxml[${PYTHON_USEDEP}]
 	dev-python/nest-asyncio[${PYTHON_USEDEP}]
 	>=dev-python/ontquery-0.2.11[${PYTHON_USEDEP}]
