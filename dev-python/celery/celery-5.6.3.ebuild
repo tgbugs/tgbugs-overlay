@@ -34,6 +34,7 @@ RDEPEND="
 	<dev-python/kombu-6.0.0[${PYTHON_USEDEP}]
 	>=dev-python/python-dateutil-2.8.2[${PYTHON_USEDEP}]
 	dev-python/pytz[${PYTHON_USEDEP}]
+	dev-python/tzlocal[${PYTHON_USEDEP}]
 	dev-python/vine[${PYTHON_USEDEP}]
 "
 
