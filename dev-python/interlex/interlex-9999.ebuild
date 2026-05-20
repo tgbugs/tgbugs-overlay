@@ -8,7 +8,7 @@ PYTHON_COMPAT=( python3_{10..14} pypy3 pypy3_11 )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
-	EGIT_REPO_URI="git@github.com:tgbugs/${PN}.git"
+	EGIT_REPO_URI="https://github.com/tgbugs/${PN}.git"
 	inherit git-r3
 	KEYWORDS=""
 else
