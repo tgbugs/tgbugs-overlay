@@ -3,7 +3,7 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=setuptools
+DISTUTILS_USE_PEP517=hatchling
 PYTHON_COMPAT=( python3_{10..14} pypy3 pypy3_11 )
 PYPI_NO_NORMALIZE=1
 PYPI_PN=pyjsg
@@ -24,10 +24,6 @@ DEPEND="
 RDEPEND="${DEPEND}"
 
 RESTRICT="!test? ( test )"
-
-PATCHES=(
-	"${FILESDIR}"/no-setup-requires.patch
-)
 
 distutils_enable_tests pytest
 
