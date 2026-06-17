@@ -35,8 +35,12 @@ IDEPEND="
 
 RDEPEND="
 	dev-python/flask[${PYTHON_USEDEP}]
-	dev-python/nbconvert[${PYTHON_USEDEP}]
-	dev-python/nbformat[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
+		dev-python/nbconvert[${PYTHON_USEDEP}]
+		' 'python3*')
+	$(python_gen_cond_dep '
+		dev-python/nbformat[${PYTHON_USEDEP}]
+		' 'python3*')
 	dev-python/psutil[${PYTHON_USEDEP}]
 	dev-python/pymysql[${PYTHON_USEDEP}]
 	>=dev-python/pyontutils-0.1.32[${PYTHON_USEDEP}]
