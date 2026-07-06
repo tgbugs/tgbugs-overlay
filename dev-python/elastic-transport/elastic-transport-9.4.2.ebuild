@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{11..14} pypy3_11 )
+PYTHON_COMPAT=( python3_{12..14} pypy3_11 )
 
 inherit distutils-r1
 
@@ -29,7 +29,7 @@ RESTRICT="test"
 RDEPEND="
 	dev-python/certifi[${PYTHON_USEDEP}]
 	dev-python/sniffio[${PYTHON_USEDEP}]
-	>=dev-python/urllib3-1.26.2[${PYTHON_USEDEP}]
+	>=dev-python/urllib3-2[${PYTHON_USEDEP}]
 "
 BDEPEND="
 	test? (
@@ -62,6 +62,9 @@ EPYTEST_DESELECT=(
 	# https://github.com/elastic/elastic-transport-python/issues/269
 	tests/async_/test_async_transport.py::test_async_transport_httpbin
 	tests/async_/test_httpbin.py::test_node
+	tests/test_httpbin.py::test_node
+	# formatting mismatch (httpbin?)
+	tests/test_logging.py::test_debug_logging
 )
 
 python_test() {
