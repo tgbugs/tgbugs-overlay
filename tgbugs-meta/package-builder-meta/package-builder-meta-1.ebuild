@@ -3,6 +3,9 @@
 
 EAPI=8
 
+PYTHON_COMPAT=( python3_{12..15} pypy3_11 )
+inherit python-r1
+
 DESCRIPTION="meta package for package builders"
 HOMEPAGE="https://github.com/tgbugs/dockerfiles"
 
@@ -23,7 +26,7 @@ tgbugs-meta/python-testing-meta
 tgbugs-meta/scheme-meta
 X? (
 	app-editors/gvim
-	dev-python/interlex
+	dev-python/interlex[${PYTHON_USEDEP}]
 	tgbugs-meta/dev-meta
 	tgbugs-meta/docker-meta
 	tgbugs-meta/dynapad-meta
@@ -33,4 +36,5 @@ X? (
 	x11-libs/gtk+
 )
 "
-RDEPEND="$(echo "${RDEPEND}" | "${EPREFIX}"/bin/sed 's/[[:blank:]]*#.*$//')"
+_rdp=""; while IFS= read -r line || [[ -n "$line" ]]; do out="${line%%#*}"; out="${out%"${out##*[![:space:]]}"}"; _rdp+="${out}"$'\n'; done < <(printf '%s\n' "$RDEPEND"); RDEPEND="${_rdp}"
+printf '%s\n' "$RDEPEND"
