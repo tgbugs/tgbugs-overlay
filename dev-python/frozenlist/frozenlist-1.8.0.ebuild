@@ -5,7 +5,7 @@ EAPI=8
 
 DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=standalone
-PYTHON_COMPAT=( python3_{12..15} pypy3_11 )
+PYTHON_COMPAT=( python3_{12..15} python3_{14,15}t pypy3_11 )
 
 inherit distutils-r1
 
@@ -34,6 +34,11 @@ BDEPEND="
 		' 'python*')
 	)
 "
+
+PATCHES=(
+	# https://github.com/aio-libs/frozenlist/pull/749
+	"${FILESDIR}"/${P}-tests.patch
+)
 
 EPYTEST_PLUGINS=()
 distutils_enable_tests pytest

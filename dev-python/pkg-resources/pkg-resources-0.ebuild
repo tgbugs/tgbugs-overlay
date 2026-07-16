@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{12..15} pypy3_11 )
+PYTHON_COMPAT=( python3_{12..15} python3_{14,15}t pypy3_11 )
 
 inherit python-r1
 
