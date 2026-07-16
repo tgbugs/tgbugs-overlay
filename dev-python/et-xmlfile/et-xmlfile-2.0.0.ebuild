@@ -1,0 +1,59 @@
+# Copyright 1999-2026 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+EAPI=8
+
+DISTUTILS_USE_PEP517=setuptools
+PYTHON_COMPAT=( python3_{12..15} pypy3_11 )
+
+inherit distutils-r1
+
+MY_PV=${PV}
+MY_P=et_xmlfile-${MY_PV}
+
+DESCRIPTION="An implementation of lxml.xmlfile for the standard library"
+HOMEPAGE="
+	https://pypi.org/project/et-xmlfile/
+	https://foss.heptapod.net/openpyxl/et_xmlfile/
+"
+SRC_URI="
+	https://foss.heptapod.net/openpyxl/et_xmlfile/-/archive/${MY_PV}/${MY_P}.tar.gz
+		-> ${MY_P}.git.tar.gz
+"
+S=${WORKDIR}/${MY_P}
+
+LICENSE="MIT"
+SLOT="0"
+KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ppc ppc64 ~riscv ~s390 ~sparc x86 ~arm64-macos ~x64-macos"
+
+RDEPEND="
+	dev-python/lxml[${PYTHON_USEDEP}]
+"
+
+EPYTEST_PLUGINS=()
+distutils_enable_tests pytest
+distutils_enable_sphinx doc \
+	dev-python/sphinx-rtd-theme
+
+python_test() {
+	local EPYTEST_DESELECT=()
+
+	case ${EPYTHON} in
+		python3.15*)
+			EPYTEST_DESELECT+=(
+				# minor exception message difference
+				et_xmlfile/tests/test_incremental_tree_with_stdlib_tests.py::ElementTreeTest::test_iterparse
+				et_xmlfile/tests/test_incremental_tree_with_stdlib_tests.py::KeywordArgsTest::test_issue14818
+			)
+			;&
+		python3.14*)
+			EPYTEST_DESELECT+=(
+				# minor exception message difference
+				# https://foss.heptapod.net/openpyxl/et_xmlfile/-/issues/8
+				et_xmlfile/tests/test_incremental_tree_with_stdlib_tests.py::ElementTreeTest::test_simpleops
+			)
+			;;
+	esac
+
+	epytest
+}
