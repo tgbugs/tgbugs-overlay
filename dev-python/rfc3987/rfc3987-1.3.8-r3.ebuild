@@ -21,7 +21,9 @@ KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~m68k ~mips ppc ppc64 ~riscv ~s390
 # dev-python/regex doesn't support pypy. The package falls back to re and has most
 # functionality without it.
 RDEPEND="
-	dev-python/regex[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
+		dev-python/regex[${PYTHON_USEDEP}]
+	' 'python*')
 "
 BDEPEND="
 	${RDEPEND}
