@@ -1,0 +1,138 @@
+From 219362021d38583fec0a95964e552b7f27e2df4c Mon Sep 17 00:00:00 2001
+From: Tom Gillespie <tgbugs@gmail.com>
+Date: Thu, 16 Jan 2025 13:50:21 -0800
+Subject: [PATCH] fix Weighting calculation for path converters and add tests
+
+Fix issue #2924 where Rules with dynamic elements would take priority
+over rules with static elements of the same length.
+
+The underlying issue was that the ordering for rules was backwards
+with regard to number of argument weights. In order to ensure that
+static elements match first the shortest rule must be tested first.
+
+To ensure that a RulePart that contains a path converter does not
+incorrectly take priority over other RuleParts that are part of other
+Rules that should have priority, RuleParts containing a path converter
+are assigned an infinite number of argument weights because they can
+consume an arbitrary number of url path elements when matching.
+
+With this change, two consecutive path converters give priority to the
+first converter. In general two consecutive path converters with
+different names cannot have consistent or predicatable behavior (where
+would you cut?). Tests are updated accordingly. Might consider making
+back to back path converters an error.
+---
+ src/werkzeug/routing/rules.py |  6 +++--
+ tests/test_routing.py         | 45 ++++++++++++++++++++++++++++++++++-
+ 2 files changed, 48 insertions(+), 3 deletions(-)
+
+diff --git a/src/werkzeug/routing/rules.py b/src/werkzeug/routing/rules.py
+index 2dad31dd..6819218e 100644
+--- a/src/werkzeug/routing/rules.py
++++ b/src/werkzeug/routing/rules.py
+@@ -623,6 +623,7 @@ class Rule(RuleFactory):
+                 self._trace.append((False, data["static"]))
+                 content += data["static"] if static else re.escape(data["static"])
+ 
++            haspath = False
+             if data["variable"] is not None:
+                 if static:
+                     # Switching content to represent regex, hence the need to escape
+@@ -640,6 +641,7 @@ class Rule(RuleFactory):
+                 convertor_number += 1
+                 argument_weights.append(convobj.weight)
+                 self._trace.append((True, data["variable"]))
++                haspath = data["converter"] == "path"
+ 
+             if data["slash"] is not None:
+                 self._trace.append((False, "/"))
+@@ -651,7 +653,7 @@ class Rule(RuleFactory):
+                     weight = Weighting(
+                         -len(static_weights),
+                         static_weights,
+-                        -len(argument_weights),
++                        float("+inf") if haspath else len(argument_weights),
+                         argument_weights,
+                     )
+                     yield RulePart(
+@@ -681,7 +683,7 @@ class Rule(RuleFactory):
+         weight = Weighting(
+             -len(static_weights),
+             static_weights,
+-            -len(argument_weights),
++            float("+inf") if haspath else len(argument_weights),
+             argument_weights,
+         )
+         yield RulePart(
+diff --git a/tests/test_routing.py b/tests/test_routing.py
+index 02db898d..2c715ebb 100644
+--- a/tests/test_routing.py
++++ b/tests/test_routing.py
+@@ -381,7 +381,8 @@ def test_greedy():
+         [
+             r.Rule("/foo", endpoint="foo"),
+             r.Rule("/<path:bar>", endpoint="bar"),
+-            r.Rule("/<path:bar>/<path:blub>", endpoint="bar"),
++            r.Rule("/<path:bar>/<blub>", endpoint="bar"),
++            r.Rule("/<baz>/static", endpoint="oops"),
+         ]
+     )
+     adapter = map.bind("example.org", "/")
+@@ -389,12 +390,54 @@ def test_greedy():
+     assert adapter.match("/foo") == ("foo", {})
+     assert adapter.match("/blub") == ("bar", {"bar": "blub"})
+     assert adapter.match("/he/he") == ("bar", {"bar": "he", "blub": "he"})
++    assert adapter.match("/he/static") == ("oops", {"baz": "he"})
++
++    assert adapter.build("foo", {}) == "/foo"
++    assert adapter.build("bar", {"bar": "blub"}) == "/blub"
++    assert adapter.build("bar", {"bar": "blub", "blub": "bar"}) == "/blub/bar"
++
++
++def test_greedy_double_paths():
++    # two back to back paths do not have any meaning and should
++    # probably cause an error in _parse_rule
++    map = r.Map(
++        [
++            r.Rule("/foo", endpoint="foo"),
++            r.Rule("/<path:bar>", endpoint="bar"),
++            r.Rule("/<path:bar>/<path:blub>", endpoint="bar"),
++        ]
++    )
++    adapter = map.bind("example.org", "/")
++
++    assert adapter.match("/foo") == ("foo", {})
++    assert adapter.match("/blub") == ("bar", {"bar": "blub"})
++    assert adapter.match("/he/he") == ("bar", {"bar": "he/he"})
++    # can't match ("bar", {"bar": "he", "blub": "he"}) without breaking static matching
++    # use a rule like "/<path:bar/<blub>" instead
+ 
+     assert adapter.build("foo", {}) == "/foo"
+     assert adapter.build("bar", {"bar": "blub"}) == "/blub"
+     assert adapter.build("bar", {"bar": "blub", "blub": "bar"}) == "/blub/bar"
+ 
+ 
++def test_static_priority():
++    # see https://github.com/pallets/werkzeug/issues/2924
++    map = r.Map(
++        [
++            r.Rule("/<path:dyn2>/<dyn1>", endpoint="file"),
++            r.Rule("/<dyn1>/statn", endpoint="stat"),
++        ],
++    )
++
++    adapter = map.bind("example.org", "/")
++
++    assert adapter.match("/d2/d1", method="GET") == (
++        "file",
++        {"dyn2": "d2", "dyn1": "d1"},
++    )
++    assert adapter.match("/d1/statn", method="GET") == ("stat", {"dyn1": "d1"})
++
++
+ def test_path():
+     map = r.Map(
+         [
+-- 
+2.45.2
+
