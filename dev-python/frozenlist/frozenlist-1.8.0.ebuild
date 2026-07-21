@@ -44,8 +44,7 @@ EPYTEST_PLUGINS=()
 distutils_enable_tests pytest
 
 python_compile() {
-	# pypy is not using the C extension
-	if ! use native-extensions || [[ ${EPYTHON} != python* ]]; then
+	if ! use native-extensions; then
 		local -x FROZENLIST_NO_EXTENSIONS=1
 	fi
 
