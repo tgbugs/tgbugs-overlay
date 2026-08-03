@@ -60,11 +60,6 @@ QA_CONFIG_IMPL_DECL_SKIP=( makedev )
 PATCHES=(
 	"${FILESDIR}/file-5.43-seccomp-fstatat64-musl.patch" #789336, not upstream yet
 	"${FILESDIR}/file-5.45-seccomp-sandbox.patch"
-	"${FILESDIR}/file-5.46-zip.patch"
-	"${FILESDIR}/file-5.46-buffer-overflow.patch"
-	"${FILESDIR}/file-5.46-seccomp-rseq.patch"
-	"${FILESDIR}/file-5.46-seccomp-glibc-2.42.patch"
-	"${FILESDIR}/file-5.46-seccomp-glibc-2.42-followup.patch"
 )
 
 src_prepare() {
