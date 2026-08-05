@@ -30,7 +30,10 @@ DEPEND="
 	dev-python/requests[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 "
-RDEPEND="${DEPEND}"
+
+RDEPEND="${DEPEND}
+	dev-python/cachetools[${PYTHON_USEDEP}]
+"
 
 PATCHES=("${FILESDIR}/immdict-3.patch")
 
