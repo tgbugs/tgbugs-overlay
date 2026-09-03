@@ -42,11 +42,6 @@ BDEPEND="
 EPYTEST_PLUGINS=( pytest-subprocess )
 distutils_enable_tests pytest
 
-PATCHES=(
-	# https://github.com/scikit-build/scikit-build-core/pull/1259/changes/56e8c65f6911c168a4f23ae76c9c7f9ad4c088eb
-	"${FILESDIR}/${P}-test.patch"
-)
-
 python_test() {
 	local EPYTEST_IGNORE=(
 		# needs unpackaged validate_pyproject
