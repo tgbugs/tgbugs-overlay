@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_EXT=1
-DISTUTILS_USE_PEP517=setuptools
+DISTUTILS_USE_PEP517=scikit-build-core
 PYTHON_COMPAT=( python3_{12..15} pypy3_11 )
 
 inherit distutils-r1 pypi
@@ -43,7 +43,6 @@ distutils_enable_tests pytest
 
 src_configure() {
 	export ARGON2_CFFI_USE_SYSTEM=1
-	# We cannot call usex in global scope, so we invoke it in src_configure
 	export ARGON2_CFFI_USE_SSE2=$(usex cpu_flags_x86_sse2 1 0)
 	distutils-r1_src_configure
 }
