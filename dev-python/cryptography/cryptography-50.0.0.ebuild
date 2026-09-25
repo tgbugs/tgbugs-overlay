@@ -73,7 +73,9 @@ KEYWORDS="amd64 arm arm64 ~loong ~mips ppc ppc64 ~riscv ~s390 ~sparc x86"
 
 RDEPEND="
 	>=dev-libs/openssl-1.0.2o-r6:0=
-	>=dev-python/cffi-2.0.0:=[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep '
+		>=dev-python/cffi-2.0.0:=[${PYTHON_USEDEP}]
+	' 'python*')
 "
 DEPEND="
 	${RDEPEND}
