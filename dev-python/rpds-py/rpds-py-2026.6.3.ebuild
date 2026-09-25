@@ -6,26 +6,22 @@ EAPI=8
 DISTUTILS_EXT=1
 DISTUTILS_USE_PEP517=maturin
 PYPI_VERIFY_REPO=https://github.com/crate-py/rpds
-PYTHON_COMPAT=( python3_{12..15} pypy3_11 )
+PYTHON_COMPAT=( python3_{12..15} python3_{14..15}t pypy3_11 )
 
 CRATES="
 	archery@1.2.2
-	cc@1.2.48
-	find-msvc-tools@0.1.5
 	heck@0.5.0
 	libc@0.2.177
 	once_cell@1.21.3
 	portable-atomic@1.11.1
 	proc-macro2@1.0.103
-	pyo3-build-config@0.28.3
-	pyo3-ffi@0.28.3
-	pyo3-macros-backend@0.28.3
-	pyo3-macros@0.28.3
-	pyo3@0.28.3
-	python3-dll-a@0.2.14
+	pyo3-build-config@0.29.0
+	pyo3-ffi@0.29.0
+	pyo3-macros-backend@0.29.0
+	pyo3-macros@0.29.0
+	pyo3@0.29.0
 	quote@1.0.42
 	rpds@1.2.1
-	shlex@1.3.0
 	smallvec@1.15.1
 	syn@2.0.111
 	target-lexicon@0.13.3
@@ -61,5 +57,6 @@ export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
 
 src_unpack() {
 	pypi_src_unpack
-	cargo_src_unpack
+	cargo_crate_unpack
+	cargo_gen_config
 }
