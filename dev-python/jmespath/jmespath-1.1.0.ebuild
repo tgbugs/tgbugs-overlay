@@ -24,6 +24,10 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="amd64 arm arm64 ~loong ppc ppc64 ~riscv ~sparc x86"
 
+BDEPEND="
+	<dev-python/flit-core-4[${PYTHON_USEDEP}]
+"
+
 EPYTEST_IGNORE=(
 	# fuzzing tests, they take forever
 	extra/test_hypothesis.py
