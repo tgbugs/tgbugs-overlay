@@ -25,6 +25,7 @@ KEYWORDS="~alpha amd64 arm arm64 ~hppa ~loong ~mips ppc ppc64 ~riscv ~s390 ~spar
 IUSE="+native-extensions"
 
 BDEPEND="
+	<dev-python/flit-core-4[${PYTHON_USEDEP}]
 	dev-python/expandvars[${PYTHON_USEDEP}]
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	dev-python/wheel[${PYTHON_USEDEP}]
