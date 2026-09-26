@@ -3,7 +3,7 @@
 
 EAPI=8
 
-DISTUTILS_USE_PEP517=flit
+DISTUTILS_USE_PEP517=flit-core
 PYPI_VERIFY_REPO=https://github.com/pypa/dependency-groups
 PYTHON_COMPAT=( python3_{12..15} python3_{14,15}t pypy3_11 )
 
