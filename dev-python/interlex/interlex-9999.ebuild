@@ -21,7 +21,7 @@ HOMEPAGE="https://github.com/tgbugs/interlex"
 
 LICENSE="MIT"
 SLOT="0"
-IUSE="alt dev +rabbitmq database elasticsearch server test"
+IUSE="alt dev rabbitmq database elasticsearch server test"
 RESTRICT="!test? ( test )"
 
 BDEPEND="
