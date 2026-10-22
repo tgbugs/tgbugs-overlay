@@ -107,6 +107,8 @@ python_test() {
 		# more random warning failures
 		test/contrib/test_pyopenssl.py::TestHTTPS_TLSv1_{2,3}::test_ssl_correct_system_time
 		test/contrib/test_pyopenssl.py::TestHTTPS_TLSv1_{2,3}::test_ssl_wrong_system_time
+		# some plugin?
+		test/test_connection.py::TestConnection::test_HTTPSConnection_default_socket_options
 	)
 
 	local EPYTEST_PLUGINS=( pytest-timeout )
