@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..14} pypy3 pypy3_11 )
+PYTHON_COMPAT=( python3_{12..14} pypy3 pypy3_11 )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
@@ -40,7 +40,7 @@ RDEPEND="
 		dev-python/google-auth-oauthlib[${PYTHON_USEDEP}]
 	)
 	rdf? (
-		>=dev-python/pyontutils-0.1.36[${PYTHON_USEDEP}]
+		>=dev-python/pyontutils-0.1.40[${PYTHON_USEDEP}]
 	)
 	test? (
 		dev-python/pytest[${PYTHON_USEDEP}]
