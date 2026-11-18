@@ -4,13 +4,14 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( pypy3 pypy3_11 python3_{10..14} )
+PYTHON_COMPAT=( pypy3_11 python3_{12..15} )
 inherit distutils-r1
 
 if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="https://github.com/tgbugs/protc.git"
 	inherit git-r3
 	KEYWORDS=""
+	BDEPEND="dev-python/orthauth[yaml,sxpr,${PYTHON_USEDEP}]"
 else
 	inherit pypi
 	KEYWORDS="~amd64 ~x86"
@@ -24,7 +25,7 @@ SLOT="0"
 IUSE="dev test"
 RESTRICT="!test? ( test )"
 
-BDEPEND="
+BDEPEND="${BDEPEND}
 	dev-python/fastentrypoints[${PYTHON_USEDEP}]"
 
 IDEPEND="
